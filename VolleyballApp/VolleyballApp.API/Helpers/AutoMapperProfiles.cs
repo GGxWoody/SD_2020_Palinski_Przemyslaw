@@ -15,6 +15,7 @@ namespace VolleyballApp.API.Helpers
             CreateMap<User, UserForDetailedDto>()
                 .ForMember(dest => dest.Age,
                     opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));;
+            CreateMap<UserForRegisterDto,User>();
         }
     }
 }
