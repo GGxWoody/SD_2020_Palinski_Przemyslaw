@@ -16,10 +16,12 @@ import { MemberListComponent } from './members/member-list/member-list.component
 import { MessagesComponent } from './messages/messages.component';
 import { appRoutes } from './routes';
 import { MemberCardComponent } from './members/member-card/member-card.component';
+import { TeamListComponent } from './teams/team-list/team-list.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { AuthGuard } from './_guards/auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
+import { TeamListResolver } from './_resolvers/team-list.resolver';
 
 
 
@@ -42,7 +44,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       RegisterComponent,
       MemberListComponent,
       MemberCardComponent,
-      MessagesComponent
+      MessagesComponent,
+      TeamListComponent
    ],
    imports: [
       BrowserModule,
@@ -69,6 +72,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       ErrorInterceptorProvider,
       MessagesResolver,
       MemberListResolver,
+      TeamListResolver,
       AuthGuard,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
    ],

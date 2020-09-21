@@ -2,9 +2,11 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MessagesComponent } from './messages/messages.component';
+import { TeamListComponent } from './teams/team-list/team-list.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { MessagesResolver } from './_resolvers/messages.resolver';
+import { TeamListResolver } from './_resolvers/team-list.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -14,6 +16,7 @@ export const appRoutes: Routes = [
         canActivate: [AuthGuard],
         children: [
             { path: 'members', component: MemberListComponent, resolve: { users: MemberListResolver } },
+            { path: 'teams', component: TeamListComponent, resolve: {teams: TeamListResolver} },
             { path: 'messages', component: MessagesComponent, resolve: {messages: MessagesResolver} },
         ]
     },

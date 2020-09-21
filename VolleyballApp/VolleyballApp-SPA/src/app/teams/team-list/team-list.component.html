@@ -1,0 +1,23 @@
+<div class="container mt-3">
+
+  <div class="text-center mt-3">
+    <h2>Teams found - {{pagination.totalItems}} found</h2>
+  </div>
+  <br>
+  
+  <div class="row justify-content-center">
+    <div *ngFor="let team of teams" class="col-lg-2 col-md-3 col-sm-6">
+      Team name: {{ team.teamName }}
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center">
+  <pagination [boundaryLinks]="true" 
+              [totalItems]="pagination.totalItems"
+              [itemsPerPage]="pagination.itemsPerPage"
+              [(ngModel)]="pagination.currentPage"
+              (pageChanged)="pageChanged($event)"
+            previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  </pagination>
+</div>

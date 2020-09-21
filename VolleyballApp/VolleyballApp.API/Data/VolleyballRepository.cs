@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using VolleyballApp.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +13,6 @@ namespace VolleyballApp.API.Data
         public VolleyballRepository(DataContext context)
         {
             this._context = context;
-
         }
         public void Add<T>(T entity) where T : class
         {
@@ -24,6 +22,18 @@ namespace VolleyballApp.API.Data
         public void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);
+        }
+
+        public async Task<Team> GetTeam(int id)
+        {
+            var team = await _context.Teams.Include(e => e.Users).Include(c => c.Owner).FirstOrDefaultAsync(u => u.Id == id);
+            return team;
+        }
+
+        public async Task<PagedList<Team>> GetTeams(UserParams userParams)
+        {
+            var teams = _context.Teams.OrderByDescending(u => u.DateCreated);
+            return await PagedList<Team>.CreateAsync(teams, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<User> GetUser(int id)

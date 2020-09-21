@@ -16,5 +16,9 @@ namespace VolleyballApp.API.Models
         public DateTime LastActive { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+        public int GamesPlayed { get; set; }
+        public int GamesWon { get; set; }
+        public ICollection<Team> TeamsCreated { get; set; }
+        public ICollection<Team> Teams { get; set; }
     }
 }
