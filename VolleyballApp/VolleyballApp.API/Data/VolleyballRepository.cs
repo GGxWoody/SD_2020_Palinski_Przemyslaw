@@ -38,7 +38,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.Include(e => e.Teams)
+                .Include(e => e.TeamsCreated).FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 

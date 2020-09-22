@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { TeamListComponent } from './teams/team-list/team-list.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
+import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
+import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { MessagesResolver } from './_resolvers/messages.resolver';
 import { TeamListResolver } from './_resolvers/team-list.resolver';
@@ -15,9 +20,14 @@ export const appRoutes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         children: [
+            {
+                path: 'members/edit', component: MemberEditComponent, resolve: { user: MemberEditResolver },
+                canDeactivate: [PreventUnsavedChanges]
+            },
             { path: 'members', component: MemberListComponent, resolve: { users: MemberListResolver } },
             { path: 'teams', component: TeamListComponent, resolve: {teams: TeamListResolver} },
             { path: 'messages', component: MessagesComponent, resolve: {messages: MessagesResolver} },
+            { path: 'members/:id', component: MemberDetailComponent, resolve: { user: MemberDetailResolver } }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' },

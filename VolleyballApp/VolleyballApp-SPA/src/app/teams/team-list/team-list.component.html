@@ -6,8 +6,8 @@
   <br>
   
   <div class="row justify-content-center">
-    <div *ngFor="let team of teams" class="col-lg-2 col-md-3 col-sm-6">
-      Team name: {{ team.teamName }}
+    <div *ngFor="let team of teams" class="col-12">
+      <app-team-card [team]="team"></app-team-card>
     </div>
   </div>
 </div>

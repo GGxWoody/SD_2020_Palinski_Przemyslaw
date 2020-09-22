@@ -16,12 +16,18 @@ import { MemberListComponent } from './members/member-list/member-list.component
 import { MessagesComponent } from './messages/messages.component';
 import { appRoutes } from './routes';
 import { MemberCardComponent } from './members/member-card/member-card.component';
+import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { TeamListComponent } from './teams/team-list/team-list.component';
+import { TeamCardComponent } from './teams/team-card/team-card.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { AuthGuard } from './_guards/auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
 import { TeamListResolver } from './_resolvers/team-list.resolver';
+import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
+import { MemberEditResolver } from './_resolvers/member-edit.resolver';
+import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 
 
 
@@ -44,8 +50,11 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       RegisterComponent,
       MemberListComponent,
       MemberCardComponent,
+      MemberEditComponent,
       MessagesComponent,
-      TeamListComponent
+      TeamListComponent,
+      TeamCardComponent,
+      MemberDetailComponent
    ],
    imports: [
       BrowserModule,
@@ -72,8 +81,11 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       ErrorInterceptorProvider,
       MessagesResolver,
       MemberListResolver,
+      MemberEditResolver,
       TeamListResolver,
+      MemberDetailResolver,
       AuthGuard,
+      PreventUnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
    ],
    bootstrap: [

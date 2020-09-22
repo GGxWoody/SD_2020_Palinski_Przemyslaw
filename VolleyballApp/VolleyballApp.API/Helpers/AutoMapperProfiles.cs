@@ -14,14 +14,13 @@ namespace VolleyballApp.API.Helpers
                     opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<User, UserForDetailedDto>()
                 .ForMember(dest => dest.Age,
-                    opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));;
+                    opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()))
+                .ForMember(dest => dest.GamesLost,
+                    opt => opt.MapFrom(src => src.GamesPlayed - src.GamesWon));
             CreateMap<UserForRegisterDto,User>();
             CreateMap<Team, TeamsForListDto>();
-            CreateMap<Team, TeamForDeatailedDto>()
-                .ForMember(dest => dest.Owner,
-                    opt => opt.MapFrom(src => src.Owner))
-                .ForMember(dest => dest.Users,
-                    opt => opt.MapFrom(src => src.Users));
+            CreateMap<Team, TeamForDeatailedDto>();
+            CreateMap<UserForUpdateDto, User>();
         }
     }
 }
