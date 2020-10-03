@@ -7,41 +7,45 @@ import { PaginatedResult } from '../_models/pagination';
 import { Team } from '../_models/team';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TeamService {
-baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl;
 
-constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-getTeams(page?, itemsPerPage?): Observable<PaginatedResult<Team[]>> {
-  const paginatedResult: PaginatedResult<Team[]> = new PaginatedResult<
-  Team[]
-  >();
+  getTeams(page?, itemsPerPage?): Observable<PaginatedResult<Team[]>> {
+    const paginatedResult: PaginatedResult<Team[]> = new PaginatedResult<
+      Team[]
+    >();
 
-  let params = new HttpParams();
+    let params = new HttpParams();
 
-  if (page != null && itemsPerPage != null) {
-    params = params.append('pageNumber', page);
-    params = params.append('pageSize', itemsPerPage);
+    if (page != null && itemsPerPage != null) {
+      params = params.append('pageNumber', page);
+      params = params.append('pageSize', itemsPerPage);
+    }
+
+    return this.http
+      .get<Team[]>(this.baseUrl + 'teams', { observe: 'response', params })
+      .pipe(
+        map((response) => {
+          paginatedResult.result = response.body;
+          if (response.headers.get('Pagination') != null) {
+            paginatedResult.pagination = JSON.parse(
+              response.headers.get('Pagination')
+            );
+          }
+          return paginatedResult;
+        })
+      );
   }
 
-  return this.http
-  .get<Team[]>(this.baseUrl + 'teams', { observe: 'response', params })
-  .pipe(
-    map(response => {
-      paginatedResult.result = response.body;
-      if (response.headers.get('Pagination') != null) {
-        paginatedResult.pagination = JSON.parse(
-          response.headers.get('Pagination')
-        );
-      }
-      return paginatedResult;
-    })
-  );
-}
+  getTeam(id): Observable<Team> {
+    return this.http.get<Team>(this.baseUrl + 'teams/' + id);
+  }
 
-getTeam(id): Observable<Team> {
-  return this.http.get<Team>(this.baseUrl + 'teams/' + id);
-}
+  createTeam(model: any) {
+    return this.http.post(this.baseUrl + 'teams/create', model);
+  }
 }

@@ -21,6 +21,7 @@ namespace VolleyballApp.API.Helpers
             CreateMap<Team, TeamsForListDto>();
             CreateMap<Team, TeamForDeatailedDto>();
             CreateMap<UserForUpdateDto, User>();
+            CreateMap<TeamForCreationDto,Team>();
         }
     }
 }

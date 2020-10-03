@@ -20,6 +20,7 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { TeamListComponent } from './teams/team-list/team-list.component';
 import { TeamCardComponent } from './teams/team-card/team-card.component';
+import { TeamCreateComponent } from './teams/team-create/team-create.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
 import { MemberListResolver } from './_resolvers/member-list.resolver';
 import { AuthGuard } from './_guards/auth.guard';
@@ -28,6 +29,7 @@ import { TeamListResolver } from './_resolvers/team-list.resolver';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
+import { from } from 'rxjs';
 
 
 
@@ -54,6 +56,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MessagesComponent,
       TeamListComponent,
       TeamCardComponent,
+      TeamCreateComponent,
       MemberDetailComponent
    ],
    imports: [

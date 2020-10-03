@@ -19,6 +19,13 @@ namespace VolleyballApp.API.Data
             _context.Add(entity);
         }
 
+        public async Task<Team> CreateTeam(Team team)
+        {
+            await _context.Teams.AddAsync(team);
+            await _context.SaveChangesAsync();
+            return team;
+        }
+
         public void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);
@@ -77,6 +84,12 @@ namespace VolleyballApp.API.Data
         public async Task<bool> saveAll()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> TeamExists(string name)
+        {
+            if(await _context.Teams.AnyAsync(x => x.TeamName.ToLower() == name.ToLower())) return true;
+            return false;
         }
     }
 }

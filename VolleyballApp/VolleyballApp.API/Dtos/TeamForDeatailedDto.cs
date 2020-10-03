@@ -11,5 +11,6 @@ namespace VolleyballApp.API.Dtos
         public UserForListDto Owner { get; set; }
         public ICollection<UserForListDto> Users { get; set; }
         public DateTime DateCreated { get; set; }
+        public string Description { get; set; }
     }
 }

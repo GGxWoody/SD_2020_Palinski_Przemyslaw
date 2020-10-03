@@ -6,4 +6,5 @@ export interface Team {
     owner?: User;
     players?: User[];
     dateCreated?: Date;
+    description?: string;
 }

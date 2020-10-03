@@ -11,5 +11,6 @@ namespace VolleyballApp.API.Models
         public User Owner { get; set; }
         public ICollection<User> Users { get; set; }
         public DateTime DateCreated { get; set; }
+        public string Description { get; set; }
     }
 }

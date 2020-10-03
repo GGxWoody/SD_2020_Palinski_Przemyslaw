@@ -14,5 +14,7 @@ namespace VolleyballApp.API.Data
         Task<PagedList<Team>> GetTeams(UserParams userParams);
         Task<Team> GetTeam(int id);
         Task<User> GetUser(int id);
+        Task<bool> TeamExists(string name);
+        Task<Team> CreateTeam(Team team);
     }
 }

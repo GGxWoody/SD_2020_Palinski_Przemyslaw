@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VolleyballApp.API.Data;
@@ -12,6 +13,7 @@ using VolleyballApp.API.Models;
 
 namespace VolleyballApp.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamsController : ControllerBase
@@ -33,7 +35,7 @@ namespace VolleyballApp.API.Controllers
             Response.AddPagination(teams.CurrentPage, teams.PageSize, teams.TotalCount, teams.TotalPages);
             return Ok(teamsToReturn);
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name= "GetTeam")]
         public async Task<IActionResult> GetTeam(int id){
             var team = await _repository.GetTeam(id);
             var teamToReturn = _mapper.Map<TeamForDeatailedDto>(team);
@@ -50,6 +52,30 @@ namespace VolleyballApp.API.Controllers
             _context.Update(team);
             _context.SaveChanges();
             return NoContent();
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateNewTeam(TeamForCreationDto teamForCreationDto)
+        {
+            if(await _repository.TeamExists(teamForCreationDto.TeamName)) return BadRequest("Team already exists");
+
+            var teamToCreate = _mapper.Map<Team>(teamForCreationDto);
+
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var userFromRepo = await _repository.GetUser(currnetUserId);
+
+            var userCreated = userFromRepo;
+
+            teamToCreate.Owner = userFromRepo;
+            teamToCreate.OwnerId = userFromRepo.Id;
+            teamToCreate.DateCreated = System.DateTime.Now;
+
+            var teamCreated = await _repository.CreateTeam(teamToCreate);
+
+            var teamToReturn = _mapper.Map<TeamForDeatailedDto>(teamCreated);
+
+            return CreatedAtRoute("GetTeam", new { controller = "Teams", id = teamCreated.Id }, teamToReturn);
         }
     }
 }
