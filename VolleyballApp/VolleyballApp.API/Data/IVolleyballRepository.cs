@@ -16,5 +16,11 @@ namespace VolleyballApp.API.Data
         Task<User> GetUser(int id);
         Task<bool> TeamExists(string name);
         Task<Team> CreateTeam(Team team);
+        Task<Invite> GetFriendInvite(int userId, int id);
+        Task<Invite> CreateFriendInvite(User sender, User reciver);
+        Task<Friendlist> AcceptFriendInvite(User sender, User reciver);
+        Task<bool> AreFriends(int firstId, int secoundId);
+        Task<bool> IsInivtedToFriends(int userId, int id);
+        Task<PagedList<Invite>> GetAllUserFriendInvites(UserParams userParams, int userId);
     }
 }

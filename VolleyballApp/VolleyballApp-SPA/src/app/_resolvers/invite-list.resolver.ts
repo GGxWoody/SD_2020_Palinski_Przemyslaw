@@ -4,19 +4,19 @@ import { Resolve, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { TeamService } from '../_services/team.service';
-import { Team } from '../_models/team';
+import { FriendInviteService } from '../_services/friend-invite.service';
+import { Invite } from '../_models/invite';
 
 @Injectable()
-export class TeamListResolver implements Resolve<Team[]> {
+export class InviteListResolver implements Resolve<Invite[]> {
     pageNumber = 1;
-    pageSize = 5;
+    pageSize = 4;
 
-    constructor(private teamService: TeamService, private router: Router,
+    constructor(private inviteService: FriendInviteService, private router: Router,
                 private alertify: AlertifyService) { }
 
-    resolve(route: ActivatedRouteSnapshot): Observable<Team[]> {
-        return this.teamService.getTeams(this.pageNumber, this.pageSize).pipe(
+    resolve(route: ActivatedRouteSnapshot): Observable<Invite[]> {
+        return this.inviteService.getInvites(this.pageNumber, this.pageSize).pipe(
             catchError(error => {
                 this.alertify.error('Problem retriving data');
                 this.router.navigate(['/']);

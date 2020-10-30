@@ -29,7 +29,9 @@ import { TeamListResolver } from './_resolvers/team-list.resolver';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
-import { from } from 'rxjs';
+import { InviteCardComponent } from './invites/invite-card/invite-card.component';
+import { InviteListComponent } from './invites/invite-list/invite-list.component';
+import { InviteListResolver } from './_resolvers/invite-list.resolver';
 
 
 
@@ -57,7 +59,9 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       TeamListComponent,
       TeamCardComponent,
       TeamCreateComponent,
-      MemberDetailComponent
+      MemberDetailComponent,
+      InviteCardComponent,
+      InviteListComponent
    ],
    imports: [
       BrowserModule,
@@ -85,6 +89,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MessagesResolver,
       MemberListResolver,
       MemberEditResolver,
+      InviteListResolver,
       TeamListResolver,
       MemberDetailResolver,
       AuthGuard,

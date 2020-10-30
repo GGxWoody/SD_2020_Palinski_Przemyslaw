@@ -18,4 +18,5 @@ export interface User {
     teamsCreated?: Team[];
     gamesWon?: number;
     gamesLost?: number;
+    isFriend?: boolean;
 }

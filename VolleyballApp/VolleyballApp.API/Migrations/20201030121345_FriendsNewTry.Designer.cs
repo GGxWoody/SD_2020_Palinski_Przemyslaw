@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201030121345_FriendsNewTry")]
+    partial class FriendsNewTry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,27 +31,6 @@ namespace VolleyballApp.API.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("TeamUser");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.Friendlist", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("FirstUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SecoundUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FirstUserId");
-
-                    b.HasIndex("SecoundUserId");
-
-                    b.ToTable("Friendlist");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Invite", b =>
@@ -146,10 +127,15 @@ namespace VolleyballApp.API.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("BLOB");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Username")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Users");
                 });
@@ -167,21 +153,6 @@ namespace VolleyballApp.API.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.Friendlist", b =>
-                {
-                    b.HasOne("VolleyballApp.API.Models.User", "FirstUser")
-                        .WithMany()
-                        .HasForeignKey("FirstUserId");
-
-                    b.HasOne("VolleyballApp.API.Models.User", "SecoundUser")
-                        .WithMany()
-                        .HasForeignKey("SecoundUserId");
-
-                    b.Navigation("FirstUser");
-
-                    b.Navigation("SecoundUser");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Invite", b =>
@@ -212,6 +183,15 @@ namespace VolleyballApp.API.Migrations
 
             modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
                 {
+                    b.HasOne("VolleyballApp.API.Models.User", null)
+                        .WithMany("Friendlist")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
+                {
+                    b.Navigation("Friendlist");
+
                     b.Navigation("TeamsCreated");
                 });
 #pragma warning restore 612, 618

@@ -95,6 +95,21 @@
             <div *ngFor="let team of user.teamsCreated" class="col-12 mt-2">
               <app-team-card [team]="team"></app-team-card>
             </div>
+            <div *ngIf="!creationMode" class="d-flex justify-content-center">
+              <button
+                class="btn btn-primary btn-lg mr-2"
+                (click)="createToggle()"
+              >
+                Create Team
+              </button>
+            </div>
+            <div *ngIf="creationMode" class="container">
+              <div class="row justify-content-center">
+                <div class="col-4">
+                  <app-team-create (cancelCreation)="cancelCreateMode($event)"></app-team-create>
+                </div>
+              </div>
+            </div>
           </tab>
         </tabset>
       </div>

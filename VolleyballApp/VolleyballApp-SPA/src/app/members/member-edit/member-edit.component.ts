@@ -15,6 +15,7 @@ export class MemberEditComponent implements OnInit {
   @ViewChild('editForm', { static: true }) editForm: NgForm;
   user: User;
   photoUrl: string;
+  creationMode = false;
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     if (this.editForm.dirty) {
@@ -41,5 +42,13 @@ export class MemberEditComponent implements OnInit {
 
   updateMainPhoto(photoUrl) {
     this.user.photoUrl = photoUrl;
+  }
+
+  createToggle() {
+    this.creationMode = true;
+  }
+
+  cancelCreateMode(creationMode: boolean) {
+    this.creationMode = creationMode;
   }
 }

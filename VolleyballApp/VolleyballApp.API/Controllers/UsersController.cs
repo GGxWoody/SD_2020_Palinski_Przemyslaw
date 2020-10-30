@@ -45,9 +45,10 @@ namespace VolleyballApp.API.Controllers
         [HttpGet("{id}", Name= "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var user = await _repository.GetUser(id);
             var userToReturn = _mapper.Map<UserForDetailedDto>(user);
-
+            userToReturn.IsFriend = await _repository.AreFriends(currnetUserId, id);
 
             return Ok(userToReturn);
         }

@@ -17,7 +17,7 @@
           </div>
           <div>
             <strong>Games:</strong>
-            <p> Won: {{ user.gamesWon }}, Lost: {{ user.gamesLost }}</p>
+            <p>Won: {{ user.gamesWon }}, Lost: {{ user.gamesLost }}</p>
           </div>
           <div>
             <strong>Age:</strong>
@@ -34,6 +34,13 @@
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex">
+            <button
+              class="btn btn-primary w-100"
+              [disabled]="user.isFriend"
+              (click)="sendInvite(user.id)"
+            >
+              <i class="fa fa-address-book"></i>Friend invite
+            </button>
             <button class="btn btn-success w-100">
               <i class="fa fa-envelope"></i> Message
             </button>

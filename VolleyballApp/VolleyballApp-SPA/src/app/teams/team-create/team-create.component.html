@@ -1,3 +1,17 @@
-<p>
-  team-create works!
-</p>
+<form [formGroup]="creationForm" (ngSubmit)="create()">
+<h2 class="text-center text-primary">Team Creation</h2>
+<div class="form-group">
+  <input [ngClass]="{'is-invalid': creationForm.get('teamName').errors && creationForm.get('teamName').touched}" class="form-control"
+    placeholder="Team Name" formControlName="teamName">
+  <div class="invalid-feedback" *ngIf="creationForm.get('teamName').touched && creationForm.get('teamName').hasError('required')">Team name is required</div>
+</div>
+<div class="form-group">
+  <input [ngClass]="{'is-invalid': creationForm.get('description').errors && creationForm.get('description').touched}" class="form-control"
+    placeholder="Description" formControlName="description">
+  <div class="invalid-feedback" *ngIf="creationForm.get('description').touched && creationForm.get('description').hasError('required')">Description is required</div>
+</div>
+<div class="form-group text-center">
+  <button class="btn btn-success mr-2" type="submit" [disabled]="creationForm.invalid">Create</button>
+  <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+</div>
+</form>
