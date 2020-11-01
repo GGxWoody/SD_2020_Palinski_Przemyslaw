@@ -25,4 +25,13 @@ export class InviteCardComponent implements OnInit {
       this.alertify.error(error);
     });
   }
+
+  declineInvite(userId: number, id: number) {
+    this.inviteService.declineInvite(userId, id).subscribe(data => {
+      this.alertify.success('You declined ' + this.invite.inviteFrom.knownAs + ' invite to friendlist');
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
 }

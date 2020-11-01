@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { User } from '../_models/user';
 import { PaginatedResult } from '../_models/pagination';
 import { map } from 'rxjs/operators';
+import { Friend } from '../_models/friend';
 
 @Injectable({
   providedIn: 'root'
@@ -38,16 +39,40 @@ export class UserService {
       params = params.append('orderBy', userParams.orderBy);
     }
 
-    if (likesParam === 'Likers') {
-      params = params.append('Likers', 'true');
-    }
+    return this.http
+      .get<User[]>(this.baseUrl + 'users', { observe: 'response', params })
+      .pipe(
+        map(response => {
+          paginatedResult.result = response.body;
+          if (response.headers.get('Pagination') != null) {
+            paginatedResult.pagination = JSON.parse(
+              response.headers.get('Pagination')
+            );
+          }
+          return paginatedResult;
+        })
+      );
+  }
 
-    if (likesParam === 'Likees') {
-      params = params.append('Likees', 'true');
+  getFriends(
+    page?,
+    itemsPerPage?,
+    userParams?,
+    likesParam?
+  ): Observable<PaginatedResult<Friend[]>> {
+    const paginatedResult: PaginatedResult<Friend[]> = new PaginatedResult<
+      Friend[]
+    >();
+
+    let params = new HttpParams();
+
+    if (page != null && itemsPerPage != null) {
+      params = params.append('pageNumber', page);
+      params = params.append('pageSize', itemsPerPage);
     }
 
     return this.http
-      .get<User[]>(this.baseUrl + 'users', { observe: 'response', params })
+      .get<Friend[]>(this.baseUrl + 'users/friends', { observe: 'response', params })
       .pipe(
         map(response => {
           paginatedResult.result = response.body;

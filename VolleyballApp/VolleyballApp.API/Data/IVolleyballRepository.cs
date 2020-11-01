@@ -22,5 +22,7 @@ namespace VolleyballApp.API.Data
         Task<bool> AreFriends(int firstId, int secoundId);
         Task<bool> IsInivtedToFriends(int userId, int id);
         Task<PagedList<Invite>> GetAllUserFriendInvites(UserParams userParams, int userId);
+        Task<Invite> DeclineFriendInvite(int id, int userId);
+        Task<PagedList<Friendlist>> GetFriends(UserParams userParams);
     }
 }

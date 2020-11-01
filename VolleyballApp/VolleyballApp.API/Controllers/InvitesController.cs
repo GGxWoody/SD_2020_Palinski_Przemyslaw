@@ -10,6 +10,7 @@ using VolleyballApp.API.Helpers;
 
 namespace VolleyballApp.API.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [Route("api/invites/{userId}")]
     [ApiController]
     public class InvitesController : ControllerBase
@@ -65,6 +66,19 @@ namespace VolleyballApp.API.Controllers
             var inviteToDisplay = _mapper.Map<FriendToReturnDto>(friendFromRepo);
 
             return Ok(inviteToDisplay);
+        }
+
+        [HttpDelete("friend/{id}")]
+        public async Task<IActionResult> DeclineFriendInvite(int id, int userId)
+        {
+            if (userId == id) return BadRequest();
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            if (await _repository.IsInivtedToFriends(userId,id))
+            {
+                await _repository.DeclineFriendInvite(userId, id);
+                return NoContent();
+            }
+            return BadRequest("No existing invite from this user");
         }
 
         [HttpPost("friend/{id}")]

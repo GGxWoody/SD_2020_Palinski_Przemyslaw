@@ -6,6 +6,6 @@ namespace VolleyballApp.API.Models
     {
         public int Id { get; set; }
         public User FirstUser { get; set; }
-        public User SecoundUser { get; set; }
+        public User SecondUser { get; set; }
     }
 }

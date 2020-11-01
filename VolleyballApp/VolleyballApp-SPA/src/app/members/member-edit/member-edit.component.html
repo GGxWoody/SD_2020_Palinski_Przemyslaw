@@ -33,7 +33,7 @@
           </div>
           <div>
             <strong>Last active:</strong>
-            <p>{{ user.lastActive | date: "mediumDate" }}</p>
+            <p>{{ user.lastActive | timeAgo }}</p>
           </div>
           <div>
             <strong>Member since:</strong>
@@ -81,21 +81,7 @@
             </form>
           </tab>
           <tab heading="Teams">
-            <h4>Teams Joined</h4>
-            <div *ngIf="user.teams.length == 0" class="mt-3 text-center">
-              <h4>No teams joined</h4>
-            </div>
-            <div *ngFor="let team of user.teams" class="col-12 mt-2">
-              <app-team-card [team]="team"></app-team-card>
-            </div>
-            <h4 class="mt-2">Teams Created</h4>
-            <div *ngIf="user.teamsCreated.length == 0" class="mt-3 text-center">
-              <h4>No teams created</h4>
-            </div>
-            <div *ngFor="let team of user.teamsCreated" class="col-12 mt-2">
-              <app-team-card [team]="team"></app-team-card>
-            </div>
-            <div *ngIf="!creationMode" class="d-flex justify-content-center">
+            <div *ngIf="!creationMode" class="d-flex justify-content-center mt-3">
               <button
                 class="btn btn-primary btn-lg mr-2"
                 (click)="createToggle()"
@@ -109,6 +95,20 @@
                   <app-team-create (cancelCreation)="cancelCreateMode($event)"></app-team-create>
                 </div>
               </div>
+            </div>
+            <h4 class="mt-3">Teams Joined</h4>
+            <div *ngIf="user.teams.length == 0" class="mt-3 text-center">
+              <h4>No teams joined</h4>
+            </div>
+            <div *ngFor="let team of user.teams" class="col-12 mt-2">
+              <app-team-card [team]="team"></app-team-card>
+            </div>
+            <h4 class="mt-2">Teams Created</h4>
+            <div *ngIf="user.teamsCreated.length == 0" class="mt-3 text-center">
+              <h4>No teams created</h4>
+            </div>
+            <div *ngFor="let team of user.teamsCreated" class="col-12 mt-2">
+              <app-team-card [team]="team"></app-team-card>
             </div>
           </tab>
         </tabset>

@@ -1,13 +1,22 @@
 <div class="card mb-3">
-  <div class="card-header">
-    Friend invite
-  </div>
+  <div class="card-header">Friend invite</div>
   <div class="card-body">
     <h5 class="card-title">From: {{ invite.inviteFrom.knownAs }}</h5>
-    <p class="card-text">Age: {{ invite.inviteFrom.age}}, Country: {{ invite.inviteFrom.country }}, City: {{ invite.inviteFrom.city }}</p>
+    <p class="card-text">
+      Age: {{ invite.inviteFrom.age }}, Country:
+      {{ invite.inviteFrom.country }}, City: {{ invite.inviteFrom.city }}
+    </p>
     <button
-              class="btn btn-primary w-100"
-              (click)="acceptInvite(invite.inviteFrom.id, invite.inviteTo.id)"
-            >Accept</button>
+      class="btn btn-primary w-100"
+      (click)="acceptInvite(invite.inviteFrom.id, invite.inviteTo.id)"
+    >
+      Accept
+    </button>
+    <button
+      class="btn btn-danger w-100"
+      (click)="declineInvite(invite.inviteFrom.id, invite.inviteTo.id)"
+    >
+      Decline
+    </button>
   </div>
 </div>

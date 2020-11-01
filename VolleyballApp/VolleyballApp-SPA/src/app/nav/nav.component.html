@@ -27,10 +27,11 @@
         Welcome {{ authService.decodedToken?.unique_name | titlecase}}
       </a>
       <div class="dropdown-menu mt-3" *dropdownMenu>
-        <a class="dropdown-item" [routerLink]="['/members/edit']"><i class="fa fa-user"></i>Edit Profile</a>
-        <a class="dropdown-item" [routerLink]="['/invites']"><i class="fa fa-user"></i>Invites</a>
+        <a class="dropdown-item" [routerLink]="['/members/edit']"><i class="fa fa-user mr-1"></i>Edit Profile</a>
+        <a class="dropdown-item" [routerLink]="['/invites']"><i class="fa fa-envelope mr-1"></i>Invites</a>
+        <a class="dropdown-item" [routerLink]="['/friends']"><i class="fa fa-address-book mr-1"></i>Friend List</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i>Logout</a>
+        <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out mr-1"></i>Logout</a>
       </div>
     </div>
   </div>

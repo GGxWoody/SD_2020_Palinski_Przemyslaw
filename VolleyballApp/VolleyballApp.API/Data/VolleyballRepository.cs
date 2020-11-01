@@ -127,19 +127,19 @@ namespace VolleyballApp.API.Data
         {
             Friendlist fl = new Friendlist();
             fl.FirstUser = sender;
-            fl.SecoundUser = reciver;
+            fl.SecondUser = reciver;
             var InviteToDelete = await GetFriendInvite(sender.Id, reciver.Id);
             _context.Invites.Remove(InviteToDelete);
             await _context.Friendlist.AddAsync(fl);
             await _context.SaveChangesAsync();
-            return await _context.Friendlist.Include(e => e.FirstUser).Include(e => e.SecoundUser)
-            .FirstOrDefaultAsync(x => x.FirstUser.Id == sender.Id && x.SecoundUser.Id == reciver.Id);
+            return await _context.Friendlist.Include(e => e.FirstUser).Include(e => e.SecondUser)
+            .FirstOrDefaultAsync(x => x.FirstUser.Id == sender.Id && x.SecondUser.Id == reciver.Id);
         }
 
         public async Task<bool> AreFriends(int firstId, int secoundId)
         {
-            var friendlistNode = await _context.Friendlist.FirstOrDefaultAsync(x => x.FirstUser.Id == firstId && x.SecoundUser.Id == secoundId
-            || x.FirstUser.Id == secoundId && x.SecoundUser.Id == firstId);
+            var friendlistNode = await _context.Friendlist.FirstOrDefaultAsync(x => x.FirstUser.Id == firstId && x.SecondUser.Id == secoundId
+            || x.FirstUser.Id == secoundId && x.SecondUser.Id == firstId);
             if (friendlistNode == null) return false;
             return true;
         }
@@ -151,6 +151,22 @@ namespace VolleyballApp.API.Data
             || x.InviteFrom.Id == id && x.InviteTo.Id == userId);
             if (invite == null) return false;
             return true;
+        }
+
+        public async Task<Invite> DeclineFriendInvite(int id, int userId)
+        {
+            var InviteToDelete = await GetFriendInvite(id, userId);
+            _context.Invites.Remove(InviteToDelete);
+            await _context.SaveChangesAsync();
+            return InviteToDelete;
+        }
+
+        public async Task<PagedList<Friendlist>> GetFriends(UserParams userParams)
+        {
+            var friends = _context.Friendlist.Include(x => x.FirstUser).Include(x => x.SecondUser).AsQueryable();
+            friends = friends.Where(f => f.FirstUser.Id == userParams.UserID || f.SecondUser.Id == userParams.UserID);
+
+            return await PagedList<Friendlist>.CreateAsync(friends, userParams.PageNumber, userParams.PageSize);
         }
     }
 }

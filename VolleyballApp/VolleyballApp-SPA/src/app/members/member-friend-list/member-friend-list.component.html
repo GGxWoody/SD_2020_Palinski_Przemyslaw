@@ -1,14 +1,13 @@
 <div class="container mt-3">
   <div class="row justify-content-center">
-    <h2 class="col-12 text-center mt-4" *ngIf="invites.length === 0">No Invites</h2>
-    <h3 class="col-12 text-center mt-4" *ngIf="invites.length === 0">Comeback later of look for new friends on Player List</h3>  
-    <div *ngFor="let invite of invites" class="col-6">
-      <app-invite-card [invite]="invite" (refreshContent)="refreshContent($event)"></app-invite-card>
+    <div *ngFor="let friend of friends" class="col-lg-2 col-md-3 col-sm-6">
+      <app-member-card *ngIf="friend.secondUser.id === user.id" [user]="friend.firstUser"></app-member-card>
+      <app-member-card *ngIf="friend.firstUser.id === user.id" [user]="friend.secondUser"></app-member-card>
     </div>
   </div>
 </div>
 
-<div class="d-flex justify-content-center" *ngIf="!(invites.length === 0)">
+<div class="d-flex justify-content-center">
   <pagination [boundaryLinks]="true" 
               [totalItems]="pagination.totalItems"
               [itemsPerPage]="pagination.itemsPerPage"

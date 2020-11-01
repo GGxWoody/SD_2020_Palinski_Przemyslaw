@@ -13,6 +13,7 @@ using VolleyballApp.API.Models;
 
 namespace VolleyballApp.API.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]

@@ -12,6 +12,7 @@ using VolleyballApp.API.Helpers;
 
 namespace VolleyballApp.API.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -51,6 +52,18 @@ namespace VolleyballApp.API.Controllers
             userToReturn.IsFriend = await _repository.AreFriends(currnetUserId, id);
 
             return Ok(userToReturn);
+        }
+
+        [HttpGet("friends")]
+        public async Task<IActionResult> GetFriends([FromQuery]UserParams userParams)
+        {
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userFromRepo = await _repository.GetUser(currnetUserId);
+            userParams.UserID = currnetUserId;
+            var users = await _repository.GetFriends(userParams);
+            var usersToReturn = _mapper.Map<IEnumerable<FriendToReturnDto>>(users);
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
+            return Ok(usersToReturn);
         }
 
         [HttpPut("{id}")]

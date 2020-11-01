@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using DatingApp.API.Helpers;
 
 namespace VolleyballApp.API
 {
@@ -52,6 +53,7 @@ namespace VolleyballApp.API
                     ValidateAudience = false
                 };
             });
+            services.AddScoped<LogUserActivity>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

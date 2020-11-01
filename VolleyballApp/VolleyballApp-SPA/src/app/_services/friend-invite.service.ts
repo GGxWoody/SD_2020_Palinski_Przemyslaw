@@ -49,4 +49,8 @@ export class FriendInviteService {
   acceptInvite(userId: number, id: number) {
     return this.http.put(this.baseUrl + 'invites/' + userId + '/friend/' + id, {});
   }
+
+  declineInvite(userId: number, id: number) {
+    return this.http.delete(this.baseUrl + 'invites/' + userId + '/friend/' + id);
+  }
 }

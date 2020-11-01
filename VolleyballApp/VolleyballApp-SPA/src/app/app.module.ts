@@ -32,6 +32,10 @@ import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { InviteCardComponent } from './invites/invite-card/invite-card.component';
 import { InviteListComponent } from './invites/invite-list/invite-list.component';
 import { InviteListResolver } from './_resolvers/invite-list.resolver';
+import { FriendListResolver } from './_resolvers/friend-list.resolver';
+import { MemberFriendListComponent } from './members/member-friend-list/member-friend-list.component';
+import { TimeAgoPipe } from 'time-ago-pipe';
+import { NgPipesModule } from 'ngx-pipes';
 
 
 
@@ -61,13 +65,16 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       TeamCreateComponent,
       MemberDetailComponent,
       InviteCardComponent,
-      InviteListComponent
+      InviteListComponent,
+      MemberFriendListComponent,
+      TimeAgoPipe
    ],
    imports: [
       BrowserModule,
       BrowserAnimationsModule,
       HttpClientModule,
       FormsModule,
+      NgPipesModule,
       ReactiveFormsModule,
       BsDropdownModule.forRoot(),
       TabsModule.forRoot(),
@@ -92,6 +99,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       InviteListResolver,
       TeamListResolver,
       MemberDetailResolver,
+      FriendListResolver,
       AuthGuard,
       PreventUnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }

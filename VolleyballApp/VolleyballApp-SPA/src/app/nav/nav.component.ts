@@ -21,7 +21,7 @@ export class NavComponent implements OnInit {
     }, error => {
       this.alertify.warning(error);
     }, () => {
-      this.router.navigate(['/members']);
+      this.router.navigate(['/messages']);
     });
   }
 
