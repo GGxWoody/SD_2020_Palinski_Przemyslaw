@@ -17,8 +17,8 @@ export class InviteCardComponent implements OnInit {
   }
 
 
-  acceptInvite(userId: number, id: number) {
-    this.inviteService.acceptInvite(userId, id).subscribe(data => {
+  acceptFriendInvite(userId: number, id: number) {
+    this.inviteService.acceptFriendInvite(userId, id).subscribe(data => {
       this.alertify.success('You accepted: ' + this.invite.inviteFrom.knownAs + ' to friendlist');
       this.refreshContent.emit();
     }, error => {
@@ -26,9 +26,29 @@ export class InviteCardComponent implements OnInit {
     });
   }
 
-  declineInvite(userId: number, id: number) {
-    this.inviteService.declineInvite(userId, id).subscribe(data => {
+  declineFriendInvite(userId: number, id: number) {
+    this.inviteService.declineFriendInvite(userId, id).subscribe(data => {
       this.alertify.success('You declined ' + this.invite.inviteFrom.knownAs + ' invite to friendlist');
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  acceptTeamInvite(userId: number, teamId: number, id: number) {
+    this.inviteService.acceptTeamInvite(userId, teamId, id).subscribe(data => {
+      this.alertify.success('You accepted: ' + this.invite.teamInvited.owner.knownAs
+      + ' invite to team ' + this.invite.teamInvited.teamName);
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  declineTeamInvite(userId: number, teamId: number, id: number) {
+    this.inviteService.declineTeamInvite(userId, teamId, id).subscribe(data => {
+      this.alertify.success('You declined ' + this.invite.teamInvited.owner.knownAs
+      + ' invite to team ' + this.invite.teamInvited.teamName);
       this.refreshContent.emit();
     }, error => {
       this.alertify.error(error);

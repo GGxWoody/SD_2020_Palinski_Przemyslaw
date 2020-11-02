@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ShortenPipe } from 'ngx-pipes';
 import { Team } from 'src/app/_models/team';
 
@@ -10,9 +11,8 @@ import { Team } from 'src/app/_models/team';
 })
 export class TeamCardComponent implements OnInit {
   @Input() team: Team;
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
-
 }

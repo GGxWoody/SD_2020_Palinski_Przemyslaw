@@ -25,16 +25,16 @@ namespace VolleyballApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFriendInvites([FromQuery]UserParams userParams, int userId)
+        public async Task<IActionResult> GetUserInvites([FromQuery]UserParams userParams, int userId)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
-            var invites = await _repository.GetAllUserFriendInvites(userParams ,userId);
+            var invites = await _repository.GetAllUserInvites(userParams ,userId);
             var invitesToReturn = _mapper.Map<List<InviteToReturnDto>>(invites);
             Response.AddPagination(invites.CurrentPage, invites.PageSize, invites.TotalCount, invites.TotalPages);
             return Ok(invitesToReturn);
         }
 
-        [HttpGet("friend/{id}", Name = "GetInvite")]
+        [HttpGet("friend/{id}", Name = "GetFriendInvite")]
         public async Task<IActionResult> GetFriendInvite(int userId, int id)
         {
             if (userId == id) return BadRequest();
@@ -93,7 +93,70 @@ namespace VolleyballApp.API.Controllers
             if (recipient == null) return BadRequest("Could not find user");
             var invite = await _repository.CreateFriendInvite(user,recipient);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
-            return CreatedAtRoute("GetInvite", new { userId = user.Id, id = recipient.Id}, inviteToReturn);
+            return CreatedAtRoute("GetFriendInvite", new { userId = user.Id, id = recipient.Id}, inviteToReturn);
+        }
+
+        [HttpPost("team/{teamId}/{id}")]
+        public async Task<IActionResult> SendTeamInvite(int id, int teamId, int userId)
+        {
+            if (userId == id) return BadRequest();
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            if (await _repository.IsInTeam(teamId,id)) return BadRequest("Already in team");
+            if (await _repository.IsInivtedToTeam(teamId,id)) return BadRequest("Already invited");
+            if (!await _repository.AreFriends(userId,id)) return BadRequest("Must be friends first");
+            var team = await _repository.GetTeam(teamId);
+            if (team == null) return BadRequest("Could not find team");
+            if (team.OwnerId != userId) return BadRequest("Must be owner to invite to team");
+            var recipient = await _repository.GetUser(id);
+            if (recipient == null) return BadRequest("Could not find user");
+            var invite = await _repository.CreateTeamInvite(recipient,team);
+            var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            return CreatedAtRoute("GetTeamInvite", new {userId = userId, teamId = team.Id, id = recipient.Id}, inviteToReturn);
+        }
+
+        [HttpGet("team/{teamId}/{id}", Name = "GetTeamInvite")]
+        public async Task<IActionResult> GetTeamInvite(int id, int teamId, int userId)
+        {
+            if (userId == id) return BadRequest();
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                && id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            var inviteFromRepo = await _repository.GetTeamInvite(teamId, id);
+            if (inviteFromRepo == null)
+                return NotFound();
+
+            var inviteToDisplay = _mapper.Map<InviteToReturnDto>(inviteFromRepo);
+            return Ok(inviteToDisplay);
+        }
+
+        [HttpPut("team/{teamId}/{id}")]
+        public async Task<IActionResult> AcceptTeamInvite(int id, int teamId, int userId)
+        {
+            if (userId == id) return BadRequest();
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            if (await _repository.GetTeamInvite(teamId, id) == null)
+                return NotFound();
+            var team = await _repository.GetTeam(teamId);
+            var recipient = await _repository.GetUser(id);
+            if (team == null || recipient == null) return NotFound();
+            var teamFromRepo = await _repository.AcceptTeamInvite(teamId, id);
+            var teamToDisplay = _mapper.Map<TeamForDeatailedDto>(teamFromRepo);
+
+            return Ok(teamToDisplay);
+        }
+
+        [HttpDelete("team/{teamId}/{id}")]
+        public async Task<IActionResult> DeclineTeamInvite(int id, int teamId, int userId)
+        {
+            if (userId == id) return BadRequest();
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            if (await _repository.IsInivtedToTeam(teamId,id))
+            {
+                await _repository.DeclineTeamInvite(teamId, id);
+                return NoContent();
+            }
+            return BadRequest("No existing invite for this user");
         }
     }
 }

@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BsDropdownModule, BsDatepickerModule, PaginationModule, ButtonsModule, TabsModule } from 'ngx-bootstrap';
+import { BsDropdownModule, BsDatepickerModule, PaginationModule, ButtonsModule, TabsModule, ModalModule } from 'ngx-bootstrap';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -37,6 +37,8 @@ import { MemberFriendListComponent } from './members/member-friend-list/member-f
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { NgPipesModule } from 'ngx-pipes';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
+import { TeamDetailResolver } from './_resolvers/team-detail.resolver';
+import { SelectDropDownModule } from 'ngx-select-dropdown';
 
 
 
@@ -64,6 +66,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       TeamListComponent,
       TeamCardComponent,
       TeamCreateComponent,
+      TeamDetailComponent,
       MemberDetailComponent,
       InviteCardComponent,
       InviteListComponent,
@@ -78,8 +81,10 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       FormsModule,
       NgPipesModule,
       ReactiveFormsModule,
+      SelectDropDownModule,
       BsDropdownModule.forRoot(),
       TabsModule.forRoot(),
+      ModalModule.forRoot(),
       PaginationModule.forRoot(),
       ButtonsModule.forRoot(),
       BsDatepickerModule.forRoot(),
@@ -99,6 +104,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MemberListResolver,
       MemberEditResolver,
       InviteListResolver,
+      TeamDetailResolver,
       TeamListResolver,
       MemberDetailResolver,
       FriendListResolver,

@@ -43,18 +43,6 @@ namespace VolleyballApp.API.Controllers
             return Ok(teamToReturn);
         }
 
-        [HttpPut("{teamId}/add/{userId}")]
-        public async Task<IActionResult> AddUserToTeam(int teamId, int userId){
-            if (await _repository.GetTeam(teamId) == null) return NotFound();
-            if (await _repository.GetUser(userId) == null) return NotFound();
-            Team team = _context.Teams.Include(e => e.Users).FirstOrDefaultAsync(u => u.Id == teamId).Result;
-            User newUser = _context.Users.FirstOrDefaultAsync(u => u.Id == userId).Result;
-            team.Users.Add(newUser);
-            _context.Update(team);
-            _context.SaveChanges();
-            return NoContent();
-        }
-
         [HttpPost("create")]
         public async Task<IActionResult> CreateNewTeam(TeamForCreationDto teamForCreationDto)
         {

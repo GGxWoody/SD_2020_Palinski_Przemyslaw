@@ -47,9 +47,10 @@ namespace VolleyballApp.API.Data
             return await PagedList<Team>.CreateAsync(teams, userParams.PageNumber, userParams.PageSize);
         }
 
-        public async Task<PagedList<Invite>> GetAllUserFriendInvites(UserParams userParams, int userId)
+        public async Task<PagedList<Invite>> GetAllUserInvites(UserParams userParams, int userId)
         {
             var invites = _context.Invites.Include(e => e.InviteFrom).Include(e => e.InviteTo)
+            .Include(x => x.TeamInvited).Include(x => x.TeamInvited.Owner)
             .OrderByDescending(x => x.Id).AsQueryable();
             invites = invites.Where(i => i.InviteTo.Id == userId);
             return await PagedList<Invite>.CreateAsync(invites, userParams.PageNumber, userParams.PageSize);
@@ -57,7 +58,7 @@ namespace VolleyballApp.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(e => e.Teams)
+            var user = await _context.Users.Include(e => e.Teams).ThenInclude(t => t.Owner)
                 .Include(e => e.TeamsCreated).FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
@@ -167,6 +168,63 @@ namespace VolleyballApp.API.Data
             friends = friends.Where(f => f.FirstUser.Id == userParams.UserID || f.SecondUser.Id == userParams.UserID);
 
             return await PagedList<Friendlist>.CreateAsync(friends, userParams.PageNumber, userParams.PageSize);
+        }
+
+        public async Task<bool> IsInTeam(int teamId, int id)
+        {
+            var team = await _context.Teams.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == teamId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return team.Users.Contains(user);
+        }
+
+        public async Task<bool> IsInivtedToTeam(int teamId, int id)
+        {
+            var invites = _context.Invites.Include(x => x.TeamInvited).Include(x => x.InviteTo).AsQueryable();
+            invites = invites.Where(x => x.TeamInvited.Id == teamId);
+            invites = invites.Where(x => x.InviteTo.Id == id);
+            if (await invites.FirstOrDefaultAsync() == null) return false;
+            else return true;
+        }
+
+        public async Task<Invite> CreateTeamInvite(User recipient, Team team)
+        {
+            Invite newInvite = new Invite();
+            newInvite.TeamInvited = team;
+            newInvite.InviteTo = recipient;
+            newInvite.TeamInvite = true;
+            await _context.Invites.AddAsync(newInvite);
+            await _context.SaveChangesAsync();
+            return await GetTeamInvite(team.Id , recipient.Id);
+        }
+
+        public async Task<Invite> GetTeamInvite(int teamId, int id)
+        {
+            var invite = await _context.Invites.Include(e => e.TeamInvited)
+            .Include(x => x.TeamInvited.Owner).Include(e => e.InviteTo)
+            .FirstOrDefaultAsync(x => x.TeamInvited.Id == teamId && x.InviteTo.Id == id && x.TeamInvite == true);
+            return invite;
+        }
+
+        public async Task<Team> AcceptTeamInvite(int teamId, int id)
+        {
+            Team team = await _context.Teams.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == teamId);
+            User userToAdd = await _context.Users.Include(x => x.Teams).FirstOrDefaultAsync(x => x.Id == id);
+            team.Users.Add(userToAdd);
+            userToAdd.Teams.Add(team);
+            _context.Update(team);
+            _context.Update(userToAdd);
+            var InviteToDelete = await GetTeamInvite(team.Id, userToAdd.Id);
+            _context.Invites.Remove(InviteToDelete);
+            await _context.SaveChangesAsync();
+            return await _context.Teams.FirstOrDefaultAsync(x => x.Id == teamId);
+        }
+
+        public async Task<Invite> DeclineTeamInvite(int teamId, int id)
+        {
+            var InviteToDelete = await GetTeamInvite(teamId, id);
+            _context.Invites.Remove(InviteToDelete);
+            await _context.SaveChangesAsync();
+            return InviteToDelete;
         }
     }
 }

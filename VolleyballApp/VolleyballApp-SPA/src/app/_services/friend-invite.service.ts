@@ -15,7 +15,7 @@ export class FriendInviteService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  sendInvite(userId: number, id: number) {
+  sendFriendInvite(userId: number, id: number) {
     return this.http.post(this.baseUrl + 'invites/' + userId + '/friend/' + id, {});
   }
 
@@ -46,11 +46,23 @@ export class FriendInviteService {
       );
   }
 
-  acceptInvite(userId: number, id: number) {
+  acceptFriendInvite(userId: number, id: number) {
     return this.http.put(this.baseUrl + 'invites/' + userId + '/friend/' + id, {});
   }
 
-  declineInvite(userId: number, id: number) {
+  declineFriendInvite(userId: number, id: number) {
     return this.http.delete(this.baseUrl + 'invites/' + userId + '/friend/' + id);
+  }
+
+  acceptTeamInvite(userId: number, teamId: number, id: number) {
+    return this.http.put(this.baseUrl + 'invites/' + userId + '/team/' + teamId + '/' + id, {});
+  }
+
+  declineTeamInvite(userId: number, teamId: number, id: number) {
+    return this.http.delete(this.baseUrl + 'invites/' + userId + '/team/' + teamId + '/' + id);
+  }
+
+  sendTeamInvite(userId: number, teamId: number, id: number) {
+    return this.http.post(this.baseUrl + 'invites/' + userId + '/team/' + teamId + '/' + id, {});
   }
 }

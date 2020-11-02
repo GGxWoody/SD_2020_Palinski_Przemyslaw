@@ -19,7 +19,6 @@ export class TeamListComponent implements OnInit {
     this.root.data.subscribe(data => {
       this.teams = data.teams.result;
       this.pagination = data.teams.pagination;
-      console.log(this.pagination);
     });
   }
 

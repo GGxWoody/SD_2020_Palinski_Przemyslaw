@@ -17,12 +17,18 @@ namespace VolleyballApp.API.Data
         Task<bool> TeamExists(string name);
         Task<Team> CreateTeam(Team team);
         Task<Invite> GetFriendInvite(int userId, int id);
+        Task<Invite> GetTeamInvite(int teamId, int id);
         Task<Invite> CreateFriendInvite(User sender, User reciver);
+        Task<Invite> CreateTeamInvite(User recipient, Team team);
         Task<Friendlist> AcceptFriendInvite(User sender, User reciver);
+        Task<Team> AcceptTeamInvite(int teamId, int id);
         Task<bool> AreFriends(int firstId, int secoundId);
         Task<bool> IsInivtedToFriends(int userId, int id);
-        Task<PagedList<Invite>> GetAllUserFriendInvites(UserParams userParams, int userId);
+        Task<PagedList<Invite>> GetAllUserInvites(UserParams userParams, int userId);
         Task<Invite> DeclineFriendInvite(int id, int userId);
+        Task<Invite> DeclineTeamInvite(int teamId,int id);
         Task<PagedList<Friendlist>> GetFriends(UserParams userParams);
+        Task<bool> IsInTeam(int teamId, int id);
+        Task<bool> IsInivtedToTeam(int teamId, int id);
     }
 }

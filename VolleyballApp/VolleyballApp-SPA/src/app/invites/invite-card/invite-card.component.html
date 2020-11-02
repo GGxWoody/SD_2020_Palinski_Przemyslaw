@@ -1,6 +1,7 @@
 <div class="card mb-3">
-  <div class="card-header">Friend invite</div>
-  <div class="card-body">
+  <div class="card-header" *ngIf="invite.friendInvite">Friend invite</div>
+  <div class="card-header" *ngIf="invite.teamInvite">Team invite</div>
+  <div class="card-body" *ngIf="invite.friendInvite">
     <h5 class="card-title">From: {{ invite.inviteFrom.knownAs }}</h5>
     <p class="card-text">
       Age: {{ invite.inviteFrom.age }}, Country:
@@ -8,13 +9,33 @@
     </p>
     <button
       class="btn btn-primary w-100"
-      (click)="acceptInvite(invite.inviteFrom.id, invite.inviteTo.id)"
+      (click)="acceptFriendInvite(invite.inviteFrom.id, invite.inviteTo.id)"
     >
       Accept
     </button>
     <button
       class="btn btn-danger w-100"
-      (click)="declineInvite(invite.inviteFrom.id, invite.inviteTo.id)"
+      (click)="declineFriendInvite(invite.inviteFrom.id, invite.inviteTo.id)"
+    >
+      Decline
+    </button>
+  </div>
+  <div class="card-body" *ngIf="invite.teamInvite">
+    <h5 class="card-title">To team: {{ invite.teamInvited.teamName }}</h5>
+    <h5 class="card-title">From: {{ invite.teamInvited.owner.knownAs }}</h5>
+    <p class="card-text">
+      Age: {{ invite.teamInvited.owner.age }}, Country:
+      {{ invite.teamInvited.owner.country }}, City: {{ invite.teamInvited.owner.city }}
+    </p>
+    <button
+      class="btn btn-primary w-100"
+      (click)="acceptTeamInvite(invite.teamInvited.owner.id, invite.teamInvited.id , invite.inviteTo.id)"
+    >
+      Accept
+    </button>
+    <button
+      class="btn btn-danger w-100"
+      (click)="declineTeamInvite(invite.teamInvited.owner.id, invite.teamInvited.id , invite.inviteTo.id)"
     >
       Decline
     </button>
