@@ -36,6 +36,7 @@ import { FriendListResolver } from './_resolvers/friend-list.resolver';
 import { MemberFriendListComponent } from './members/member-friend-list/member-friend-list.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { NgPipesModule } from 'ngx-pipes';
+import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
 
 
 
@@ -67,6 +68,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       InviteCardComponent,
       InviteListComponent,
       MemberFriendListComponent,
+      TeamDetailComponent,
       TimeAgoPipe
    ],
    imports: [
