@@ -21,13 +21,11 @@ namespace VolleyballApp.API.Controllers
     {
         private readonly IVolleyballRepository _repository;
         private readonly IMapper _mapper;
-        private readonly DataContext _context;
 
-        public TeamsController(IVolleyballRepository repository, IMapper mapper, DataContext context)
+        public TeamsController(IVolleyballRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> GetTeams([FromQuery]UserParams userParams){

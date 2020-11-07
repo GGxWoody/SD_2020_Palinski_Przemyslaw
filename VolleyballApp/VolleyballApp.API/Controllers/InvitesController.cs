@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VolleyballApp.API.Data;
 using VolleyballApp.API.Dtos;
@@ -12,6 +13,7 @@ namespace VolleyballApp.API.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
     [Route("api/invites/{userId}")]
+    [Authorize]
     [ApiController]
     public class InvitesController : ControllerBase
     {
@@ -154,6 +156,80 @@ namespace VolleyballApp.API.Controllers
             if (await _repository.IsInivtedToTeam(teamId,id))
             {
                 await _repository.DeclineTeamInvite(teamId, id);
+                return NoContent();
+            }
+            return BadRequest("No existing invite for this user");
+        }
+
+        [HttpGet("match/{firstTeamId}/{secondTeamId}", Name = "GetMatchInvite")]
+        public async Task<IActionResult> GetMatchInvite(int firstTeamId, int secondTeamId, int userId)
+        {
+            var firstTeam = await _repository.GetTeam(firstTeamId);
+            var secondTeam = await _repository.GetTeam(secondTeamId);
+            if (firstTeam.OwnerId == secondTeam.OwnerId) return BadRequest();
+            if (firstTeam.OwnerId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                && secondTeam.OwnerId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            var inviteFromRepo = await _repository.GetMatchInvite(firstTeamId, secondTeamId);
+            if (inviteFromRepo == null)
+                return NotFound();
+
+            var inviteToDisplay = _mapper.Map<InviteToReturnDto>(inviteFromRepo);
+            return Ok(inviteToDisplay);
+        }
+
+        [HttpPost("match/{firstTeamId}/{secondTeamId}")]
+        public async Task<IActionResult> SendMatchInvite(int firstTeamId, int secondTeamId, int userId)
+        {
+            var firstTeam = await _repository.GetTeam(firstTeamId);
+            var secondTeam = await _repository.GetTeam(secondTeamId);
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+
+            if (firstTeam == null || secondTeam == null) BadRequest("One of the team does not exist");
+            var firstTeamPlayers = firstTeam.Users;
+            var secondTeamPlayers = secondTeam.Users;
+
+
+            if (currnetUserId != firstTeam.OwnerId) return BadRequest("You have to be owner of team to send invite for match");
+            if (firstTeam.Owner.Id == secondTeam.Owner.Id) return BadRequest("Teams owned by the same person");
+            if (await _repository.MatchExistsAndIsNotConcluded(firstTeam.Id, secondTeam.Id)) return BadRequest("Match exists and has not been concluded");
+            if (_repository.TeamsShareSamePlayers(firstTeamPlayers, secondTeamPlayers)) return BadRequest("Match cannot be created if team share players");
+
+            var invite = await _repository.CreateMatchInvite(firstTeam,secondTeam);
+            var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            return CreatedAtRoute("GetMatchInvite", new {firstTeamId = firstTeamId, secondTeamId = secondTeamId, userId = firstTeam.OwnerId}, inviteToReturn);
+
+        }
+
+        [HttpPut("match/{firstTeamId}/{secondTeamId}")]
+        public async Task<IActionResult> AcceptMatchInvite(int firstTeamId, int secondTeamId, int userId)
+        {
+            var firstTeam = await _repository.GetTeam(firstTeamId);
+            var secondTeam = await _repository.GetTeam(secondTeamId);
+            if (firstTeam == null || secondTeam == null)
+                return NotFound();
+            if (secondTeam.OwnerId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            if (await _repository.GetMatchInvite(firstTeamId, secondTeamId) == null)
+                return NotFound();
+            var matchFromRepo = await _repository.AcceptMatchInvite(firstTeamId, secondTeamId);
+            var teamToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
+
+            return Ok(teamToDisplay);
+        }
+
+        [HttpDelete("match/{firstTeamId}/{secondTeamId}")]
+        public async Task<IActionResult> DeclineMatchInvite(int firstTeamId, int secondTeamId, int userId)
+        {
+            var firstTeam = await _repository.GetTeam(firstTeamId);
+            var secondTeam = await _repository.GetTeam(secondTeamId);
+            if (firstTeam == null || secondTeam == null)
+                return NotFound();
+            if (secondTeam.OwnerId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            if (await _repository.IsInivtedToMatch(firstTeamId, secondTeamId))
+            {
+                await _repository.DeclineMatchInvite(firstTeamId, secondTeamId);
                 return NoContent();
             }
             return BadRequest("No existing invite for this user");

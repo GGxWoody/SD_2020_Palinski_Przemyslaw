@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201107130614_SetChangedToList")]
+    partial class SetChangedToList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +78,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<int?>("TeamInvitedId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TeamInvitingId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("InviteFromId");
@@ -86,8 +85,6 @@ namespace VolleyballApp.API.Migrations
                     b.HasIndex("InviteToId");
 
                     b.HasIndex("TeamInvitedId");
-
-                    b.HasIndex("TeamInvitingId");
 
                     b.ToTable("Invites");
                 });
@@ -274,17 +271,11 @@ namespace VolleyballApp.API.Migrations
                         .WithMany()
                         .HasForeignKey("TeamInvitedId");
 
-                    b.HasOne("VolleyballApp.API.Models.Team", "TeamInviting")
-                        .WithMany()
-                        .HasForeignKey("TeamInvitingId");
-
                     b.Navigation("InviteFrom");
 
                     b.Navigation("InviteTo");
 
                     b.Navigation("TeamInvited");
-
-                    b.Navigation("TeamInviting");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Match", b =>

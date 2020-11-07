@@ -30,5 +30,13 @@ namespace VolleyballApp.API.Data
         Task<PagedList<Friendlist>> GetFriends(UserParams userParams);
         Task<bool> IsInTeam(int teamId, int id);
         Task<bool> IsInivtedToTeam(int teamId, int id);
+        Task<Match> GetMatch(int id);
+        Task<bool> MatchExistsAndIsNotConcluded(int firstTeamId, int secondTeamId);
+        bool TeamsShareSamePlayers(ICollection<User> firstTeamPlayers,ICollection<User> secondTeamPlayers);
+        Task<Invite> GetMatchInvite(int firstTeamId, int secondTeamId);
+        Task<Invite> CreateMatchInvite(Team firstTeam, Team secondTeam);
+        Task<Match> AcceptMatchInvite(int firstTeamId, int secondTeamId);
+        Task<bool> IsInivtedToMatch(int firstTeamId, int secondTeamId);
+        Task<Invite> DeclineMatchInvite(int firstTeamId, int secondTeamId);
     }
 }

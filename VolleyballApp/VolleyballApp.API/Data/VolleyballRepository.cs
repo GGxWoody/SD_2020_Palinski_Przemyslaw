@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using AutoMapper;
 using VolleyballApp.API.Dtos;
+using System.Collections.Generic;
 
 namespace VolleyballApp.API.Data
 {
@@ -222,6 +223,81 @@ namespace VolleyballApp.API.Data
         public async Task<Invite> DeclineTeamInvite(int teamId, int id)
         {
             var InviteToDelete = await GetTeamInvite(teamId, id);
+            _context.Invites.Remove(InviteToDelete);
+            await _context.SaveChangesAsync();
+            return InviteToDelete;
+        }
+
+        public async Task<Match> GetMatch(int id)
+        {
+            Match match = await _context.Matches.Include(x => x.Score)
+            .ThenInclude(x => x.SetList).FirstOrDefaultAsync(x => x.Id == id);
+            return match;
+        }
+
+        public async Task<bool> MatchExistsAndIsNotConcluded(int firstTeamId, int secondTeamId)
+        {
+            Match match = await _context.Matches.Include(x => x.Score).FirstOrDefaultAsync(x => x.FirstTeam.Id == firstTeamId && x.SecondTeam.Id == secondTeamId);
+            if (match == null || match.Score.SetList != null) return false;
+            return true;
+        }
+
+        public bool TeamsShareSamePlayers(ICollection<User> firstTeamPlayers, ICollection<User> secondTeamPlayers)
+        {
+            var sameUsers = firstTeamPlayers.Intersect(secondTeamPlayers);
+            if (sameUsers.Count() == 0) return false;
+            else return true;
+        }
+
+        public async Task<Invite> GetMatchInvite(int firstTeamId, int secondTeamId)
+        {
+            var invite = await _context.Invites.Include(e => e.TeamInvited).ThenInclude(x => x.Owner)
+            .Include(e => e.TeamInviting).ThenInclude(x => x.Owner).Include(e => e.InviteTo).Include(e => e.InviteFrom)
+            .FirstOrDefaultAsync(x => x.TeamInvited.Id == secondTeamId && x.TeamInviting.Id == firstTeamId && x.MatchInvite == true);
+            return invite;
+        }
+
+        public async Task<Invite> CreateMatchInvite(Team firstTeam, Team secondTeam)
+        {
+            Invite newInvite = new Invite();
+            newInvite.TeamInvited = secondTeam;
+            newInvite.TeamInviting = firstTeam;
+            newInvite.InviteTo = secondTeam.Owner;
+            newInvite.InviteFrom = firstTeam.Owner;
+            newInvite.MatchInvite = true;
+            await _context.Invites.AddAsync(newInvite);
+            await _context.SaveChangesAsync();
+            return await GetMatchInvite(firstTeam.Id, secondTeam.Id);
+        }
+
+        public async Task<Match> AcceptMatchInvite(int firstTeamId, int secondTeamId)
+        {
+            Match match = new Match();
+            match.FirstTeam = await GetTeam(firstTeamId);
+            match.SecondTeam = await GetTeam(secondTeamId);
+            match.Score = new Score();
+            var InviteToDelete = await GetMatchInvite(firstTeamId, secondTeamId);
+            _context.Invites.Remove(InviteToDelete);
+            await _context.Scores.AddAsync(match.Score);
+            await _context.Matches.AddAsync(match);
+            await _context.SaveChangesAsync();
+            return await _context.Matches.Include(e => e.FirstTeam).ThenInclude(e => e.Owner)
+            .Include(e => e.SecondTeam).ThenInclude(e => e.Owner)
+            .FirstOrDefaultAsync(x => x.FirstTeam.Id == firstTeamId && x.SecondTeam.Id == secondTeamId);
+        }
+
+        public async Task<bool> IsInivtedToMatch(int firstTeamId, int secondTeamId)
+        {
+            var invites = _context.Invites.Include(x => x.TeamInvited).Include(x => x.TeamInviting).AsQueryable();
+            invites = invites.Where(x => x.TeamInvited.Id == secondTeamId);
+            invites = invites.Where(x => x.TeamInviting.Id == firstTeamId);
+            if (await invites.FirstOrDefaultAsync() == null) return false;
+            else return true;
+        }
+
+        public async Task<Invite> DeclineMatchInvite(int firstTeamId, int secondTeamId)
+        {
+            var InviteToDelete = await GetMatchInvite(firstTeamId, secondTeamId);
             _context.Invites.Remove(InviteToDelete);
             await _context.SaveChangesAsync();
             return InviteToDelete;

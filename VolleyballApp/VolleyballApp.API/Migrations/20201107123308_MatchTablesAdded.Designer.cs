@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201107123308_MatchTablesAdded")]
+    partial class MatchTablesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +78,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<int?>("TeamInvitedId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TeamInvitingId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("InviteFromId");
@@ -86,8 +85,6 @@ namespace VolleyballApp.API.Migrations
                     b.HasIndex("InviteToId");
 
                     b.HasIndex("TeamInvitedId");
-
-                    b.HasIndex("TeamInvitingId");
 
                     b.ToTable("Invites");
                 });
@@ -125,13 +122,38 @@ namespace VolleyballApp.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("FifthSetId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FirstSetId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("FirstTeamSets")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FourthSetId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SecondSetId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SecondTeamSets")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ThirdSetId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("FifthSetId");
+
+                    b.HasIndex("FirstSetId");
+
+                    b.HasIndex("FourthSetId");
+
+                    b.HasIndex("SecondSetId");
+
+                    b.HasIndex("ThirdSetId");
 
                     b.ToTable("Scores");
                 });
@@ -145,15 +167,10 @@ namespace VolleyballApp.API.Migrations
                     b.Property<int>("FirstTeamScore")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ScoreId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("SecondTeamScore")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ScoreId");
 
                     b.ToTable("Sets");
                 });
@@ -274,17 +291,11 @@ namespace VolleyballApp.API.Migrations
                         .WithMany()
                         .HasForeignKey("TeamInvitedId");
 
-                    b.HasOne("VolleyballApp.API.Models.Team", "TeamInviting")
-                        .WithMany()
-                        .HasForeignKey("TeamInvitingId");
-
                     b.Navigation("InviteFrom");
 
                     b.Navigation("InviteTo");
 
                     b.Navigation("TeamInvited");
-
-                    b.Navigation("TeamInviting");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Match", b =>
@@ -310,11 +321,37 @@ namespace VolleyballApp.API.Migrations
                     b.Navigation("SecondTeam");
                 });
 
-            modelBuilder.Entity("VolleyballApp.API.Models.Set", b =>
+            modelBuilder.Entity("VolleyballApp.API.Models.Score", b =>
                 {
-                    b.HasOne("VolleyballApp.API.Models.Score", null)
-                        .WithMany("SetList")
-                        .HasForeignKey("ScoreId");
+                    b.HasOne("VolleyballApp.API.Models.Set", "FifthSet")
+                        .WithMany()
+                        .HasForeignKey("FifthSetId");
+
+                    b.HasOne("VolleyballApp.API.Models.Set", "FirstSet")
+                        .WithMany()
+                        .HasForeignKey("FirstSetId");
+
+                    b.HasOne("VolleyballApp.API.Models.Set", "FourthSet")
+                        .WithMany()
+                        .HasForeignKey("FourthSetId");
+
+                    b.HasOne("VolleyballApp.API.Models.Set", "SecondSet")
+                        .WithMany()
+                        .HasForeignKey("SecondSetId");
+
+                    b.HasOne("VolleyballApp.API.Models.Set", "ThirdSet")
+                        .WithMany()
+                        .HasForeignKey("ThirdSetId");
+
+                    b.Navigation("FifthSet");
+
+                    b.Navigation("FirstSet");
+
+                    b.Navigation("FourthSet");
+
+                    b.Navigation("SecondSet");
+
+                    b.Navigation("ThirdSet");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Team", b =>
@@ -331,8 +368,6 @@ namespace VolleyballApp.API.Migrations
             modelBuilder.Entity("VolleyballApp.API.Models.Score", b =>
                 {
                     b.Navigation("Match");
-
-                    b.Navigation("SetList");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
