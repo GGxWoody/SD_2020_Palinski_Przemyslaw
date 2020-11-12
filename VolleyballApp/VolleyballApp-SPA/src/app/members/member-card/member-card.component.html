@@ -7,7 +7,7 @@
     </ul>
   </div>
   <div class="card-body p-1">
-    <h6 class="card-title text-center mb-1"><i class="fa fa-user"></i>{{ user.knownAs }}, {{ user.age }}</h6>
+    <h6 class="card-title text-center mb-1"><i *ngIf="user.gender === 'female'" class="fa fa-venus"></i><i *ngIf="user.gender === 'male'" class="fa fa-mars"></i> {{ user.knownAs }}, {{ user.age }}</h6>
     <p class="card-text text-muted text-center">{{ user.city }}</p>
   </div>
 </div>

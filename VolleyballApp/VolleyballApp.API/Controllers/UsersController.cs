@@ -33,10 +33,6 @@ namespace VolleyballApp.API.Controllers
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var userFromRepo = await _repository.GetUser(currnetUserId);
             userParams.UserID = currnetUserId;
-            if (String.IsNullOrEmpty(userParams.Gender))
-            {
-                userParams.Gender = userFromRepo.Gender == "male" ? "male" : "female";
-            }
             var users = await _repository.GetUsers(userParams);
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
             Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
@@ -61,7 +57,7 @@ namespace VolleyballApp.API.Controllers
             var userFromRepo = await _repository.GetUser(currnetUserId);
             userParams.UserID = currnetUserId;
             var users = await _repository.GetFriends(userParams);
-            var usersToReturn = _mapper.Map<IEnumerable<FriendToReturnDto>>(users);
+            var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
             Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
             return Ok(usersToReturn);
         }

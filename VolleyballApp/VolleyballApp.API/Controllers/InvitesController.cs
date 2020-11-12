@@ -195,6 +195,7 @@ namespace VolleyballApp.API.Controllers
             if (firstTeam.Owner.Id == secondTeam.Owner.Id) return BadRequest("Teams owned by the same person");
             if (await _repository.MatchExistsAndIsNotConcluded(firstTeam.Id, secondTeam.Id)) return BadRequest("Match exists and has not been concluded");
             if (_repository.TeamsShareSamePlayers(firstTeamPlayers, secondTeamPlayers)) return BadRequest("Match cannot be created if team share players");
+            if (await _repository.MatchInviteExists(firstTeam, secondTeam)) return BadRequest("Invite was already send and awaits acceptation");
 
             var invite = await _repository.CreateMatchInvite(firstTeam,secondTeam);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);

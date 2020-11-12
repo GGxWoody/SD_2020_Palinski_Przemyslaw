@@ -59,9 +59,9 @@ export class UserService {
     itemsPerPage?,
     userParams?,
     likesParam?
-  ): Observable<PaginatedResult<Friend[]>> {
-    const paginatedResult: PaginatedResult<Friend[]> = new PaginatedResult<
-      Friend[]
+  ): Observable<PaginatedResult<User[]>> {
+    const paginatedResult: PaginatedResult<User[]> = new PaginatedResult<
+      User[]
     >();
 
     let params = new HttpParams();
@@ -72,7 +72,7 @@ export class UserService {
     }
 
     return this.http
-      .get<Friend[]>(this.baseUrl + 'users/friends', { observe: 'response', params })
+      .get<User[]>(this.baseUrl + 'users/friends', { observe: 'response', params })
       .pipe(
         map(response => {
           paginatedResult.result = response.body;

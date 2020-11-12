@@ -54,4 +54,24 @@ export class InviteCardComponent implements OnInit {
       this.alertify.error(error);
     });
   }
+
+  acceptMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
+    this.inviteService.acceptMatchInvite(userId, firstTeamId, secondTeamId).subscribe(data => {
+      this.alertify.success('You accepted: ' + this.invite.teamInvited.owner.knownAs
+      + ' invite to match form ' + this.invite.teamInviting.teamName);
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  declineMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
+    this.inviteService.declineMatchInvite(userId, firstTeamId, secondTeamId).subscribe(data => {
+      this.alertify.success('You declined ' + this.invite.teamInvited.owner.knownAs
+      + ' invite to match form ' + this.invite.teamInviting.teamName);
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
 }

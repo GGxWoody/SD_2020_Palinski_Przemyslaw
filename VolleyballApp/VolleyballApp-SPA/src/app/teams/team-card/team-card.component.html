@@ -1,12 +1,13 @@
 <div class="card mb-3" [routerLink]="['/teams/', team.id]">
   <div class="row no-gutters">
-    <div class="col-md-4">
+    <div class="col-md-12 text-center">
       <img src='../../../assets/team-creast.png' class="card-img" alt="...">
     </div>
-    <div class="col-md-8">
+  </div>
+  <div class="row no-gutters">
+    <div class="col-md-12 text-center">
       <div class="card-body">
         <h5 class="card-title">{{ team.teamName }}</h5>
-        <p class="card-text">{{ team.description | shorten: 200: '...'}}</p>
         <p class="card-text"><small class="text-muted">Team created: {{ team.dateCreated | date: 'mediumDate' }}</small></p>
       </div>
     </div>

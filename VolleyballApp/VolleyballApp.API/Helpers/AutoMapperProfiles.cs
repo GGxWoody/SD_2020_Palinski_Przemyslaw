@@ -26,6 +26,8 @@ namespace VolleyballApp.API.Helpers
             CreateMap<Friendlist,FriendToReturnDto>();
             CreateMap<Match,MatchForDetailedDto>();
             CreateMap<Score,ScoreForSendingDto>();
+            CreateMap<Match,MatchForListDto>();
+            CreateMap<Score,ScoreForListDto>();
         }
     }
 }

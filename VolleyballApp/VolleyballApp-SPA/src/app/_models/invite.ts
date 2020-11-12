@@ -5,6 +5,7 @@ export interface Invite {
     id: number;
     inviteFrom?: User;
     inviteTo?: User;
+    teamInviting?: Team;
     teamInvited?: Team;
     friendInvite: boolean;
     teamInvite: boolean;

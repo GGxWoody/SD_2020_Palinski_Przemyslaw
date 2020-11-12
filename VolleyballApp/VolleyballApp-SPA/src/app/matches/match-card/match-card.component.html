@@ -1,0 +1,22 @@
+<div class="card mb-3" d-flex justify-content-center>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card-body">
+        <p class="card-text"><app-team-card [team]="match.firstTeam"></app-team-card></p>
+      </div>
+    </div>
+    <div class="col-md-4 text-center align-middle mt-5">
+      <h1>VS</h1>
+      <h2>{{ match.score.firstTeamSets }} : {{ match.score.secondTeamSets }}</h2>
+      <h4 *ngIf="match.score.firstTeamSets===0 && match.score.secondTeamSets===0">Match has not benn played</h4>
+      <button class="btn btn-primary w-100 mt-3" [routerLink]="['/matches/', match.id]">
+          Match detail
+        </button>
+    </div>
+    <div class="col-md-4">
+      <div class="card-body">
+        <p class="card-text"><app-team-card [team]="match.secondTeam"></app-team-card></p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -51,7 +51,7 @@ namespace VolleyballApp.API.Data
         public async Task<PagedList<Invite>> GetAllUserInvites(UserParams userParams, int userId)
         {
             var invites = _context.Invites.Include(e => e.InviteFrom).Include(e => e.InviteTo)
-            .Include(x => x.TeamInvited).Include(x => x.TeamInvited.Owner)
+            .Include(x => x.TeamInvited).ThenInclude(x => x.Owner).Include(x => x.TeamInviting)
             .OrderByDescending(x => x.Id).AsQueryable();
             invites = invites.Where(i => i.InviteTo.Id == userId);
             return await PagedList<Invite>.CreateAsync(invites, userParams.PageNumber, userParams.PageSize);
@@ -68,8 +68,11 @@ namespace VolleyballApp.API.Data
         {
             var users = _context.Users.OrderByDescending(u => u.LastActive).AsQueryable();
             users = users.Where(u => u.Id != userParams.UserID);
-            users = users.Where(u => u.Gender == userParams.Gender);
-
+            if(!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
+            {
+                users = users.Where(u => u.Gender == userParams.Gender);
+            }
+        
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {
                 var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
@@ -149,8 +152,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<bool> IsInivtedToFriends(int userId, int id)
         {
-            var invite = await _context.Invites.FirstOrDefaultAsync(x => x.InviteFrom.Id == userId && x.InviteTo.Id == id
-            || x.InviteFrom.Id == id && x.InviteTo.Id == userId);
+            var invite = await _context.Invites.FirstOrDefaultAsync(x => x.InviteFrom.Id == userId && x.InviteTo.Id == id && x.FriendInvite == true
+            || x.InviteFrom.Id == id && x.InviteTo.Id == userId && x.FriendInvite == true);
             if (invite == null) return false;
             return true;
         }
@@ -163,12 +166,23 @@ namespace VolleyballApp.API.Data
             return InviteToDelete;
         }
 
-        public async Task<PagedList<Friendlist>> GetFriends(UserParams userParams)
+        public async Task<PagedList<User>> GetFriends(UserParams userParams)
         {
-            var friends = _context.Friendlist.Include(x => x.FirstUser).Include(x => x.SecondUser).AsQueryable();
-            friends = friends.Where(f => f.FirstUser.Id == userParams.UserID || f.SecondUser.Id == userParams.UserID);
+            var friendsFirstSide = _context.Friendlist.Include(x => x.FirstUser).Include(x => x.SecondUser).AsQueryable();
+            friendsFirstSide = friendsFirstSide.Where(f => f.FirstUser.Id == userParams.UserID);
+            var friendsSecondSide = _context.Friendlist.Include(x => x.FirstUser).Include(x => x.SecondUser).AsQueryable();
+            friendsSecondSide = friendsSecondSide.Where(f => f.SecondUser.Id == userParams.UserID);
+            var friends = friendsFirstSide.Select(x => x.SecondUser);
+            friends.Concat(friendsSecondSide.Select(x => x.FirstUser));
 
-            return await PagedList<Friendlist>.CreateAsync(friends, userParams.PageNumber, userParams.PageSize);
+            return await PagedList<User>.CreateAsync(friends, userParams.PageNumber, userParams.PageSize);
+        }
+
+        public async Task<PagedList<Match>> GetMatches(UserParams userParams)
+        {
+            var matches = _context.Matches.Include(x => x.FirstTeam).ThenInclude(x => x.Owner)
+            .Include(x => x.SecondTeam).ThenInclude(x => x.Owner).Include(x => x.Score);
+            return await PagedList<Match>.CreateAsync(matches, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<bool> IsInTeam(int teamId, int id)
@@ -301,6 +315,13 @@ namespace VolleyballApp.API.Data
             _context.Invites.Remove(InviteToDelete);
             await _context.SaveChangesAsync();
             return InviteToDelete;
+        }
+
+        public async Task<bool> MatchInviteExists(Team firstTeam, Team secondTeam)
+        {
+            var invite = await _context.Invites.FirstOrDefaultAsync(x => x.TeamInviting.Id == firstTeam.Id && x.TeamInvited.Id == secondTeam.Id && x.MatchInvite == true);
+            if (invite == null) return false;
+            return true;
         }
     }
 }

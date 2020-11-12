@@ -1,6 +1,7 @@
 <div class="card mb-3">
   <div class="card-header" *ngIf="invite.friendInvite">Friend invite</div>
   <div class="card-header" *ngIf="invite.teamInvite">Team invite</div>
+  <div class="card-header" *ngIf="invite.matchInvite">Match invite</div>
   <div class="card-body" *ngIf="invite.friendInvite">
     <h5 class="card-title">From: {{ invite.inviteFrom.knownAs }}</h5>
     <p class="card-text">
@@ -36,6 +37,23 @@
     <button
       class="btn btn-danger w-100"
       (click)="declineTeamInvite(invite.teamInvited.owner.id, invite.teamInvited.id , invite.inviteTo.id)"
+    >
+      Decline
+    </button>
+  </div>
+  <div class="card-body" *ngIf="invite.matchInvite">
+    <h5 class="card-title">From team: {{ invite.teamInviting.teamName }}</h5>
+    <h5 class="card-title">For team: {{ invite.teamInvited.teamName }}</h5>
+    <h5 class="card-title">Team owner: {{ invite.teamInviting.owner.knownAs }}</h5>
+    <button
+      class="btn btn-primary w-100"
+      (click)="acceptMatchInvite(invite.teamInviting.owner.id, invite.teamInviting.id , invite.teamInvited.id)"
+    >
+      Accept
+    </button>
+    <button
+      class="btn btn-danger w-100"
+      (click)="declineMatchInvite(invite.teamInviting.owner.id, invite.teamInviting.id , invite.teamInvited.id)"
     >
       Decline
     </button>

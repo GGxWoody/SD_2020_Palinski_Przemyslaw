@@ -10,7 +10,7 @@ import { Team } from '../_models/team';
 @Injectable()
 export class TeamListResolver implements Resolve<Team[]> {
     pageNumber = 1;
-    pageSize = 5;
+    pageSize = 6;
 
     constructor(private teamService: TeamService, private router: Router,
                 private alertify: AlertifyService) { }

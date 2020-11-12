@@ -65,4 +65,16 @@ export class FriendInviteService {
   sendTeamInvite(userId: number, teamId: number, id: number) {
     return this.http.post(this.baseUrl + 'invites/' + userId + '/team/' + teamId + '/' + id, {});
   }
+
+  acceptMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
+    return this.http.put(this.baseUrl + 'invites/' + userId + '/match/' + firstTeamId + '/' + secondTeamId, {});
+  }
+
+  declineMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
+    return this.http.delete(this.baseUrl + 'invites/' + userId + '/match/' + firstTeamId + '/' + secondTeamId);
+  }
+
+  sendMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
+    return this.http.post(this.baseUrl + 'invites/' + userId + '/match/' + firstTeamId + '/' + secondTeamId, {});
+  }
 }

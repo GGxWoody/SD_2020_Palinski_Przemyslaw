@@ -57,6 +57,7 @@ namespace VolleyballApp.API.Controllers
             teamToCreate.Owner = userFromRepo;
             teamToCreate.OwnerId = userFromRepo.Id;
             teamToCreate.DateCreated = System.DateTime.Now;
+            teamToCreate.Users.Add(userFromRepo);
 
             var teamCreated = await _repository.CreateTeam(teamToCreate);
 

@@ -27,7 +27,8 @@ namespace VolleyballApp.API.Data
         Task<PagedList<Invite>> GetAllUserInvites(UserParams userParams, int userId);
         Task<Invite> DeclineFriendInvite(int id, int userId);
         Task<Invite> DeclineTeamInvite(int teamId,int id);
-        Task<PagedList<Friendlist>> GetFriends(UserParams userParams);
+        Task<PagedList<User>> GetFriends(UserParams userParams);
+        Task<PagedList<Match>> GetMatches(UserParams userParams);
         Task<bool> IsInTeam(int teamId, int id);
         Task<bool> IsInivtedToTeam(int teamId, int id);
         Task<Match> GetMatch(int id);
@@ -38,5 +39,6 @@ namespace VolleyballApp.API.Data
         Task<Match> AcceptMatchInvite(int firstTeamId, int secondTeamId);
         Task<bool> IsInivtedToMatch(int firstTeamId, int secondTeamId);
         Task<Invite> DeclineMatchInvite(int firstTeamId, int secondTeamId);
+        Task<bool> MatchInviteExists(Team firstTeam,Team secondTeam);
     }
 }

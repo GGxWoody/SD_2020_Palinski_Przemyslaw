@@ -12,7 +12,7 @@ import { UserService } from 'src/app/_services/user.service';
   styleUrls: ['./member-friend-list.component.scss']
 })
 export class MemberFriendListComponent implements OnInit {
-  friends: Friend[];
+  friends: User[];
   pagination: Pagination;
   user: User = JSON.parse(localStorage.getItem('user'));
   constructor(private userService: UserService, private alertify: AlertifyService, private root: ActivatedRoute) { }
@@ -32,7 +32,7 @@ export class MemberFriendListComponent implements OnInit {
 
   loadFriends() {
     this.userService.getFriends(this.pagination.currentPage, this.pagination.itemsPerPage)
-    .subscribe((res: PaginatedResult<Friend[]>) => {
+    .subscribe((res: PaginatedResult<User[]>) => {
       this.friends = res.result;
       this.pagination = res.pagination;
     }, error => {

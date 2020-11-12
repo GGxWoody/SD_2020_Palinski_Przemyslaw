@@ -39,6 +39,11 @@ import { NgPipesModule } from 'ngx-pipes';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
 import { TeamDetailResolver } from './_resolvers/team-detail.resolver';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { MatchListComponent } from './matches/match-list/match-list.component';
+import { MatchListResolver } from './_resolvers/match-list.resolver';
+import { MatchCardComponent } from './matches/match-card/match-card.component';
+import { MatchDetailComponent } from './matches/match-detail/match-detail.component';
+import { MatchDetailResolver } from './_resolvers/match-detail.resolver';
 
 
 
@@ -72,6 +77,9 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       InviteListComponent,
       MemberFriendListComponent,
       TeamDetailComponent,
+      MatchListComponent,
+      MatchCardComponent,
+      MatchDetailComponent,
       TimeAgoPipe
    ],
    imports: [
@@ -108,6 +116,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       TeamListResolver,
       MemberDetailResolver,
       FriendListResolver,
+      MatchListResolver,
+      MatchDetailResolver,
       AuthGuard,
       PreventUnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
