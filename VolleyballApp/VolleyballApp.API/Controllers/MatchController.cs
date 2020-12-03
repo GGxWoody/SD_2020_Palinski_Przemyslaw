@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -43,6 +44,14 @@ namespace VolleyballApp.API.Controllers
             var matchesToReturn = _mapper.Map<List<MatchForListDto>>(matches);
             Response.AddPagination(matches.CurrentPage, matches.PageSize, matches.TotalCount, matches.TotalPages);
             return Ok(matchesToReturn);
+        }
+
+
+        [HttpPut("{id}/score")]
+        public async Task<IActionResult> SetMatchScore(ScoreForAddDto scoreForAddDto, int id)
+        {
+            var matchWithScore = await _repository.AddScore(scoreForAddDto, id);
+            return Ok(matchWithScore);
         }
     }
 }

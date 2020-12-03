@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201113143047_SetRemove")]
+    partial class SetRemove
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,40 +119,6 @@ namespace VolleyballApp.API.Migrations
                     b.HasIndex("SecondTeamId");
 
                     b.ToTable("Matches");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Score", b =>
@@ -352,23 +320,6 @@ namespace VolleyballApp.API.Migrations
                     b.Navigation("SecondTeam");
                 });
 
-            modelBuilder.Entity("VolleyballApp.API.Models.Photo", b =>
-                {
-                    b.HasOne("VolleyballApp.API.Models.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId");
-
-                    b.HasOne("VolleyballApp.API.Models.User", "User")
-                        .WithOne("Photo")
-                        .HasForeignKey("VolleyballApp.API.Models.Photo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("VolleyballApp.API.Models.Team", b =>
                 {
                     b.HasOne("VolleyballApp.API.Models.User", "Owner")
@@ -387,8 +338,6 @@ namespace VolleyballApp.API.Migrations
 
             modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
                 {
-                    b.Navigation("Photo");
-
                     b.Navigation("TeamsCreated");
                 });
 #pragma warning restore 612, 618

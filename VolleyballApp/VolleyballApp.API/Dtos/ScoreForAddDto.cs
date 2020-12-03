@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using VolleyballApp.API.Models;
 
 namespace VolleyballApp.API.Dtos
 {
-    public class ScoreForSendingDto
+    public class ScoreForAddDto
     {
-        public int Id { get; set; }
         public int FirstTeamSets { get; set; }
         public int SecondTeamSets { get; set; }
         public int OneFirstTeam { get; set; }

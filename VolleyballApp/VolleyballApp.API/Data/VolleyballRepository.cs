@@ -38,13 +38,14 @@ namespace VolleyballApp.API.Data
 
         public async Task<Team> GetTeam(int id)
         {
-            var team = await _context.Teams.Include(e => e.Users).Include(c => c.Owner).FirstOrDefaultAsync(u => u.Id == id);
+            var team = await _context.Teams.Include(e => e.Users).ThenInclude(u => u.Photo)
+            .Include(c => c.Owner).ThenInclude(u => u.Photo).FirstOrDefaultAsync(u => u.Id == id);
             return team;
         }
 
         public async Task<PagedList<Team>> GetTeams(UserParams userParams)
         {
-            var teams = _context.Teams.OrderByDescending(u => u.DateCreated);
+            var teams = _context.Teams.Include(e => e.Owner).OrderByDescending(u => u.DateCreated);
             return await PagedList<Team>.CreateAsync(teams, userParams.PageNumber, userParams.PageSize);
         }
 
@@ -60,19 +61,19 @@ namespace VolleyballApp.API.Data
         public async Task<User> GetUser(int id)
         {
             var user = await _context.Users.Include(e => e.Teams).ThenInclude(t => t.Owner)
-                .Include(e => e.TeamsCreated).FirstOrDefaultAsync(u => u.Id == id);
+                .Include(e => e.TeamsCreated).Include(p => p.Photo).FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var users = _context.Users.OrderByDescending(u => u.LastActive).AsQueryable();
+            var users = _context.Users.Include(p => p.Photo).OrderByDescending(u => u.LastActive).AsQueryable();
             users = users.Where(u => u.Id != userParams.UserID);
-            if(!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
+            if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
             {
                 users = users.Where(u => u.Gender == userParams.Gender);
             }
-        
+
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {
                 var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
@@ -105,7 +106,7 @@ namespace VolleyballApp.API.Data
 
         public async Task<bool> TeamExists(string name)
         {
-            if(await _context.Teams.AnyAsync(x => x.TeamName.ToLower() == name.ToLower())) return true;
+            if (await _context.Teams.AnyAsync(x => x.TeamName.ToLower() == name.ToLower())) return true;
             return false;
         }
 
@@ -124,7 +125,7 @@ namespace VolleyballApp.API.Data
             newInvite.FriendInvite = true;
             await _context.Invites.AddAsync(newInvite);
             await _context.SaveChangesAsync();
-            return await GetFriendInvite(sender.Id,reciver.Id);
+            return await GetFriendInvite(sender.Id, reciver.Id);
         }
 
 
@@ -209,7 +210,7 @@ namespace VolleyballApp.API.Data
             newInvite.TeamInvite = true;
             await _context.Invites.AddAsync(newInvite);
             await _context.SaveChangesAsync();
-            return await GetTeamInvite(team.Id , recipient.Id);
+            return await GetTeamInvite(team.Id, recipient.Id);
         }
 
         public async Task<Invite> GetTeamInvite(int teamId, int id)
@@ -244,15 +245,14 @@ namespace VolleyballApp.API.Data
 
         public async Task<Match> GetMatch(int id)
         {
-            Match match = await _context.Matches.Include(x => x.Score)
-            .ThenInclude(x => x.SetList).FirstOrDefaultAsync(x => x.Id == id);
+            Match match = await _context.Matches.Include(x => x.Score).FirstOrDefaultAsync(x => x.Id == id);
             return match;
         }
 
         public async Task<bool> MatchExistsAndIsNotConcluded(int firstTeamId, int secondTeamId)
         {
             Match match = await _context.Matches.Include(x => x.Score).FirstOrDefaultAsync(x => x.FirstTeam.Id == firstTeamId && x.SecondTeam.Id == secondTeamId);
-            if (match == null || match.Score.SetList != null) return false;
+            if (match == null || match.Score.OneFirstTeam != 0 && match.Score.OneSecondTeam != 0) return false;
             return true;
         }
 
@@ -322,6 +322,23 @@ namespace VolleyballApp.API.Data
             var invite = await _context.Invites.FirstOrDefaultAsync(x => x.TeamInviting.Id == firstTeam.Id && x.TeamInvited.Id == secondTeam.Id && x.MatchInvite == true);
             if (invite == null) return false;
             return true;
+        }
+
+        public async Task<Match> AddScore(ScoreForAddDto scoreToAdd, int id)
+        {
+            var match = await GetMatch(id);
+            var score = await _context.Scores.FirstOrDefaultAsync(x => x.Id == match.ScoreId);
+            score = _mapper.Map<Score>(scoreToAdd);
+            _context.Scores.Update(score); 
+            if(await saveAll()) return await _context.Matches.FirstOrDefaultAsync(x => x.Id == match.Id);
+            else return null;
+        }
+
+        public async Task<Photo> GetPhoto(int id)
+        {
+            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.Id == id);
+
+            return photo;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace VolleyballApp.API.Data
         public DbSet<Friendlist> Friendlist { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Score> Scores { get; set; }
-        public DbSet<Set> Sets { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201122132421_PhotoTable")]
+    partial class PhotoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,6 +133,9 @@ namespace VolleyballApp.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PublicId")
                         .HasColumnType("TEXT");
 
@@ -150,7 +155,7 @@ namespace VolleyballApp.API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Score", b =>

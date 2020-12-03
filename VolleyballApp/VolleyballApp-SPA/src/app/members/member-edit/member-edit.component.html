@@ -15,7 +15,7 @@
       <div class="card">
         <img
           class="card-img-top img-thumbnail"
-          src="../../../assets/user.png"
+          src="{{ user.photoUrl || '../../../assets/user.png' }}"
           alt="{{ user.knownAs }}"
         />
         <div class="card-body">
@@ -110,6 +110,9 @@
             <div *ngFor="let team of user.teamsCreated" class="col-12 mt-2">
               <app-team-card [team]="team"></app-team-card>
             </div>
+          </tab>
+          <tab heading="Photo">
+            <app-photo-editor [photo]="user.photo" (getMemberPhotoChange)="updateMainPhoto($event)"></app-photo-editor>
           </tab>
         </tabset>
       </div>

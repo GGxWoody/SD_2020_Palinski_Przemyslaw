@@ -8,9 +8,14 @@
     <div class="col-md-4 text-center align-middle mt-5">
       <h1>VS</h1>
       <h2>{{ match.score.firstTeamSets }} : {{ match.score.secondTeamSets }}</h2>
+      <h5 *ngIf="match.score.firstTeamSets+match.score.secondTeamSets >= 1" class="d-inline mr-3">{{ match.score.oneFirstTeam }}:{{ match.score.oneSecondTeam }}</h5>
+      <h5 *ngIf="match.score.firstTeamSets+match.score.secondTeamSets >= 2" class="d-inline mr-3">{{ match.score.twoFirstTeam }}:{{ match.score.twoSecondTeam }}</h5>
+      <h5 *ngIf="match.score.firstTeamSets+match.score.secondTeamSets >= 3" class="d-inline mr-3">{{ match.score.threeFirstTeam }}:{{ match.score.threeSecondTeam }}</h5>
+      <h5 *ngIf="match.score.firstTeamSets+match.score.secondTeamSets >= 4" class="d-inline mr-3">{{ match.score.fourFirstTeam }}:{{ match.score.fourSecondTeam }}</h5>
+      <h5 *ngIf="match.score.firstTeamSets+match.score.secondTeamSets >= 5" class="d-inline mr-3">{{ match.score.fiveFirstTeam }}:{{ match.score.fiveSecondTeam }}</h5>
       <h4 *ngIf="match.score.firstTeamSets===0 && match.score.secondTeamSets===0">Match has not benn played</h4>
-      <button class="btn btn-primary w-100 mt-3" [routerLink]="['/matches/', match.id]">
-          Match detail
+      <button *ngIf="match.score.firstTeamSets+match.score.secondTeamSets === 0 &&(match.firstTeam.owner.id == user.id || match.secondTeam.owner.id == user.id)" class="btn btn-primary w-100 mt-3" [routerLink]="['/matches/', match.id]">
+          Edit Match / Set score
         </button>
     </div>
     <div class="col-md-4">

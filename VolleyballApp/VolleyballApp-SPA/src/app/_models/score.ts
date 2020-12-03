@@ -1,10 +1,16 @@
-import { Match } from './match';
-import { Set } from './set';
 
 export class Score {
     id: number;
-    match: Match;
     firstTeamSets: number;
     secondTeamSets: number;
-    setList?: Set[];
+    oneFirstTeam: number;
+    oneSecondTeam: number;
+    twoFirstTeam: number;
+    twoSecondTeam: number;
+    threeFirstTeam: number;
+    threeSecondTeam: number;
+    fourFirstTeam: number;
+    fourSecondTeam: number;
+    fiveFirstTeam: number;
+    fiveSecondTeam: number;
 }

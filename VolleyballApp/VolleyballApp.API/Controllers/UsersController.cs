@@ -46,7 +46,10 @@ namespace VolleyballApp.API.Controllers
             var user = await _repository.GetUser(id);
             var userToReturn = _mapper.Map<UserForDetailedDto>(user);
             userToReturn.IsFriend = await _repository.AreFriends(currnetUserId, id);
-
+            if (user.Photo != null)
+            {
+                userToReturn.PhotoUrl = user.Photo.Url;
+            }
             return Ok(userToReturn);
         }
 

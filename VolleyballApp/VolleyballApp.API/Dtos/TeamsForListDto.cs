@@ -7,7 +7,7 @@ namespace VolleyballApp.API.Dtos
         public int Id { get; set; }
         public string TeamName { get; set; }
         public DateTime DateCreated { get; set; }
-        public UserForListDto Owner { get; set; }
+        public UserForTeamListDto Owner { get; set; }
         public string Description { get; set; }
     }
 }

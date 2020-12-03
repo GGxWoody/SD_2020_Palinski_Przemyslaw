@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShortenPipe } from 'ngx-pipes';
 import { Team } from 'src/app/_models/team';
+import { User } from 'src/app/_models/user';
 
 @Component({
   selector: 'app-team-card',
@@ -11,6 +12,7 @@ import { Team } from 'src/app/_models/team';
 })
 export class TeamCardComponent implements OnInit {
   @Input() team: Team;
+  user: User = JSON.parse(localStorage.getItem('user'));
   constructor(private router: Router) { }
 
   ngOnInit() {

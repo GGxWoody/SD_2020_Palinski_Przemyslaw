@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DatingApp.API.Helpers;
+using VolleyballApp.API.Dtos;
 using VolleyballApp.API.Models;
 
 namespace VolleyballApp.API.Data
@@ -40,5 +41,7 @@ namespace VolleyballApp.API.Data
         Task<bool> IsInivtedToMatch(int firstTeamId, int secondTeamId);
         Task<Invite> DeclineMatchInvite(int firstTeamId, int secondTeamId);
         Task<bool> MatchInviteExists(Team firstTeam,Team secondTeam);
+        Task<Match> AddScore(ScoreForAddDto scoreToAdd,int id);
+        Task<Photo> GetPhoto(int id);
     }
 }

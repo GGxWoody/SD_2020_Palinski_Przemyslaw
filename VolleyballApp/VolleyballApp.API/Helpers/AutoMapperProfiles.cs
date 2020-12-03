@@ -28,6 +28,10 @@ namespace VolleyballApp.API.Helpers
             CreateMap<Score,ScoreForSendingDto>();
             CreateMap<Match,MatchForListDto>();
             CreateMap<Score,ScoreForListDto>();
+            CreateMap<ScoreForAddDto,Score>();
+            CreateMap<Photo, PhotoForReturnDto>();
+            CreateMap<PhotoForCreationDto, Photo>();
+            CreateMap<User, UserForTeamListDto>();
         }
     }
 }

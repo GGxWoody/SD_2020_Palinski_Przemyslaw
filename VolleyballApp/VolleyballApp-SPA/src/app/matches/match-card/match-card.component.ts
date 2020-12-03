@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Match } from 'src/app/_models/match';
+import { User } from 'src/app/_models/user';
 
 @Component({
   selector: 'app-match-card',
@@ -8,6 +9,7 @@ import { Match } from 'src/app/_models/match';
 })
 export class MatchCardComponent implements OnInit {
   @Input() match: Match;
+  user: User = JSON.parse(localStorage.getItem('user'));
   constructor() { }
 
   ngOnInit() {

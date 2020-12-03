@@ -7,7 +7,7 @@
   <div class="row no-gutters">
     <div class="col-md-12 text-center">
       <div class="card-body">
-        <h5 class="card-title">{{ team.teamName }}</h5>
+        <h5 class="card-title">{{ team.teamName }}<i class="fa fa-black-tie" *ngIf="user.id === team.owner.id"></i></h5>
         <p class="card-text"><small class="text-muted">Team created: {{ team.dateCreated | date: 'mediumDate' }}</small></p>
       </div>
     </div>

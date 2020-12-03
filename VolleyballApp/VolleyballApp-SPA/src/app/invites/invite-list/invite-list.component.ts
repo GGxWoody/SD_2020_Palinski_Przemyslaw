@@ -19,7 +19,6 @@ export class InviteListComponent implements OnInit {
     this.root.data.subscribe(data => {
       this.invites = data.invites.result;
       this.pagination = data.invites.pagination;
-      console.log(this.pagination);
     });
   }
 

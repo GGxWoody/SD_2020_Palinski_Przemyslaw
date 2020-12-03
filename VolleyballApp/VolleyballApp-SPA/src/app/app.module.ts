@@ -44,6 +44,8 @@ import { MatchListResolver } from './_resolvers/match-list.resolver';
 import { MatchCardComponent } from './matches/match-card/match-card.component';
 import { MatchDetailComponent } from './matches/match-detail/match-detail.component';
 import { MatchDetailResolver } from './_resolvers/match-detail.resolver';
+import { FileUploadModule } from 'ng2-file-upload';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 
 
 
@@ -80,6 +82,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MatchListComponent,
       MatchCardComponent,
       MatchDetailComponent,
+      PhotoEditorComponent,
       TimeAgoPipe
    ],
    imports: [
@@ -90,6 +93,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       NgPipesModule,
       ReactiveFormsModule,
       SelectDropDownModule,
+      FileUploadModule,
       BsDropdownModule.forRoot(),
       TabsModule.forRoot(),
       ModalModule.forRoot(),
