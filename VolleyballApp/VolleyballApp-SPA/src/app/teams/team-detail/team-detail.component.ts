@@ -1,4 +1,6 @@
+import { ViewChild } from '@angular/core';
 import { Component, OnInit, TemplateRef } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Team } from 'src/app/_models/team';
@@ -6,6 +8,7 @@ import { User } from 'src/app/_models/user';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { FriendInviteService } from 'src/app/_services/friend-invite.service';
+import { TeamService } from 'src/app/_services/team.service';
 
 @Component({
   selector: 'app-team-detail',
@@ -13,6 +16,7 @@ import { FriendInviteService } from 'src/app/_services/friend-invite.service';
   styleUrls: ['./team-detail.component.css']
 })
 export class TeamDetailComponent implements OnInit {
+  @ViewChild('editForm', { static: true }) editForm: NgForm;
   team: Team;
   loginedInUser: User;
   teamSelected: Team;
@@ -29,7 +33,7 @@ export class TeamDetailComponent implements OnInit {
   };
 
   constructor(private root: ActivatedRoute, private modalService: BsModalService, private inviteService: FriendInviteService,
-              private alertify: AlertifyService, private authService: AuthService) { }
+              private alertify: AlertifyService, private authService: AuthService, private teamService: TeamService) { }
 
   ngOnInit() {
     this.root.data.subscribe(data => {
@@ -45,6 +49,14 @@ export class TeamDetailComponent implements OnInit {
   sendMatchInvite(id: number) {
     this.inviteService.sendMatchInvite(this.loginedInUser.id, this.teamSelected.id , this.team.id).subscribe(data => {
       this.alertify.success('You invited: ' + this.team.teamName + ' to play match');
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  updateTeam() {
+    this.teamService.updateTeam(this.team.id, this.team).subscribe(next => {
+      this.alertify.success('Profile updated successfully');
     }, error => {
       this.alertify.error(error);
     });

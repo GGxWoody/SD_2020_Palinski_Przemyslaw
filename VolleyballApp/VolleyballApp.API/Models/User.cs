@@ -21,5 +21,7 @@ namespace VolleyballApp.API.Models
         public Photo Photo { get; set; }
         public ICollection<Team> TeamsCreated { get; set; }
         public ICollection<Team> Teams { get; set; }
+        public ICollection<Message> MessagesSent { get; set; }
+        public ICollection<Message> MessagesReceived { get; set; }
     }
 }

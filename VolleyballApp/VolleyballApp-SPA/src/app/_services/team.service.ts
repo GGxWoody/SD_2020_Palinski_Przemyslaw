@@ -48,4 +48,8 @@ export class TeamService {
   createTeam(model: any) {
     return this.http.post(this.baseUrl + 'teams/create', model);
   }
+
+  updateTeam(id: number, team: Team) {
+    return this.http.put(this.baseUrl + 'teams/' + id, team);
+  }
 }

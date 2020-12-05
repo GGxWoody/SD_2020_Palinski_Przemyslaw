@@ -13,6 +13,7 @@ namespace VolleyballApp.API.Data
         public DbSet<Match> Matches { get; set; }
         public DbSet<Score> Scores { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
@@ -20,6 +21,16 @@ namespace VolleyballApp.API.Data
             .HasOne(t => t.Owner)
             .WithMany(u => u.TeamsCreated)
             .HasForeignKey(t => t.OwnerId);
+
+            modelBuilder.Entity<Message>()
+            .HasOne(u => u.Sender)
+            .WithMany(u => u.MessagesSent)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+            .HasOne(u => u.Recipient)
+            .WithMany(u => u.MessagesReceived)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

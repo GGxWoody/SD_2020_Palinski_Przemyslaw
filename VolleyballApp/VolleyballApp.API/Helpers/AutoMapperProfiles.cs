@@ -32,6 +32,13 @@ namespace VolleyballApp.API.Helpers
             CreateMap<Photo, PhotoForReturnDto>();
             CreateMap<PhotoForCreationDto, Photo>();
             CreateMap<User, UserForTeamListDto>();
+            CreateMap<Message, MessageToReturnDto>()
+                .ForMember(m => m.SenderPhotoUrl, opt => opt
+                    .MapFrom(u => u.Sender.Photo.Url))
+                .ForMember(m => m.RecipientPhotoUrl, opt => opt
+                    .MapFrom(u => u.Recipient.Photo.Url));
+            CreateMap<MessageForCreationDto, Message>().ReverseMap();
+            CreateMap<TeamForUpdateDto, Team>();
         }
     }
 }

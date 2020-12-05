@@ -12,9 +12,6 @@
         />
         <div class="card-body">
           <div>
-            <strong>Location:</strong>
-          </div>
-          <div>
             <strong>Games:</strong>
           </div>
           <div>
@@ -28,8 +25,17 @@
               type="button"
               class="btn btn-primary w-100"
               (click)="staticModal.show()"
+              *ngIf="loginedInUser.id != team.owner.id"
             >
               Match invite
+            </button>
+            <button
+              [disabled]="!editForm.dirty"
+              form="editForm"
+              class="btn btn-success btn-block"
+              *ngIf="loginedInUser.id === team.owner.id"
+            >
+              <i class="fa fa-save"></i> Save Changes
             </button>
             <button class="btn btn-success w-100">
               <i class="fa fa-envelope"></i> Message
@@ -48,14 +54,35 @@
                 <app-member-card [user]="team.owner"></app-member-card>
               </div>
             </div>
-            <h4 class="mt-3">
+            <h4 class="mt-3" *ngIf="loginedInUser.id != team.owner.id">
               {{ team.description }}
             </h4>
+            <form
+              class="mt-2 text-center"
+              #editForm="ngForm"
+              id="editForm"
+              (ngSubmit)="updateTeam()"
+            >
+              <h4>Location Details</h4>
+              <div class="form">
+                <label for="city" class="ml-4">Name</label>
+                <input
+                  class="form-control ml-2"
+                  type="text"
+                  name="name"
+                  [(ngModel)]="team.teamName"
+                />
+                <label for="city" class="ml-4">Description</label>
+                <input
+                  class="form-control ml-2"
+                  type="text"
+                  name="description"
+                  [(ngModel)]="team.description"
+                />
+              </div>
+            </form>
           </tab>
           <tab heading="Players">
-            <div *ngIf="team.users.length === 0" class="mt-5 text-center">
-              <h4>Team has no players</h4>
-            </div>
             <div class="row justify-content-center mt-3">
               <div *ngFor="let user of team.users" class="col-3">
                 <app-member-card [user]="user"></app-member-card>
@@ -67,7 +94,6 @@
     </div>
   </div>
 </div>
-
 
 <div
   class="modal fade"
@@ -100,7 +126,10 @@
           [options]="loginedInUser.teamsCreated"
           [config]="config"
         ></ngx-select-dropdown>
-        <button class="btn btn-primary w-100 mt-3" (click)="sendMatchInvite(team.id)">
+        <button
+          class="btn btn-primary w-100 mt-3"
+          (click)="sendMatchInvite(team.id)"
+        >
           Team invite
         </button>
       </div>

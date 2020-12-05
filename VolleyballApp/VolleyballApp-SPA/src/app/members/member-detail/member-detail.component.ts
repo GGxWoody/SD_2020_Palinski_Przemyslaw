@@ -14,6 +14,7 @@ import { Team } from 'src/app/_models/team';
   styleUrls: ['./member-detail.component.scss']
 })
 export class MemberDetailComponent implements OnInit {
+  @ViewChild('memberTabs', {static: true}) memberTabs: TabsetComponent;
   user: User;
   loginedInUser: User;
   modalRef: BsModalRef;
@@ -38,6 +39,11 @@ export class MemberDetailComponent implements OnInit {
     this.root.data.subscribe(data => {
       this.user = data.user;
       this.loginedInUser = data.loginedInUser;
+    });
+
+    this.root.queryParams.subscribe(params => {
+      const selectedTab = params.tab;
+      this.memberTabs.tabs[selectedTab > 0 ? selectedTab : 0].active = true;
     });
   }
 
@@ -67,5 +73,9 @@ export class MemberDetailComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  selectTab(tabId: number) {
+    this.memberTabs.tabs[tabId].active = true;
   }
 }

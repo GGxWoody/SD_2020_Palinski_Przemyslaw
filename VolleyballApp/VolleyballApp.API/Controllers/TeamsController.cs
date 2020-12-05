@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -64,6 +65,16 @@ namespace VolleyballApp.API.Controllers
             var teamToReturn = _mapper.Map<TeamForDeatailedDto>(teamCreated);
 
             return CreatedAtRoute("GetTeam", new { controller = "Teams", id = teamCreated.Id }, teamToReturn);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTeam(int id, TeamForUpdateDto teamForUpdateDto)
+        {
+            var teamFromRepo = await _repository.GetTeam(id);
+            if (teamFromRepo.OwnerId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            _mapper.Map(teamForUpdateDto, teamFromRepo);
+            if (await _repository.saveAll()) return NoContent();
+            throw new Exception($"Updating team with {id} failed on save.");
         }
     }
 }

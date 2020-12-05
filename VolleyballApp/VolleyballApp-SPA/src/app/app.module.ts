@@ -46,6 +46,7 @@ import { MatchDetailComponent } from './matches/match-detail/match-detail.compon
 import { MatchDetailResolver } from './_resolvers/match-detail.resolver';
 import { FileUploadModule } from 'ng2-file-upload';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 
 
@@ -78,6 +79,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       InviteCardComponent,
       InviteListComponent,
       MemberFriendListComponent,
+      MemberMessagesComponent,
       TeamDetailComponent,
       MatchListComponent,
       MatchCardComponent,

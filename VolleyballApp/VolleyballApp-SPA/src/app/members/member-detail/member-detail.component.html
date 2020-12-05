@@ -49,9 +49,7 @@
             >
               Team invite
             </button>
-            <button class="btn btn-success w-100">
-              <i class="fa fa-envelope"></i> Message
-            </button>
+            <button class="btn btn-success w-100" (click)="selectTab(2)"><i class="fa fa-envelope"></i> Message</button>
           </div>
         </div>
       </div>
@@ -68,10 +66,8 @@
               <app-team-card [team]="team"></app-team-card>
             </div>
           </tab>
-          <tab *ngIf="user.teamsCreated.length != 0" heading="Teams Created">
-            <div *ngFor="let team of user.teamsCreated" class="col-12 mt-2">
-              <app-team-card [team]="team"></app-team-card>
-            </div>
+          <tab heading="Messages">
+            <app-member-messages [recipientId]="user.id"></app-member-messages>
           </tab>
         </tabset>
       </div>
