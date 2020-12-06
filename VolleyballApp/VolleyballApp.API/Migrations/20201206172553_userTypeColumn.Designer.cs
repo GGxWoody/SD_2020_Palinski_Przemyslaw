@@ -9,7 +9,7 @@ using VolleyballApp.API.Data;
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201206164517_userTypeColumn")]
+    [Migration("20201206172553_userTypeColumn")]
     partial class userTypeColumn
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

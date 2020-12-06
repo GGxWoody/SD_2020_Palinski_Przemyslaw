@@ -35,8 +35,7 @@ namespace VolleyballApp.API.Controllers
             if (await _repo.UserExists(userForRegisterDto.Username)) return BadRequest("Username already exists");
 
             var userToCreate = _mapper.Map<User>(userForRegisterDto);
-
-            if(userToCreate.UserType != "player" || userToCreate.UserType != "referee" || userToCreate.UserType != "player")
+            if(userToCreate.UserType != "player" && userToCreate.UserType != "referee" && userToCreate.UserType != "organiser")
             {
                 userToCreate.UserType = "player";
             }

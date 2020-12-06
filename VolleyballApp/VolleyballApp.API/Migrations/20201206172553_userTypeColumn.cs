@@ -10,8 +10,7 @@ namespace VolleyballApp.API.Migrations
                 name: "UserType",
                 table: "Users",
                 type: "TEXT",
-                nullable: true,
-                defaultValue:"player");
+                nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
