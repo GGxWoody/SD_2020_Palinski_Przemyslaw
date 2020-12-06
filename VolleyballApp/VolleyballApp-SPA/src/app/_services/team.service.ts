@@ -52,4 +52,8 @@ export class TeamService {
   updateTeam(id: number, team: Team) {
     return this.http.put(this.baseUrl + 'teams/' + id, team);
   }
+
+  deletePhoto(userId: number, id: number, teamId) {
+    return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id + '/' + teamId);
+  }
 }

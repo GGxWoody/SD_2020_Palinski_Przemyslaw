@@ -12,5 +12,7 @@ namespace VolleyballApp.API.Dtos
         public ICollection<UserForListDto> Users { get; set; }
         public DateTime DateCreated { get; set; }
         public string Description { get; set; }
+        public string PhotoUrl { get; set; }
+        public PhotoForReturnDto Photo { get; set; }
     }
 }

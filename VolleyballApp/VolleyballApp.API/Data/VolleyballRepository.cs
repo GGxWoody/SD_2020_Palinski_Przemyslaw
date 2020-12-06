@@ -39,13 +39,13 @@ namespace VolleyballApp.API.Data
         public async Task<Team> GetTeam(int id)
         {
             var team = await _context.Teams.Include(e => e.Users).ThenInclude(u => u.Photo)
-            .Include(c => c.Owner).ThenInclude(u => u.Photo).FirstOrDefaultAsync(u => u.Id == id);
+            .Include(c => c.Owner).ThenInclude(u => u.Photo).Include(e => e.Photo).FirstOrDefaultAsync(u => u.Id == id);
             return team;
         }
 
         public async Task<PagedList<Team>> GetTeams(UserParams userParams)
         {
-            var teams = _context.Teams.Include(e => e.Owner).OrderByDescending(u => u.DateCreated);
+            var teams = _context.Teams.Include(e => e.Owner).Include(e => e.Photo).OrderByDescending(u => u.DateCreated);
             return await PagedList<Team>.CreateAsync(teams, userParams.PageNumber, userParams.PageSize);
         }
 

@@ -1,3 +1,4 @@
+import { Photo } from './photo';
 import { User } from './user';
 
 export interface Team {
@@ -7,4 +8,6 @@ export interface Team {
     users?: User[];
     dateCreated?: Date;
     description?: string;
+    photo?: Photo;
+    photoUrl?: string;
 }

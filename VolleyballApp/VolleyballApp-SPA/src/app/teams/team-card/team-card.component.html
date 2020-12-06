@@ -1,7 +1,7 @@
 <div class="card mb-3" [routerLink]="['/teams/', team.id]">
   <div class="row no-gutters">
     <div class="col-md-12 text-center">
-      <img src='../../../assets/team-creast.png' class="card-img" alt="...">
+      <img src="{{ team.photoUrl || '../../../../../assets/team-creast.png' }}" class="card-img" alt="">
     </div>
   </div>
   <div class="row no-gutters">

@@ -29,6 +29,9 @@ export class MemberEditComponent implements OnInit {
     this.root.data.subscribe(data => {
       this.user = data.user;
     });
+    if (this.user.photoUrl === null) {
+      this.user.photoUrl = '../../../assets/user.png';
+    }
   }
 
   updateUser() {
@@ -50,5 +53,10 @@ export class MemberEditComponent implements OnInit {
 
   cancelCreateMode(creationMode: boolean) {
     this.creationMode = creationMode;
+  }
+
+  onNewPhoto(newPhoto: string) {
+    this.user.photoUrl = newPhoto;
+    console.log('...');
   }
 }

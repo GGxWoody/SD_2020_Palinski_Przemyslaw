@@ -112,7 +112,7 @@
             </div>
           </tab>
           <tab heading="Photo">
-            <app-photo-editor [photo]="user.photo" (getMemberPhotoChange)="updateMainPhoto($event)"></app-photo-editor>
+            <app-photo-editor [photo]="user.photo" (newPhoto)="onNewPhoto($event)"></app-photo-editor>
           </tab>
         </tabset>
       </div>

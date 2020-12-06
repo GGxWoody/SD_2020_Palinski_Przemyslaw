@@ -31,6 +31,16 @@ namespace VolleyballApp.API.Data
             .HasOne(u => u.Recipient)
             .WithMany(u => u.MessagesReceived)
             .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Photo>()
+            .HasOne(u => u.User)
+            .WithOne(u => u.Photo)
+            .IsRequired(false);
+
+            modelBuilder.Entity<Photo>()
+            .HasOne(u => u.Team)
+            .WithOne(u => u.Photo)
+            .IsRequired(false);
         }
     }
 }

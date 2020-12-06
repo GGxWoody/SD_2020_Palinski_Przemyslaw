@@ -10,7 +10,8 @@ namespace VolleyballApp.API.Models
         public DateTime DateAdded { get; set; }
         public User User { get; set; }
         public Team Team { get; set; }
-        public int UserId { get; set; }
+        public int? TeamId { get; set; }
+        public int? UserId { get; set; }
         public string PublicId { get; set; }
     }
 }

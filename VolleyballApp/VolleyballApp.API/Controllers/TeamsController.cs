@@ -39,6 +39,10 @@ namespace VolleyballApp.API.Controllers
         public async Task<IActionResult> GetTeam(int id){
             var team = await _repository.GetTeam(id);
             var teamToReturn = _mapper.Map<TeamForDeatailedDto>(team);
+            if (team.Photo != null)
+            {
+                teamToReturn.PhotoUrl = team.Photo.Url;
+            }
             return Ok(teamToReturn);
         }
 
@@ -58,6 +62,7 @@ namespace VolleyballApp.API.Controllers
             teamToCreate.Owner = userFromRepo;
             teamToCreate.OwnerId = userFromRepo.Id;
             teamToCreate.DateCreated = System.DateTime.Now;
+            teamToCreate.Users = new List<User>();
             teamToCreate.Users.Add(userFromRepo);
 
             var teamCreated = await _repository.CreateTeam(teamToCreate);
