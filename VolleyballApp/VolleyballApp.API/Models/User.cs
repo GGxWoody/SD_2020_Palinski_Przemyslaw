@@ -7,6 +7,7 @@ namespace VolleyballApp.API.Models
     {
         public int Id { get; set; }
         public string Username { get; set; }
+        public string UserType { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string Gender { get; set; }

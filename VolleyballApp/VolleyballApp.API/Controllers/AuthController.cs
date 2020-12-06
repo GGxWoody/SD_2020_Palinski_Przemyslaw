@@ -36,6 +36,11 @@ namespace VolleyballApp.API.Controllers
 
             var userToCreate = _mapper.Map<User>(userForRegisterDto);
 
+            if(userToCreate.UserType != "player" || userToCreate.UserType != "referee" || userToCreate.UserType != "player")
+            {
+                userToCreate.UserType = "player";
+            }
+
             var createdUser = await _repo.Regiser(userToCreate, userForRegisterDto.Password);
 
             var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);

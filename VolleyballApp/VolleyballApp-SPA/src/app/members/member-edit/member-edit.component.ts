@@ -54,9 +54,4 @@ export class MemberEditComponent implements OnInit {
   cancelCreateMode(creationMode: boolean) {
     this.creationMode = creationMode;
   }
-
-  onNewPhoto(newPhoto: string) {
-    this.user.photoUrl = newPhoto;
-    console.log('...');
-  }
 }

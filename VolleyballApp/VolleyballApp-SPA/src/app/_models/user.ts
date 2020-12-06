@@ -5,6 +5,7 @@ import { Team } from './team';
 export interface User {
     id: number;
     username: string;
+    userType?: string;
     knownAs?: string;
     age?: number;
     gender?: string;

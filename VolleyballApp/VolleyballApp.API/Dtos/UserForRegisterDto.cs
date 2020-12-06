@@ -21,6 +21,8 @@ namespace VolleyballApp.API.Dtos
         public string City { get; set; }
         [Required]
         public string Country { get; set; }
+        [Required]
+        public string UserType { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
 
