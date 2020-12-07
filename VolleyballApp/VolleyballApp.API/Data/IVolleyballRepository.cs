@@ -46,5 +46,11 @@ namespace VolleyballApp.API.Data
         Task<Message> GetMessage(int id);
         Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
         Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
+        Task<Invite> GetRefereeInvite(int matchId);
+        Task<Invite> CreateRefereeInvite(User referee,Match match, int currnetUserId);
+        Task<Match> AcceptRefereeInvite(int refereeId, int matchId);
+        Task<Invite> DeclineRefereeInvite(int refereeId, int matchId);
+        Task<Location> GetLocation(int id);
+        Task<Location> AddLocation(LocationForAddDto locationForAdd, int id);
     }
 }

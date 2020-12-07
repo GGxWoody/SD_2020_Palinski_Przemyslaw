@@ -245,7 +245,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<Match> GetMatch(int id)
         {
-            Match match = await _context.Matches.Include(x => x.Score).FirstOrDefaultAsync(x => x.Id == id);
+            Match match = await _context.Matches.Include(x => x.Location).Include(x => x.Score).Include(x => x.FirstTeam).ThenInclude(x => x.Owner)
+            .Include(x => x.SecondTeam).ThenInclude(x => x.Owner).Include(x => x.Referee).FirstOrDefaultAsync(x => x.Id == id);
             return match;
         }
 
@@ -290,9 +291,12 @@ namespace VolleyballApp.API.Data
             match.FirstTeam = await GetTeam(firstTeamId);
             match.SecondTeam = await GetTeam(secondTeamId);
             match.Score = new Score();
+            match.IsRefereeInvited = false;
+            match.Location = new Location();
             var InviteToDelete = await GetMatchInvite(firstTeamId, secondTeamId);
             _context.Invites.Remove(InviteToDelete);
             await _context.Scores.AddAsync(match.Score);
+            await _context.Locations.AddAsync(match.Location);
             await _context.Matches.AddAsync(match);
             await _context.SaveChangesAsync();
             return await _context.Matches.Include(e => e.FirstTeam).ThenInclude(e => e.Owner)
@@ -327,9 +331,11 @@ namespace VolleyballApp.API.Data
         public async Task<Match> AddScore(ScoreForAddDto scoreToAdd, int id)
         {
             var match = await GetMatch(id);
-            var score = await _context.Scores.FirstOrDefaultAsync(x => x.Id == match.ScoreId);
-            score = _mapper.Map<Score>(scoreToAdd);
-            _context.Scores.Update(score); 
+            var scoreToDelete = await _context.Scores.FirstOrDefaultAsync(x => x.Id == match.ScoreId);
+            match.Score = _mapper.Map<Score>(scoreToAdd);
+            
+            _context.Matches.Update(match); 
+            _context.Scores.Remove(scoreToDelete);
             if(await saveAll()) return await _context.Matches.FirstOrDefaultAsync(x => x.Id == match.Id);
             else return null;
         }
@@ -387,6 +393,75 @@ namespace VolleyballApp.API.Data
                  .ToListAsync();
 
             return messages;
+        }
+
+        public async Task<Invite> GetRefereeInvite(int matchId)
+        {
+            var invite = _context.Invites.AsQueryable();
+            invite = invite.Where(x => x.RefereeInvite == true);
+            invite = invite.Where(x => x.MatchInvitedTo.Id == matchId);
+            return await invite.FirstOrDefaultAsync();
+        }
+
+        public async Task<Invite> CreateRefereeInvite(User referee, Match match, int currnetUserId)
+        {
+            Invite newInvite = new Invite();
+            newInvite.MatchInvitedTo = match;
+            newInvite.InviteFrom = await GetUser(currnetUserId);
+            newInvite.InviteTo = referee;
+            newInvite.RefereeInvite = true;
+            match.IsRefereeInvited = true;
+            await _context.Invites.AddAsync(newInvite);
+            _context.Update(match);
+            await _context.SaveChangesAsync();
+            return await GetRefereeInvite(match.Id);
+        }
+
+        public async Task<Match> AcceptRefereeInvite(int refereeId, int matchId)
+        {
+            Match match = await GetMatch(matchId);
+            User referee = await GetUser(refereeId);
+            Invite invite = await GetRefereeInvite(matchId);
+            match.Referee = referee;
+            if (referee.RefereeMatches == null)
+            {
+                referee.RefereeMatches = new List<Match>();
+            }
+            referee.RefereeMatches.Add(match);
+            _context.Invites.Remove(invite);
+            _context.Update(match);
+            await _context.SaveChangesAsync();
+            return await GetMatch(matchId);
+        }
+
+        public async Task<Invite> DeclineRefereeInvite(int refereeId, int matchId)
+        {
+            Match match = await GetMatch(matchId);
+            Invite invite = await GetRefereeInvite(matchId);
+            match.IsRefereeInvited = false;
+            _context.Invites.Remove(invite);
+            await _context.SaveChangesAsync();
+            return invite;
+        }
+
+        public async Task<Location> GetLocation(int id)
+        {
+            var location = await _context.Locations.FirstOrDefaultAsync(x => x.Id == id);
+            return location;
+        }
+
+        public async Task<Location> AddLocation(LocationForAddDto locationForAdd, int id)
+        {
+            var match = await GetMatch(id);
+            var location = await GetLocation(match.Location.Id);
+            _context.Locations.Remove(location);
+            location = _mapper.Map<Location>(locationForAdd);
+            match.Location = location;
+            _context.Locations.Update(location);
+            _context.Matches.Update(match);
+            await _context.SaveChangesAsync();
+
+            return location;
         }
     }
 }

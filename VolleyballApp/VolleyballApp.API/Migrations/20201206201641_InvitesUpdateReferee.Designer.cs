@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201206201641_InvitesUpdateReferee")]
+    partial class InvitesUpdateReferee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,9 +145,6 @@ namespace VolleyballApp.API.Migrations
 
                     b.Property<int?>("SecondTeamId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("TimeOfMatch")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -433,7 +432,7 @@ namespace VolleyballApp.API.Migrations
                         .HasForeignKey("LocationId");
 
                     b.HasOne("VolleyballApp.API.Models.User", "Referee")
-                        .WithMany("RefereeMatches")
+                        .WithMany()
                         .HasForeignKey("RefereeId");
 
                     b.HasOne("VolleyballApp.API.Models.Score", "Score")
@@ -519,8 +518,6 @@ namespace VolleyballApp.API.Migrations
                     b.Navigation("MessagesSent");
 
                     b.Navigation("Photo");
-
-                    b.Navigation("RefereeMatches");
 
                     b.Navigation("TeamsCreated");
                 });

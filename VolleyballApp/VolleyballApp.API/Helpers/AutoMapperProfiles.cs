@@ -39,6 +39,7 @@ namespace VolleyballApp.API.Helpers
                     .MapFrom(u => u.Recipient.Photo.Url));
             CreateMap<MessageForCreationDto, Message>().ReverseMap();
             CreateMap<TeamForUpdateDto, Team>();
+            CreateMap<LocationForAddDto, Location>();
         }
     }
 }

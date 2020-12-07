@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201206191152_MatchRefereeAdded")]
+    partial class MatchRefereeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,12 +72,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<bool>("MatchInvite")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MatchInvitedToId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("RefereeInvite")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("TeamInvite")
                         .HasColumnType("INTEGER");
 
@@ -91,33 +87,11 @@ namespace VolleyballApp.API.Migrations
 
                     b.HasIndex("InviteToId");
 
-                    b.HasIndex("MatchInvitedToId");
-
                     b.HasIndex("TeamInvitedId");
 
                     b.HasIndex("TeamInvitingId");
 
                     b.ToTable("Invites");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Adress")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("City")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Match", b =>
@@ -129,12 +103,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<int?>("FirstTeamId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsRefereeInvited")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("RefereeId")
                         .HasColumnType("INTEGER");
 
@@ -144,14 +112,9 @@ namespace VolleyballApp.API.Migrations
                     b.Property<int?>("SecondTeamId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("TimeOfMatch")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FirstTeamId");
-
-                    b.HasIndex("LocationId");
 
                     b.HasIndex("RefereeId");
 
@@ -399,10 +362,6 @@ namespace VolleyballApp.API.Migrations
                         .WithMany()
                         .HasForeignKey("InviteToId");
 
-                    b.HasOne("VolleyballApp.API.Models.Match", "MatchInvitedTo")
-                        .WithMany()
-                        .HasForeignKey("MatchInvitedToId");
-
                     b.HasOne("VolleyballApp.API.Models.Team", "TeamInvited")
                         .WithMany()
                         .HasForeignKey("TeamInvitedId");
@@ -415,8 +374,6 @@ namespace VolleyballApp.API.Migrations
 
                     b.Navigation("InviteTo");
 
-                    b.Navigation("MatchInvitedTo");
-
                     b.Navigation("TeamInvited");
 
                     b.Navigation("TeamInviting");
@@ -428,12 +385,8 @@ namespace VolleyballApp.API.Migrations
                         .WithMany()
                         .HasForeignKey("FirstTeamId");
 
-                    b.HasOne("VolleyballApp.API.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
-
                     b.HasOne("VolleyballApp.API.Models.User", "Referee")
-                        .WithMany("RefereeMatches")
+                        .WithMany()
                         .HasForeignKey("RefereeId");
 
                     b.HasOne("VolleyballApp.API.Models.Score", "Score")
@@ -447,8 +400,6 @@ namespace VolleyballApp.API.Migrations
                         .HasForeignKey("SecondTeamId");
 
                     b.Navigation("FirstTeam");
-
-                    b.Navigation("Location");
 
                     b.Navigation("Referee");
 
@@ -519,8 +470,6 @@ namespace VolleyballApp.API.Migrations
                     b.Navigation("MessagesSent");
 
                     b.Navigation("Photo");
-
-                    b.Navigation("RefereeMatches");
 
                     b.Navigation("TeamsCreated");
                 });

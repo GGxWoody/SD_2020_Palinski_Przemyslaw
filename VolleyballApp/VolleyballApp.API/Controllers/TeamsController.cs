@@ -56,8 +56,8 @@ namespace VolleyballApp.API.Controllers
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var userFromRepo = await _repository.GetUser(currnetUserId);
-
-            var userCreated = userFromRepo;
+            
+            if(userFromRepo.UserType != "player") return BadRequest("Only players can create team");
 
             teamToCreate.Owner = userFromRepo;
             teamToCreate.OwnerId = userFromRepo.Id;

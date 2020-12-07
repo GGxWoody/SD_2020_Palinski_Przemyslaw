@@ -15,9 +15,10 @@ namespace VolleyballApp.API.Helpers
             response.Headers.Add("Access-Control-Require-Origin", "*");
         }
 
-        public static int CalculateAge(this DateTime theDateTime){
+        public static int CalculateAge(this DateTime theDateTime)
+        {
             var age = DateTime.Today.Year - theDateTime.Year;
-            if(theDateTime.AddYears(age) > DateTime.Today) age --;
+            if (theDateTime.AddYears(age) > DateTime.Today) age--;
             return age;
         }
 
@@ -28,6 +29,20 @@ namespace VolleyballApp.API.Helpers
             camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
             response.Headers.Add("Pagination", JsonConvert.SerializeObject(paginationHeader, camelCaseFormatter));
             response.Headers.Add("Access-Control-Expose-Headers", "Pagination");
+        }
+
+        public static bool IsCorrectSet(int FistTeam, int SecondTeam, int setNumber)
+        {
+            if (setNumber < 5)
+            {
+                if ((FistTeam <= 25 && SecondTeam <= 25) && (FistTeam == 25 || SecondTeam == 25) && Math.Abs(FistTeam - SecondTeam) >= 2) return true;
+                if (FistTeam + SecondTeam >= 50 && Math.Abs(FistTeam - SecondTeam) == 2) return true;
+            } else
+            {
+                if ((FistTeam <= 15 && SecondTeam <= 15) && (FistTeam == 15 || SecondTeam == 15) && Math.Abs(FistTeam - SecondTeam) >= 2) return true;
+                if (FistTeam + SecondTeam >= 30 && Math.Abs(FistTeam - SecondTeam) == 2) return true;
+            }
+            return false;
         }
     }
 }

@@ -110,6 +110,7 @@ namespace VolleyballApp.API.Controllers
             if (team == null) return BadRequest("Could not find team");
             if (team.OwnerId != userId) return BadRequest("Must be owner to invite to team");
             var recipient = await _repository.GetUser(id);
+            if (recipient.UserType != "player") return BadRequest("You cannot invite this user to team");
             if (recipient == null) return BadRequest("Could not find user");
             var invite = await _repository.CreateTeamInvite(recipient,team);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
@@ -215,9 +216,8 @@ namespace VolleyballApp.API.Controllers
             if (await _repository.GetMatchInvite(firstTeamId, secondTeamId) == null)
                 return NotFound();
             var matchFromRepo = await _repository.AcceptMatchInvite(firstTeamId, secondTeamId);
-            var teamToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
-
-            return Ok(teamToDisplay);
+            var matchToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
+            return Ok(matchToDisplay);
         }
 
         [HttpDelete("match/{firstTeamId}/{secondTeamId}")]
@@ -235,5 +235,60 @@ namespace VolleyballApp.API.Controllers
             }
             return BadRequest("No existing invite for this user");
         }
+
+
+        [HttpGet("match/{matchId}/{refereeId}/referee", Name = "GetRefereeInvite")]
+        public async Task<IActionResult> GetRefereeInvite(int userId, int matchId, int refereeId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            var inviteFromRepo = await _repository.GetRefereeInvite(matchId);
+            if (inviteFromRepo == null) return NotFound();
+
+            var inviteToDisplay = _mapper.Map<InviteToReturnDto>(inviteFromRepo);
+            return Ok(inviteToDisplay);
+        }
+
+        [HttpPost("match/{matchId}/{refereeId}/referee")]
+        public async Task<IActionResult> SendRefereeInvite(int matchId, int refereeId)
+        {
+            var referee = await _repository.GetUser(refereeId);
+            if (referee == null) return BadRequest ("User does not exist");
+            if (referee.UserType != "referee") return BadRequest ("User is not a referee");
+            var match = await _repository.GetMatch(matchId);
+            if (match == null) return BadRequest ("Match does not exist");
+            if (match.IsRefereeInvited == true) return BadRequest ("Referee is already invited for this match cancel it or wait for referee to accept");
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (currnetUserId != match.FirstTeam.OwnerId && currnetUserId != match.SecondTeam.OwnerId ) return BadRequest("You have to be owner of team taking part in a match to send invite refree to join match");
+
+            var invite = await _repository.CreateRefereeInvite(referee, match, currnetUserId);
+            var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            return CreatedAtRoute("GetRefereeInvite", new {userId = currnetUserId, matchId = matchId, refereeId = refereeId}, inviteToReturn);
+
+        }
+
+        [HttpPut("match/{matchId}/{refereeId}/referee")]
+        public async Task<IActionResult> AcceptRefereeInvite(int matchId, int refereeId)
+        {
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var invite = _repository.GetRefereeInvite(matchId);
+            if (invite == null) return BadRequest("This invitation does not exists");
+            if (currnetUserId != refereeId) BadRequest("This is not your invitation");
+            
+            var matchFromRepo = await _repository.AcceptRefereeInvite(refereeId, matchId);
+            var matchToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
+            return Ok(matchToDisplay);
+        }
+
+        [HttpDelete("match/{matchId}/{refereeId}/referee")]
+        public async Task<IActionResult> DeclineRefereeInvite(int matchId)
+        {
+            var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var invite = await _repository.GetRefereeInvite(matchId);
+            if (invite == null) return BadRequest("This invitation does not exists");
+            if (invite.InviteTo.Id != currnetUserId) return BadRequest("This is not your invite");
+            await _repository.DeclineRefereeInvite(currnetUserId, matchId);
+            return NoContent();
+        }
+
     }
 }

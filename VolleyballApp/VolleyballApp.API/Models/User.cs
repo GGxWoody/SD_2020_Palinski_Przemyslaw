@@ -24,5 +24,6 @@ namespace VolleyballApp.API.Models
         public ICollection<Team> Teams { get; set; }
         public ICollection<Message> MessagesSent { get; set; }
         public ICollection<Message> MessagesReceived { get; set; }
+        public ICollection<Match> RefereeMatches { get; set; }
     }
 }

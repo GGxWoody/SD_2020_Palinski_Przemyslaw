@@ -46,11 +46,34 @@ namespace VolleyballApp.API.Controllers
             return Ok(matchesToReturn);
         }
 
+        [HttpPut("{id}/location")]
+        public async Task<IActionResult> SetMatchLocation(LocationForAddDto locationForAdd, int id)
+        {
+            var match = await _repository.GetMatch(id);
+            var userSendingLocation = await _repository.GetUser(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            if(userSendingLocation.Id != match.FirstTeam.OwnerId && userSendingLocation.Id != match.SecondTeam.OwnerId) return BadRequest("You are not owner of team taking part in this game");
+            var location = await _repository.AddLocation(locationForAdd, id);
+            return Ok(location);
+        }
+
 
         [HttpPut("{id}/score")]
-        public async Task<IActionResult> SetMatchScore(ScoreForAddDto scoreForAddDto, int id)
+        public async Task<IActionResult> SetMatchScore(ScoreForAddDto scoreForAdd, int id)
         {
-            var matchWithScore = await _repository.AddScore(scoreForAddDto, id);
+            var userSendingScore = await _repository.GetUser(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            var matchToAddScore = await _repository.GetMatch(id);
+            if (userSendingScore.UserType != "referee") return BadRequest ("You are not a referee");
+            if (userSendingScore.Id != matchToAddScore.Referee.Id) return BadRequest("You are not a referee for this match");
+            if (matchToAddScore.Score.FirstTeamSets + matchToAddScore.Score.SecondTeamSets != 0) return BadRequest("Score already added");
+            if (scoreForAdd.FirstTeamSets != 3 && scoreForAdd.SecondTeamSets !=3) return BadRequest("Wrong score 6");
+            if (scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 3 && (scoreForAdd.FourFirstTeam + scoreForAdd.FourSecondTeam + scoreForAdd.FiveFirstTeam + scoreForAdd.FiveSecondTeam != 0)) return BadRequest("Wrong score");
+            if (scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 4 && (scoreForAdd.FiveFirstTeam + scoreForAdd.FiveSecondTeam != 0)) return BadRequest("Wrong score");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.OneFirstTeam, scoreForAdd.OneSecondTeam,1)) return BadRequest("Wrong score");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.TwoFirstTeam, scoreForAdd.TwoSecondTeam,2)) return BadRequest("Wrong score");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.ThreeFirstTeam, scoreForAdd.ThreeSecondTeam,3)) return BadRequest("Wrong score");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FourFirstTeam, scoreForAdd.FourSecondTeam,4) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets <= 4) return BadRequest("Wrong score");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FiveFirstTeam, scoreForAdd.FiveSecondTeam,5) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 5) return BadRequest("Wrong score 1");
+            var matchWithScore = await _repository.AddScore(scoreForAdd, id);
             return Ok(matchWithScore);
         }
     }

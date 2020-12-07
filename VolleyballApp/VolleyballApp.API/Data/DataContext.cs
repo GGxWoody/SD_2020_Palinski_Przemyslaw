@@ -14,6 +14,7 @@ namespace VolleyballApp.API.Data
         public DbSet<Score> Scores { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
