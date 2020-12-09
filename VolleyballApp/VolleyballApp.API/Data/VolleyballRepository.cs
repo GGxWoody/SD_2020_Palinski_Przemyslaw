@@ -69,6 +69,7 @@ namespace VolleyballApp.API.Data
         {
             var users = _context.Users.Include(p => p.Photo).OrderByDescending(u => u.LastActive).AsQueryable();
             users = users.Where(u => u.Id != userParams.UserID);
+            users = users.Where(u => u.UserType == "player");
             if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
             {
                 users = users.Where(u => u.Gender == userParams.Gender);
@@ -462,6 +463,16 @@ namespace VolleyballApp.API.Data
             await _context.SaveChangesAsync();
 
             return location;
+        }
+
+        public async Task<Match> AddTime(DateTime matchTime, int id)
+        {
+            var match = await GetMatch(id);
+            match.TimeOfMatch = matchTime;
+            _context.Matches.Update(match);
+            await _context.SaveChangesAsync();
+
+            return await GetMatch(id);
         }
     }
 }

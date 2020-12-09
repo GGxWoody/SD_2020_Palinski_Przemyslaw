@@ -1,3 +1,4 @@
+using System;
 using VolleyballApp.API.Models;
 
 namespace VolleyballApp.API.Dtos
@@ -9,5 +10,7 @@ namespace VolleyballApp.API.Dtos
         public TeamsForListDto SecondTeam { get; set; }
         public int ScoreId { get; set; }
         public ScoreForSendingDto Score { get; set; }
+        public Location Location { get; set;}
+        public DateTime TimeOfMatch { get; set; }
     }
 }

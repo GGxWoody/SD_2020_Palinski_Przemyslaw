@@ -1,3 +1,32 @@
-<p>
-  match-detail works!
-</p>
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-3">
+      <app-team-card [team]="match.firstTeam"></app-team-card>
+    </div>
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <div *ngIf="match.location.country != null">
+            <strong>Location:</strong>
+            <p>{{ match.location.city }}, {{ match.location.country }} </p>
+            <strong>Address: </strong>
+            <p>{{ match.location.adress }}</p>
+            <strong>Time: </strong>
+            <p>{{ match.timeOfMatch | date: "MMMM d, y, h:mm a" }}</p>
+          </div>
+          <div *ngIf="match.location.country == null">
+            <h2>Location and time of this match was not set by teams</h2>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          Referee
+        </div>
+      </div> 
+    </div>
+    <div class="col-3">
+      <app-team-card [team]="match.secondTeam"></app-team-card>
+    </div>
+  </div>
+</div>

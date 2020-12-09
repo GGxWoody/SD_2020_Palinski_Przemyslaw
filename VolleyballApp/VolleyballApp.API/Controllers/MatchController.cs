@@ -51,9 +51,21 @@ namespace VolleyballApp.API.Controllers
         {
             var match = await _repository.GetMatch(id);
             var userSendingLocation = await _repository.GetUser(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
-            if(userSendingLocation.Id != match.FirstTeam.OwnerId && userSendingLocation.Id != match.SecondTeam.OwnerId) return BadRequest("You are not owner of team taking part in this game");
+            if(userSendingLocation.Id != match.FirstTeam.OwnerId) return BadRequest("You are not owner of team that is hosting game");
             var location = await _repository.AddLocation(locationForAdd, id);
             return Ok(location);
+        }
+
+        [HttpPut("{id}/time")]
+        public async Task<IActionResult> SetMatchTime(DateTime matchTime, int id)
+        {
+            var match = await _repository.GetMatch(id);
+            var userSendingLocation = await _repository.GetUser(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            if(userSendingLocation.Id != match.FirstTeam.OwnerId) return BadRequest("You are not owner of team that is hosting game");
+            if(matchTime < DateTime.Now) return BadRequest("Match date needs to be in future");
+            var matchWithTime = await _repository.AddTime(matchTime, id);
+            var matchToReturn = _mapper.Map<MatchForDetailedDto>(matchWithTime);
+            return Ok(matchToReturn);
         }
 
 

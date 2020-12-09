@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DatingApp.API.Helpers;
@@ -52,5 +53,6 @@ namespace VolleyballApp.API.Data
         Task<Invite> DeclineRefereeInvite(int refereeId, int matchId);
         Task<Location> GetLocation(int id);
         Task<Location> AddLocation(LocationForAddDto locationForAdd, int id);
+        Task<Match> AddTime(DateTime matchTime, int id);
     }
 }
