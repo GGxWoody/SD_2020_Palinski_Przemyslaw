@@ -48,6 +48,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { TeamPhotoComponent } from './teams/team-photo/team-photo.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 
 
@@ -87,7 +88,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MatchDetailComponent,
       PhotoEditorComponent,
       TeamPhotoComponent,
-      TimeAgoPipe
+      TimeAgoPipe,
    ],
    imports: [
       BrowserModule,
@@ -104,6 +105,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       PaginationModule.forRoot(),
       ButtonsModule.forRoot(),
       BsDatepickerModule.forRoot(),
+      OwlDateTimeModule,
+      OwlNativeDateTimeModule,
       RouterModule.forRoot(appRoutes),
       JwtModule.forRoot({
          config: {

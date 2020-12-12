@@ -77,4 +77,12 @@ export class FriendInviteService {
   sendMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
     return this.http.post(this.baseUrl + 'invites/' + userId + '/match/' + firstTeamId + '/' + secondTeamId, {});
   }
+
+  acceptRefereeInvite(userId: number, matchId: number) {
+    return this.http.put(this.baseUrl + 'invites/' + userId + '/match/' + matchId + '/referee', {});
+  }
+
+  declineRefereeInvite(userId: number, matchId: number) {
+    return this.http.delete(this.baseUrl + 'invites/' + userId + '/match/' + matchId + '/referee');
+  }
 }

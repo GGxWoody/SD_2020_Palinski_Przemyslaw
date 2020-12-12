@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Match } from '../_models/match';
 import { PaginatedResult } from '../_models/pagination';
+import { Score } from '../_models/score';
 
 @Injectable({
   providedIn: 'root',
@@ -43,5 +44,13 @@ export class MatchService {
           return paginatedResult;
         })
       );
+  }
+
+  setLocationAndTime(id: number, location: Location) {
+    return this.http.put(this.baseUrl + 'match/' + id + '/location', location);
+  }
+
+  setScore(id: number, score: Score) {
+    return this.http.put(this.baseUrl + 'match/' + id + '/score', score);
   }
 }

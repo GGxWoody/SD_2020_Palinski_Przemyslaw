@@ -6,4 +6,5 @@ export class Location {
     country: string;
     city: string;
     adress: string;
+    timeOfMatch: Date;
 }

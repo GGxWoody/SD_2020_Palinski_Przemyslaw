@@ -53,6 +53,5 @@ namespace VolleyballApp.API.Data
         Task<Invite> DeclineRefereeInvite(int refereeId, int matchId);
         Task<Location> GetLocation(int id);
         Task<Location> AddLocation(LocationForAddDto locationForAdd, int id);
-        Task<Match> AddTime(DateTime matchTime, int id);
     }
 }

@@ -74,4 +74,24 @@ export class InviteCardComponent implements OnInit {
       this.alertify.error(error);
     });
   }
+
+  acceptRefereeInvite(userId: number, matchId: number) {
+    this.inviteService.acceptRefereeInvite(userId, matchId).subscribe(data => {
+      this.alertify.success('You accepted: ' + this.invite.inviteFrom.knownAs
+      + ' invite to be referee');
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  declineRefereeInvite(userId: number, matchId: number) {
+    this.inviteService.declineRefereeInvite(userId, matchId).subscribe(data => {
+      this.alertify.success('You declined: ' + this.invite.inviteFrom.knownAs
+      + ' invite to be referee');
+      this.refreshContent.emit();
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
 }

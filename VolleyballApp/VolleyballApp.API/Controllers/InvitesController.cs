@@ -266,26 +266,26 @@ namespace VolleyballApp.API.Controllers
 
         }
 
-        [HttpPut("match/{matchId}/{refereeId}/referee")]
-        public async Task<IActionResult> AcceptRefereeInvite(int matchId, int refereeId)
+        [HttpPut("match/{matchId}/referee")]
+        public async Task<IActionResult> AcceptRefereeInvite(int matchId)
         {
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var invite = _repository.GetRefereeInvite(matchId);
+            var invite = await _repository.GetRefereeInvite(matchId);
             if (invite == null) return BadRequest("This invitation does not exists");
-            if (currnetUserId != refereeId) BadRequest("This is not your invitation");
+            if (currnetUserId != invite.InviteTo.Id) BadRequest("This is not your invitation");
             
-            var matchFromRepo = await _repository.AcceptRefereeInvite(refereeId, matchId);
+            var matchFromRepo = await _repository.AcceptRefereeInvite(invite.InviteTo.Id, matchId);
             var matchToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
             return Ok(matchToDisplay);
         }
 
-        [HttpDelete("match/{matchId}/{refereeId}/referee")]
+        [HttpDelete("match/{matchId}/referee")]
         public async Task<IActionResult> DeclineRefereeInvite(int matchId)
         {
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var invite = await _repository.GetRefereeInvite(matchId);
             if (invite == null) return BadRequest("This invitation does not exists");
-            if (invite.InviteTo.Id != currnetUserId) return BadRequest("This is not your invite");
+            if (invite.InviteTo.Id != currnetUserId || invite.InviteFrom.Id != currnetUserId) return BadRequest("This is not your invite");
             await _repository.DeclineRefereeInvite(currnetUserId, matchId);
             return NoContent();
         }

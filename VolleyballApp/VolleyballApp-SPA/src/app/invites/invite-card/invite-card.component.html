@@ -2,8 +2,12 @@
   <div class="card-header" *ngIf="invite.friendInvite">Friend invite</div>
   <div class="card-header" *ngIf="invite.teamInvite">Team invite</div>
   <div class="card-header" *ngIf="invite.matchInvite">Match invite</div>
+  <div class="card-header" *ngIf="invite.refereeInvite">Referee invite</div>
   <div class="card-body" *ngIf="invite.friendInvite">
-    <h5 class="card-title">From: {{ invite.inviteFrom.knownAs }}</h5>
+    <h5 class="card-title">
+      From: <a [routerLink]="['/members/', invite.inviteFrom.id]"></a
+      >{{ invite.inviteFrom.knownAs }}
+    </h5>
     <p class="card-text">
       Age: {{ invite.inviteFrom.age }}, Country:
       {{ invite.inviteFrom.country }}, City: {{ invite.inviteFrom.city }}
@@ -22,38 +26,101 @@
     </button>
   </div>
   <div class="card-body" *ngIf="invite.teamInvite">
-    <h5 class="card-title">To team: {{ invite.teamInvited.teamName }}</h5>
+    <h5 class="card-title">
+      To team:
+      <a [routerLink]="['/teams/', invite.teamInvited.id]">{{
+        invite.teamInvited.teamName
+      }}</a>
+    </h5>
     <h5 class="card-title">From: {{ invite.teamInvited.owner.knownAs }}</h5>
     <p class="card-text">
       Age: {{ invite.teamInvited.owner.age }}, Country:
-      {{ invite.teamInvited.owner.country }}, City: {{ invite.teamInvited.owner.city }}
+      {{ invite.teamInvited.owner.country }}, City:
+      {{ invite.teamInvited.owner.city }}
     </p>
     <button
       class="btn btn-primary w-100"
-      (click)="acceptTeamInvite(invite.teamInvited.owner.id, invite.teamInvited.id , invite.inviteTo.id)"
+      (click)="
+        acceptTeamInvite(
+          invite.teamInvited.owner.id,
+          invite.teamInvited.id,
+          invite.inviteTo.id
+        )
+      "
     >
       Accept
     </button>
     <button
       class="btn btn-danger w-100"
-      (click)="declineTeamInvite(invite.teamInvited.owner.id, invite.teamInvited.id , invite.inviteTo.id)"
+      (click)="
+        declineTeamInvite(
+          invite.teamInvited.owner.id,
+          invite.teamInvited.id,
+          invite.inviteTo.id
+        )
+      "
     >
       Decline
     </button>
   </div>
   <div class="card-body" *ngIf="invite.matchInvite">
-    <h5 class="card-title">From team: {{ invite.teamInviting.teamName }}</h5>
-    <h5 class="card-title">For team: {{ invite.teamInvited.teamName }}</h5>
-    <h5 class="card-title">Team owner: {{ invite.teamInviting.owner.knownAs }}</h5>
+    <h5 class="card-title">
+      From team:
+      <a [routerLink]="['/teams/', invite.teamInviting.id]">{{
+        invite.teamInviting.teamName
+      }}</a>
+    </h5>
+    <h5 class="card-title">
+      For team:
+      <a [routerLink]="['/teams/', invite.teamInvited.id]">{{
+        invite.teamInvited.teamName
+      }}</a>
+    </h5>
     <button
       class="btn btn-primary w-100"
-      (click)="acceptMatchInvite(invite.teamInviting.owner.id, invite.teamInviting.id , invite.teamInvited.id)"
+      (click)="
+        acceptMatchInvite(
+          invite.teamInviting.owner.id,
+          invite.teamInviting.id,
+          invite.teamInvited.id
+        )
+      "
     >
       Accept
     </button>
     <button
       class="btn btn-danger w-100"
-      (click)="declineMatchInvite(invite.teamInviting.owner.id, invite.teamInviting.id , invite.teamInvited.id)"
+      (click)="
+        declineMatchInvite(
+          invite.teamInviting.owner.id,
+          invite.teamInviting.id,
+          invite.teamInvited.id
+        )
+      "
+    >
+      Decline
+    </button>
+  </div>
+  <div class="card-body" *ngIf="invite.refereeInvite">
+    <h5 class="card-title">From: {{ invite.inviteFrom.knownAs }}</h5>
+    <h5 class="card-title">
+      For Match:
+      <a [routerLink]="['/matches/', invite.matchInvitedTo.id]">
+        Click to see match</a
+      >
+    </h5>
+
+    <button
+      class="btn btn-primary w-100"
+      (click)="acceptRefereeInvite(invite.inviteTo.id, invite.matchInvitedTo.id)"
+    >
+      Accept
+    </button>
+    <button
+      class="btn btn-danger w-100"
+      (click)="
+        declineRefereeInvite(invite.inviteTo.id, invite.matchInvitedTo.id)
+      "
     >
       Decline
     </button>

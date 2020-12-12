@@ -11,6 +11,7 @@ namespace VolleyballApp.API.Dtos
         public int ScoreId { get; set; }
         public ScoreForSendingDto Score { get; set; }
         public Location Location { get; set;}
-        public DateTime TimeOfMatch { get; set; }
+        public UserForListDto Referee { get; set; }
+        public bool IsRefereeInvited { get; set; }
     }
 }

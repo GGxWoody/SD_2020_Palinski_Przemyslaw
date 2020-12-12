@@ -47,27 +47,16 @@ namespace VolleyballApp.API.Controllers
         }
 
         [HttpPut("{id}/location")]
-        public async Task<IActionResult> SetMatchLocation(LocationForAddDto locationForAdd, int id)
+        public async Task<IActionResult> SetMatchLocationAndTime(LocationForAddDto locationForAddDto, int id)
         {
             var match = await _repository.GetMatch(id);
             var userSendingLocation = await _repository.GetUser(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
             if(userSendingLocation.Id != match.FirstTeam.OwnerId) return BadRequest("You are not owner of team that is hosting game");
-            var location = await _repository.AddLocation(locationForAdd, id);
-            return Ok(location);
-        }
-
-        [HttpPut("{id}/time")]
-        public async Task<IActionResult> SetMatchTime(DateTime matchTime, int id)
-        {
-            var match = await _repository.GetMatch(id);
-            var userSendingLocation = await _repository.GetUser(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
-            if(userSendingLocation.Id != match.FirstTeam.OwnerId) return BadRequest("You are not owner of team that is hosting game");
-            if(matchTime < DateTime.Now) return BadRequest("Match date needs to be in future");
-            var matchWithTime = await _repository.AddTime(matchTime, id);
-            var matchToReturn = _mapper.Map<MatchForDetailedDto>(matchWithTime);
+            if(locationForAddDto.TimeOfMatch < DateTime.Now) return BadRequest("Match date needs to be in future");
+            var location = await _repository.AddLocation(locationForAddDto, id);
+            var matchToReturn = _mapper.Map<MatchForDetailedDto>(location);
             return Ok(matchToReturn);
         }
-
 
         [HttpPut("{id}/score")]
         public async Task<IActionResult> SetMatchScore(ScoreForAddDto scoreForAdd, int id)
@@ -84,7 +73,7 @@ namespace VolleyballApp.API.Controllers
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.TwoFirstTeam, scoreForAdd.TwoSecondTeam,2)) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.ThreeFirstTeam, scoreForAdd.ThreeSecondTeam,3)) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FourFirstTeam, scoreForAdd.FourSecondTeam,4) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets <= 4) return BadRequest("Wrong score");
-            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FiveFirstTeam, scoreForAdd.FiveSecondTeam,5) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 5) return BadRequest("Wrong score 1");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FiveFirstTeam, scoreForAdd.FiveSecondTeam,5) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 5) return BadRequest("Wrong score");
             var matchWithScore = await _repository.AddScore(scoreForAdd, id);
             return Ok(matchWithScore);
         }

@@ -6,24 +6,138 @@
     <div class="col-6">
       <div class="card">
         <div class="card-body">
-          <div *ngIf="match.location.country != null">
+          <div *ngIf="match.location.country != null && user.id != match.firstTeam.owner.id">
             <strong>Location:</strong>
-            <p>{{ match.location.city }}, {{ match.location.country }} </p>
+            <p>{{ match.location.city }}, {{ match.location.country }}</p>
             <strong>Address: </strong>
             <p>{{ match.location.adress }}</p>
             <strong>Time: </strong>
-            <p>{{ match.timeOfMatch | date: "MMMM d, y, h:mm a" }}</p>
+            <p>{{ match.location.timeOfMatch | date: "MMMM d, y, h:mm a" }}</p>
           </div>
-          <div *ngIf="match.location.country == null">
-            <h2>Location and time of this match was not set by teams</h2>
+          <div *ngIf="match.location.country == null && user.id != match.firstTeam.owner.id">
+            <h2 class="text-center">Location and time of this match was not set by teams</h2>
+          </div>
+          <div *ngIf="user.id === match.firstTeam.owner.id">
+            <form [formGroup]="locationForm" (ngSubmit)="setLocation()">
+              <div class="form-group">
+                <input [ngClass]="{'is-invalid': locationForm.get('country').errors && locationForm.get('country').touched}" class="form-control"
+                  placeholder="Country" formControlName="country">
+                <div class="invalid-feedback" *ngIf="locationForm.get('country').touched && locationForm.get('country').hasError('required')">Country is required</div>
+              </div>
+              <div class="form-group">
+                <input [ngClass]="{'is-invalid': locationForm.get('city').errors && locationForm.get('city').touched}" class="form-control"
+                  placeholder="City" formControlName="city">
+                <div class="invalid-feedback" *ngIf="locationForm.get('city').touched && locationForm.get('city').hasError('required')">City is required</div>
+              </div>
+              <div class="form-group">
+                <input [ngClass]="{'is-invalid': locationForm.get('adress').errors && locationForm.get('adress').touched}" class="form-control"
+                  placeholder="Address" formControlName="adress">
+                <div class="invalid-feedback" *ngIf="locationForm.get('adress').touched && locationForm.get('adress').hasError('required')">Address is required</div>
+              </div>
+              <div class="form-group">
+                <input [ngClass]="{'is-invalid': locationForm.get('timeOfMatch').errors && locationForm.get('timeOfMatch').touched}" class="form-control"
+                  placeholder="Time of match" formControlName="timeOfMatch" type="text" [owlDateTime]="dt" [owlDateTimeTrigger]="dt" placeholder="Date Time">
+                <owl-date-time #dt></owl-date-time> 
+                <div class="invalid-feedback" *ngIf="locationForm.get('timeOfMatch').touched && locationForm.get('timeOfMatch').hasError('required')">Date of Birth is required</div>
+              </div>
+              
+              <div class="form-group text-center">
+                <button class="btn btn-success mr-2" type="submit" [disabled]="locationForm.invalid">Set Location</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
       <div class="card">
-        <div class="card-body">
-          Referee
+        <div class="d-flex justify-content-center">
+          <div class="card-body col-4" *ngIf="match.referee != null && user.id != match.referee.id">
+            <h3 class="text-center">Match referee</h3>
+            <app-member-card [user]="match.referee"></app-member-card>
+          </div>
+          <div
+            class="card-body"
+            *ngIf="match.isRefereeInvited == true && match.referee == null && user.id === match.firstTeam.owner.id"
+          >
+            <h3>Referee is invited but has not accepted invite</h3>
+            <button class="btn btn-danger w-100" (click)="cancelInvite()">
+              Cancel invitation
+            </button>
+          </div>
+          <div *ngIf="match.referee !=null && user.id == match.referee.id">
+            <form [formGroup]="scoreForm" (ngSubmit)="setScore()">
+              <div class="row mt-3">
+                <div class="col-6">
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('firstTeamSets').errors && scoreForm.get('firstTeamSets').touched}" class="form-control"
+                      placeholder="First Team Sets" formControlName="firstTeamSets">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('firstTeamSets').touched && scoreForm.get('firstTeamSets').hasError('required')">First team sets are required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('oneFirstTeam').errors && scoreForm.get('oneFirstTeam').touched}" class="form-control"
+                      placeholder="First Set First Team" formControlName="oneFirstTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('oneFirstTeam').touched && scoreForm.get('oneFirstTeam').hasError('required')">First set first team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('twoFirstTeam').errors && scoreForm.get('twoFirstTeam').touched}" class="form-control"
+                      placeholder="Second Set First Team" formControlName="twoFirstTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('twoFirstTeam').touched && scoreForm.get('twoFirstTeam').hasError('required')">Second set first team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('threeFirstTeam').errors && scoreForm.get('threeFirstTeam').touched}" class="form-control"
+                      placeholder="Third Set First Team" formControlName="threeFirstTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('threeFirstTeam').touched && scoreForm.get('threeFirstTeam').hasError('required')">Third set first team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('fourFirstTeam').errors && scoreForm.get('fourFirstTeam').touched}" class="form-control"
+                      placeholder="Fourth Set First Team" formControlName="fourFirstTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('fourFirstTeam').touched && scoreForm.get('fourFirstTeam').hasError('required')">Fourth set first team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('fiveFirstTeam').errors && scoreForm.get('fiveFirstTeam').touched}" class="form-control"
+                      placeholder="Fifth Set First Team" formControlName="fiveFirstTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('fiveFirstTeam').touched && scoreForm.get('fiveFirstTeam').hasError('required')">Fifth set first team score is required</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('secondTeamSets').errors && scoreForm.get('secondTeamSets').touched}" class="form-control"
+                      placeholder="Second Team Sets" formControlName="secondTeamSets">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('secondTeamSets').touched && scoreForm.get('secondTeamSets').hasError('required')">Second team sets are required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('oneSecondTeam').errors && scoreForm.get('oneSecondTeam').touched}" class="form-control"
+                      placeholder="First Set Second Team" formControlName="oneSecondTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('oneSecondTeam').touched && scoreForm.get('oneSecondTeam').hasError('required')">First set second team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('twoSecondTeam').errors && scoreForm.get('twoSecondTeam').touched}" class="form-control"
+                      placeholder="Second Set Second Team" formControlName="twoSecondTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('twoSecondTeam').touched && scoreForm.get('twoSecondTeam').hasError('required')">Second set second team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('threeSecondTeam').errors && scoreForm.get('threeSecondTeam').touched}" class="form-control"
+                      placeholder="Third Set Second Team" formControlName="threeSecondTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('threeSecondTeam').touched && scoreForm.get('threeSecondTeam').hasError('required')">Third set second team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('fourSecondTeam').errors && scoreForm.get('fourSecondTeam').touched}" class="form-control"
+                      placeholder="Fourth Set Second Team" formControlName="fourSecondTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('fourSecondTeam').touched && scoreForm.get('fourSecondTeam').hasError('required')">Fourth set second team score is required</div>
+                  </div>
+                  <div class="form-group">
+                    <input [ngClass]="{'is-invalid': scoreForm.get('fiveSecondTeam').errors && scoreForm.get('fiveSecondTeam').touched}" class="form-control"
+                      placeholder="Fifth Set Second Team" formControlName="fiveSecondTeam">
+                    <div class="invalid-feedback" *ngIf="scoreForm.get('fiveSecondTeam').touched && scoreForm.get('fiveSecondTeam').hasError('required')">Fifth set second team score is required</div>
+                  </div>
+                </div>
+              </div> 
+              <div class="form-group text-center">
+                <button class="btn btn-success mr-2" type="submit" [disabled]="locationForm.invalid">Set Score</button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div> 
+      </div>
     </div>
     <div class="col-3">
       <app-team-card [team]="match.secondTeam"></app-team-card>

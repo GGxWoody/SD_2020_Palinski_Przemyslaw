@@ -12,6 +12,5 @@ namespace VolleyballApp.API.Models
         public User Referee { get; set; }
         public bool IsRefereeInvited { get; set; }
         public Location Location { get; set;}
-        public DateTime TimeOfMatch { get; set; }
     }
 }

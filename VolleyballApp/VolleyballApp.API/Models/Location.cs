@@ -1,3 +1,5 @@
+using System;
+
 namespace VolleyballApp.API.Models
 {
     public class Location
@@ -6,5 +8,6 @@ namespace VolleyballApp.API.Models
         public string Country { get; set; }
         public string City { get; set; }
         public string Adress { get; set; }
+        public DateTime TimeOfMatch { get; set; }
     }
 }

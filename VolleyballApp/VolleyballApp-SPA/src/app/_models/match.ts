@@ -1,6 +1,7 @@
 import { Score } from './score';
 import { Team } from './team';
 import { Location } from './location';
+import { User } from './user';
 
 export class Match {
     id: number;
@@ -9,4 +10,6 @@ export class Match {
     score?: Score;
     timeOfMatch?: Date;
     location?: Location;
+    referee?: User;
+    isRefereeInvited?: boolean;
 }

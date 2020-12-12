@@ -53,7 +53,7 @@ namespace VolleyballApp.API.Data
         {
             var invites = _context.Invites.Include(e => e.InviteFrom).Include(e => e.InviteTo)
             .Include(x => x.TeamInvited).ThenInclude(x => x.Owner).Include(x => x.TeamInviting)
-            .OrderByDescending(x => x.Id).AsQueryable();
+            .Include(x => x.MatchInvitedTo).OrderByDescending(x => x.Id).AsQueryable();
             invites = invites.Where(i => i.InviteTo.Id == userId);
             return await PagedList<Invite>.CreateAsync(invites, userParams.PageNumber, userParams.PageSize);
         }
@@ -398,7 +398,7 @@ namespace VolleyballApp.API.Data
 
         public async Task<Invite> GetRefereeInvite(int matchId)
         {
-            var invite = _context.Invites.AsQueryable();
+            var invite = _context.Invites.Include(x => x.InviteFrom).Include(x => x.InviteTo).Include(x => x.MatchInvitedTo).AsQueryable();
             invite = invite.Where(x => x.RefereeInvite == true);
             invite = invite.Where(x => x.MatchInvitedTo.Id == matchId);
             return await invite.FirstOrDefaultAsync();
@@ -463,16 +463,6 @@ namespace VolleyballApp.API.Data
             await _context.SaveChangesAsync();
 
             return location;
-        }
-
-        public async Task<Match> AddTime(DateTime matchTime, int id)
-        {
-            var match = await GetMatch(id);
-            match.TimeOfMatch = matchTime;
-            _context.Matches.Update(match);
-            await _context.SaveChangesAsync();
-
-            return await GetMatch(id);
         }
     }
 }
