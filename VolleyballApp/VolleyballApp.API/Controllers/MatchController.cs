@@ -54,8 +54,7 @@ namespace VolleyballApp.API.Controllers
             if(userSendingLocation.Id != match.FirstTeam.OwnerId) return BadRequest("You are not owner of team that is hosting game");
             if(locationForAddDto.TimeOfMatch < DateTime.Now) return BadRequest("Match date needs to be in future");
             var location = await _repository.AddLocation(locationForAddDto, id);
-            var matchToReturn = _mapper.Map<MatchForDetailedDto>(location);
-            return Ok(matchToReturn);
+            return Ok(location);
         }
 
         [HttpPut("{id}/score")]
@@ -75,6 +74,10 @@ namespace VolleyballApp.API.Controllers
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FourFirstTeam, scoreForAdd.FourSecondTeam,4) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets <= 4) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FiveFirstTeam, scoreForAdd.FiveSecondTeam,5) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 5) return BadRequest("Wrong score");
             var matchWithScore = await _repository.AddScore(scoreForAdd, id);
+            var firstTeam = await _repository.GetTeam(matchToAddScore.FirstTeam.Id);
+            var secondTeam = await _repository.GetTeam(matchToAddScore.SecondTeam.Id);
+            await _repository.AddMatchAndRanking(firstTeam.Users, scoreForAdd.FirstTeamSets);
+            await _repository.AddMatchAndRanking(secondTeam.Users, scoreForAdd.SecondTeamSets);
             return Ok(matchWithScore);
         }
     }

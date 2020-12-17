@@ -13,5 +13,6 @@ namespace VolleyballApp.API.Models
         public DateTime DateCreated { get; set; }
         public string Description { get; set; }
         public Photo Photo { get; set; }
+        public int RankingPoints { get; set; }
     }
 }

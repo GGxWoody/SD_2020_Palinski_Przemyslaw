@@ -39,7 +39,8 @@ namespace VolleyballApp.API.Controllers
             {
                 userToCreate.UserType = "player";
             }
-
+            userToCreate.RankingPoints = 900;
+            
             var createdUser = await _repo.Regiser(userToCreate, userForRegisterDto.Password);
 
             var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);

@@ -10,5 +10,6 @@ namespace VolleyballApp.API.Dtos
         public UserForTeamListDto Owner { get; set; }
         public string Description { get; set; }
         public string PhotoUrl { get; set; }
+        public int RankingPoints { get; set; }
     }
 }

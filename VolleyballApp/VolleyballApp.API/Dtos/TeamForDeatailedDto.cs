@@ -14,5 +14,6 @@ namespace VolleyballApp.API.Dtos
         public string Description { get; set; }
         public string PhotoUrl { get; set; }
         public PhotoForReturnDto Photo { get; set; }
+        public int RankingPoints { get; set; }
     }
 }

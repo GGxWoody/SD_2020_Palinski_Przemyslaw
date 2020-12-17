@@ -26,6 +26,7 @@ namespace VolleyballApp.API.Data
 
         public async Task<Team> CreateTeam(Team team)
         {
+            team.RankingPoints = team.Owner.RankingPoints;
             await _context.Teams.AddAsync(team);
             await _context.SaveChangesAsync();
             return team;
@@ -227,6 +228,12 @@ namespace VolleyballApp.API.Data
             Team team = await _context.Teams.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == teamId);
             User userToAdd = await _context.Users.Include(x => x.Teams).FirstOrDefaultAsync(x => x.Id == id);
             team.Users.Add(userToAdd);
+            var rankingPointsSum = 0;
+            foreach (var user in team.Users)
+            {
+                rankingPointsSum += user.RankingPoints;
+            }
+            team.RankingPoints = rankingPointsSum / team.Users.Count();
             userToAdd.Teams.Add(team);
             _context.Update(team);
             _context.Update(userToAdd);
@@ -463,6 +470,33 @@ namespace VolleyballApp.API.Data
             await _context.SaveChangesAsync();
 
             return location;
+        }
+
+        public async Task<List<User>> AddMatchAndRanking(ICollection<User> users, int setScore)
+        {
+            var userList = users.ToList();
+            if (setScore == 3)
+            {
+                userList.ForEach(a => {
+                    a.GamesPlayed ++;
+                    a.GamesWon ++;
+                });
+            } 
+            else 
+            {
+                userList.ForEach(a => {
+                    a.GamesPlayed ++;
+                });
+            }
+            await _context.SaveChangesAsync();
+                return userList;
+        }
+
+        public async Task<User> AddRefereeMatch(User user)
+        {
+            user.GamesPlayed ++;
+            await _context.SaveChangesAsync();
+            return user;
         }
     }
 }

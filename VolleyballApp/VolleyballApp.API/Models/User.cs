@@ -19,6 +19,7 @@ namespace VolleyballApp.API.Models
         public string Country { get; set; }
         public int GamesPlayed { get; set; }
         public int GamesWon { get; set; }
+        public int RankingPoints { get; set; }
         public Photo Photo { get; set; }
         public ICollection<Team> TeamsCreated { get; set; }
         public ICollection<Team> Teams { get; set; }

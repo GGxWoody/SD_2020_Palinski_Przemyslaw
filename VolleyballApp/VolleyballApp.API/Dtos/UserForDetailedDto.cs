@@ -23,5 +23,6 @@ namespace VolleyballApp.API.Dtos
         public ICollection<TeamsForListDto> Teams { get; set; }
         public ICollection<TeamsForListDto> TeamsCreated { get; set; }
         public bool IsFriend { get; set; }
+        public int RankingPoints { get; set; }
     }
 }
