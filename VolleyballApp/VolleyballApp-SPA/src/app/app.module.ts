@@ -49,6 +49,12 @@ import { PhotoEditorComponent } from './members/photo-editor/photo-editor.compon
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { TeamPhotoComponent } from './teams/team-photo/team-photo.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { LeagueListResolver } from './_resolvers/league-list.resolver';
+import { LeaguesListComponent } from './leagues/leagues-list/leagues-list.component';
+import { LeaguesCardComponent } from './leagues/leagues-card/leagues-card.component';
+import { LeagueDetailResolver } from './_resolvers/league-detail.resolver';
+import { LeagueDetailComponent } from './leagues/league-detail/league-detail.component';
+import { MatchesForLeagueResolver } from './_resolvers/matches-for-league.resolver';
 
 
 
@@ -87,7 +93,10 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MatchCardComponent,
       MatchDetailComponent,
       PhotoEditorComponent,
+      LeaguesListComponent,
+      LeagueDetailComponent,
       TeamPhotoComponent,
+      LeaguesCardComponent,
       TimeAgoPipe,
    ],
    imports: [
@@ -129,6 +138,9 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       FriendListResolver,
       MatchListResolver,
       MatchDetailResolver,
+      LeagueListResolver,
+      LeagueDetailResolver,
+      MatchesForLeagueResolver,
       AuthGuard,
       PreventUnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }

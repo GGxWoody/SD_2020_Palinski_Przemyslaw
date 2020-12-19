@@ -1,0 +1,69 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-12">
+      <div class="tab-panel">
+        <tabset>
+          <tab class="text-center" *ngIf="user.userType=='player' && user.id != league.creator.id" heading="Join League">
+            <h1 class="mt-2">About</h1>
+            <h2 class="mt-2">{{ league.description }}</h2>
+            <button *ngIf="pagination.totalItems == 0" class="btn btn-success" (click)="joinLeague()" >Join league</button>       
+          </tab>
+          <tab heading="Tabele">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Place</th>
+                  <th scope="col">Team Name</th>
+                  <th scope="col">Win</th>
+                  <th scope="col">Losses</th>
+                  <th scope="col">Points</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let team of league.teamLeague; index as i">
+                  <th scope="row">{{ i + 1 }}</th>
+                  <td>
+                    <a [routerLink]="['/teams/', team.team.id]">{{
+                      team.team.teamName
+                    }}</a>
+                  </td>
+                  <td>{{ team.leagueWins }}</td>
+                  <td>{{ team.leagueLosses }}</td>
+                  <td>{{ team.leagueScore }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <button *ngIf="user.id == league.creator.id && pagination.totalItems == 0 && league.teamLeague.length >= 2" class="btn btn-success" (click)="startLeague()">Start league</button> 
+          </tab>
+          
+          <tab heading="Matches">
+            
+            <div class="row justify-content-center">
+              <div *ngFor="let match of matches" class="col-12">
+                <app-match-card [match]="match"></app-match-card>
+              </div>
+            </div>
+
+            <div
+              class="d-flex justify-content-center"
+              *ngIf="pagination.totalPages >= 2"
+            >
+              <pagination
+                [boundaryLinks]="true"
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;"
+                nextText="&rsaquo;"
+                firstText="&laquo;"
+                lastText="&raquo;"
+              >
+              </pagination>
+            </div>
+          </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>

@@ -78,6 +78,10 @@ namespace VolleyballApp.API.Controllers
             var secondTeam = await _repository.GetTeam(matchToAddScore.SecondTeam.Id);
             await _repository.AddMatchAndRanking(firstTeam.Users, scoreForAdd.FirstTeamSets);
             await _repository.AddMatchAndRanking(secondTeam.Users, scoreForAdd.SecondTeamSets);
+            if (matchToAddScore.League != null)
+            {
+                await _repository.AddLeagueMatchScore(matchToAddScore.League, matchToAddScore, scoreForAdd.FirstTeamSets, scoreForAdd.SecondTeamSets);
+            }
             return Ok(matchWithScore);
         }
     }

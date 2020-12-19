@@ -73,7 +73,15 @@ namespace VolleyballApp.API.Data
         {
             var users = _context.Users.Include(p => p.Photo).OrderByDescending(u => u.LastActive).AsQueryable();
             users = users.Where(u => u.Id != userParams.UserID);
-            users = users.Where(u => u.UserType == "player");
+            if (!String.IsNullOrEmpty(userParams.UserType) && userParams.UserType != "player")
+            {
+                users = users.Where(u => u.UserType == userParams.UserType);
+            }
+            else
+            {
+                users = users.Where(u => u.UserType == "player");
+            }
+            
             if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
             {
                 users = users.Where(u => u.Gender == userParams.Gender);
@@ -186,8 +194,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<PagedList<Match>> GetMatches(UserParams userParams)
         {
-            var matches = _context.Matches.Include(x => x.FirstTeam).ThenInclude(x => x.Owner)
-            .Include(x => x.SecondTeam).ThenInclude(x => x.Owner).Include(x => x.Score);
+            var matches = _context.Matches.Include(x => x.FirstTeam)
+            .Include(x => x.SecondTeam).Include(x => x.Score);
             return await PagedList<Match>.CreateAsync(matches, userParams.PageNumber, userParams.PageSize);
         }
 
@@ -256,7 +264,7 @@ namespace VolleyballApp.API.Data
 
         public async Task<Match> GetMatch(int id)
         {
-            Match match = await _context.Matches.Include(x => x.Location).Include(x => x.Score).Include(x => x.FirstTeam).ThenInclude(x => x.Owner)
+            Match match = await _context.Matches.Include(x => x.League).Include(x => x.Location).Include(x => x.Score).Include(x => x.FirstTeam).ThenInclude(x => x.Owner)
             .Include(x => x.SecondTeam).ThenInclude(x => x.Owner).Include(x => x.Referee).FirstOrDefaultAsync(x => x.Id == id);
             return match;
         }
@@ -342,7 +350,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<Score> AddScore(ScoreForAddDto scoreToAdd, int id)
         {
-            var score = _context.Scores.SingleOrDefault(x => x.Id == id);
+            var match = await _context.Matches.Include(x => x.Score).FirstOrDefaultAsync(x => x.Id == id);
+            var score = _context.Scores.SingleOrDefault(x => x.Id == match.Score.Id);
             score.FirstTeamSets = scoreToAdd.FirstTeamSets;
             score.SecondTeamSets = scoreToAdd.SecondTeamSets;
             score.OneFirstTeam = scoreToAdd.OneFirstTeam;
@@ -471,7 +480,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<Location> AddLocation(LocationForAddDto locationForAdd, int id)
         {
-            var location = _context.Locations.SingleOrDefault(x => x.Id == id);
+            var match = await _context.Matches.Include(x => x.Location).FirstOrDefaultAsync(x => x.Id == id);
+            var location = _context.Locations.SingleOrDefault(x => x.Id == match.Location.Id);
             location.Adress = locationForAdd.Adress;
             location.City = locationForAdd.City;
             location.Country = locationForAdd.Country;
@@ -510,9 +520,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<League> GetLeague(int id)
         {
-            var league = await _context.Leagues.Include(x => x.Creator)
-            .Include(x => x.Matches).ThenInclude(x => x.Score).Include(x => x.TeamLeague)
-            .ThenInclude(x => x.Team).FirstOrDefaultAsync(x => x.Id == id);
+            var league = await _context.Leagues.Include(x => x.Creator).Include(x => x.Matches)
+            .Include(x => x.TeamLeague).ThenInclude(x => x.Team).FirstOrDefaultAsync(x => x.Id == id);
             return league;
         }
 
@@ -583,6 +592,60 @@ namespace VolleyballApp.API.Data
             _context.Leagues.Update(leagueFromRepo);
             await _context.SaveChangesAsync();
             return match;
+        }
+
+        public async Task<PagedList<Match>> GetLeagueMatches(int leagueId, UserParams userParams)
+        {
+            var league = _context.Matches.Include(x => x.League).Include(x => x.FirstTeam).ThenInclude(x => x.Photo)
+            .Include(x => x.SecondTeam).ThenInclude(x => x.Photo).Include(x => x.Score).Where(x => x.League.Id == leagueId);
+            return await PagedList<Match>.CreateAsync(league, userParams.PageNumber, userParams.PageSize);
+        }
+
+        public async Task<League> AddLeagueMatchScore(League league, Match match, int firstTeamScore, int secondTeamScore)
+        {
+            var leagueFromRepo = await GetLeague(league.Id);
+            var teamLeagues = new List<TeamLeague>(leagueFromRepo.TeamLeague);
+            var firstTeamLeague = teamLeagues.SingleOrDefault(x => x.Team.Id == match.FirstTeam.Id);
+            var secondTeamLeague = teamLeagues.SingleOrDefault(x => x.Team.Id == match.SecondTeam.Id);
+            if (firstTeamScore + secondTeamScore < 5)
+            {
+                if (firstTeamScore == 3)
+                {
+                    firstTeamLeague.LeagueGames ++;
+                    firstTeamLeague.LeagueWins ++;
+                    firstTeamLeague.LeagueScore += 3;
+                    secondTeamLeague.LeagueLosses ++;
+                    secondTeamLeague.LeagueGames ++;
+                } else if (secondTeamScore == 3) 
+                {
+                    firstTeamLeague.LeagueGames ++;
+                    firstTeamLeague.LeagueLosses ++;
+                    secondTeamLeague.LeagueScore += 3;
+                    secondTeamLeague.LeagueWins ++;
+                    secondTeamLeague.LeagueGames ++;
+                }
+            } else
+            {
+                if (firstTeamScore == 3)
+                {
+                    firstTeamLeague.LeagueGames ++;
+                    firstTeamLeague.LeagueWins ++;
+                    firstTeamLeague.LeagueScore += 2;
+                    secondTeamLeague.LeagueLosses ++;
+                    secondTeamLeague.LeagueGames ++;
+                    secondTeamLeague.LeagueScore ++;
+                } else if (secondTeamScore == 3) 
+                {
+                    firstTeamLeague.LeagueGames ++;
+                    firstTeamLeague.LeagueLosses ++;
+                    firstTeamLeague.LeagueScore ++;
+                    secondTeamLeague.LeagueScore += 2;
+                    secondTeamLeague.LeagueWins ++;
+                    secondTeamLeague.LeagueGames ++;
+                } 
+            }
+            await _context.SaveChangesAsync();
+            return league;
         }
     }
 }

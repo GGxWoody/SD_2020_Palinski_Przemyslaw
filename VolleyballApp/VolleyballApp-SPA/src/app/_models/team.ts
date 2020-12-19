@@ -1,3 +1,4 @@
+import { League } from './league';
 import { Photo } from './photo';
 import { User } from './user';
 
@@ -10,4 +11,5 @@ export interface Team {
     description?: string;
     photo?: Photo;
     photoUrl?: string;
+    league?: League;
 }

@@ -62,6 +62,7 @@ namespace VolleyballApp.API.Controllers
             var leagueToJoin = await _repository.GetLeague(leagueId);
             if (userJoining.OwnedTeam == false) return BadRequest ("You are not an owner of a team");
             if (leagueToJoin.TeamLeague.Count() >= leagueToJoin.TeamLimit) return BadRequest ("This league is alredy full");
+            if (DateTime.Compare(DateTime.Now, leagueToJoin.ClosedSignUp) > 0) return BadRequest("League has already closed its sign up");
             var teams = new List<TeamLeague>(leagueToJoin.TeamLeague);
             if (teams.Select(x => x.TeamId).Contains(userJoining.Team.Id)) return BadRequest("Your team is already in this league");
             await _repository.AddTeamToLeague(userJoining, leagueToJoin);
@@ -73,17 +74,19 @@ namespace VolleyballApp.API.Controllers
         {
             var leagueFromRepo = await _repository.GetLeague(leagueId);
             if (leagueFromRepo.Creator.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
-            //if (DateTime.Compare(DateTime.Now,leagueFromRepo.ClosedSignUp) > 0) return BadRequest("League has already closed its sign up");
+            if (leagueFromRepo.TeamLeague.Count() == 1) return BadRequest("League needs at least 2 teams");
+            if (leagueFromRepo.Matches.Count()> 0) return BadRequest("League has already started");
+            
             await _repository.CreateAndAddMatches(leagueId);
             return Ok();
         }
 
         [HttpGet("{id}/matches")]
-        public async Task<IActionResult> GetLeagueMatches(int id)
+        public async Task<IActionResult> GetLeagueMatches([FromQuery]UserParams userParams, int id)
         {
-            var league = await _repository.GetLeague(id);
-            var matches = league.Matches;
+            var matches = await _repository.GetLeagueMatches(id, userParams);
             var matchesToReturn = _mapper.Map<List<MatchForListDto>>(matches);
+            Response.AddPagination(matches.CurrentPage, matches.PageSize, matches.TotalCount, matches.TotalPages);
             return Ok(matchesToReturn);
         }
         

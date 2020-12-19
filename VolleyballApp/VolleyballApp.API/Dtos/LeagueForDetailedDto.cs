@@ -11,6 +11,5 @@ namespace VolleyballApp.API.Dtos
         public string City { get; set; }
         public string Country { get; set; }
         public ICollection<TeamLeagueForLeagueDetailsDto> TeamLeague { get; set; }
-        public ICollection<MatchForListDto> Matches { get; set; }
     }
 }
