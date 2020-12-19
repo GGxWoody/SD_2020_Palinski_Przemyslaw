@@ -103,14 +103,17 @@ namespace VolleyballApp.API.Controllers
         {
             if (userId == id) return BadRequest();
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
-            if (await _repository.IsInTeam(teamId,id)) return BadRequest("Already in team");
+            if (await _repository.IsInTeam(id)) return BadRequest("Already in team");
             if (await _repository.IsInivtedToTeam(teamId,id)) return BadRequest("Already invited");
             if (!await _repository.AreFriends(userId,id)) return BadRequest("Must be friends first");
             var team = await _repository.GetTeam(teamId);
             if (team == null) return BadRequest("Could not find team");
             if (team.OwnerId != userId) return BadRequest("Must be owner to invite to team");
             var recipient = await _repository.GetUser(id);
+            var sender = await _repository.GetUser(userId);
             if (recipient.UserType != "player") return BadRequest("You cannot invite this user to team");
+            if (team.Id != sender.Team.Id) return BadRequest("You are not part of that team");
+            if (sender.OwnedTeam == false) return BadRequest("You are not owner of that team");
             if (recipient == null) return BadRequest("Could not find user");
             var invite = await _repository.CreateTeamInvite(recipient,team);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);

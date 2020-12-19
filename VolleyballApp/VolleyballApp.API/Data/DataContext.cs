@@ -15,14 +15,11 @@ namespace VolleyballApp.API.Data
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<League> Leagues { get; set; }
+        public DbSet<TeamLeague> TeamLeague { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
-            modelBuilder.Entity<Team>()
-            .HasOne(t => t.Owner)
-            .WithMany(u => u.TeamsCreated)
-            .HasForeignKey(t => t.OwnerId);
-
             modelBuilder.Entity<Message>()
             .HasOne(u => u.Sender)
             .WithMany(u => u.MessagesSent)
@@ -42,6 +39,17 @@ namespace VolleyballApp.API.Data
             .HasOne(u => u.Team)
             .WithOne(u => u.Photo)
             .IsRequired(false);
+
+            modelBuilder.Entity<TeamLeague>()
+            .HasKey( x => new {x.LeagueId, x.TeamId});
+        
+            modelBuilder.Entity<Team>()
+            .HasOne(x => x.Owner)
+            .WithOne(x => x.Team);
+
+            modelBuilder.Entity<League>()
+            .HasMany(x => x.Matches)
+            .WithOne(x => x.League);
         }
     }
 }

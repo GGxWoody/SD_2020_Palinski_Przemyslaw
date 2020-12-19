@@ -65,13 +65,13 @@ namespace VolleyballApp.API.Controllers
             if (userSendingScore.UserType != "referee") return BadRequest ("You are not a referee");
             if (userSendingScore.Id != matchToAddScore.Referee.Id) return BadRequest("You are not a referee for this match");
             if (matchToAddScore.Score.FirstTeamSets + matchToAddScore.Score.SecondTeamSets != 0) return BadRequest("Score already added");
-            if (scoreForAdd.FirstTeamSets != 3 && scoreForAdd.SecondTeamSets !=3) return BadRequest("Wrong score 6");
+            if (scoreForAdd.FirstTeamSets != 3 && scoreForAdd.SecondTeamSets !=3) return BadRequest("Wrong score");
             if (scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 3 && (scoreForAdd.FourFirstTeam + scoreForAdd.FourSecondTeam + scoreForAdd.FiveFirstTeam + scoreForAdd.FiveSecondTeam != 0)) return BadRequest("Wrong score");
             if (scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 4 && (scoreForAdd.FiveFirstTeam + scoreForAdd.FiveSecondTeam != 0)) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.OneFirstTeam, scoreForAdd.OneSecondTeam,1)) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.TwoFirstTeam, scoreForAdd.TwoSecondTeam,2)) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.ThreeFirstTeam, scoreForAdd.ThreeSecondTeam,3)) return BadRequest("Wrong score");
-            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FourFirstTeam, scoreForAdd.FourSecondTeam,4) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets <= 4) return BadRequest("Wrong score");
+            if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FourFirstTeam, scoreForAdd.FourSecondTeam,4) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets >= 4) return BadRequest("Wrong score");
             if (!Helpers.Extension.IsCorrectSet(scoreForAdd.FiveFirstTeam, scoreForAdd.FiveSecondTeam,5) && scoreForAdd.FirstTeamSets + scoreForAdd.SecondTeamSets == 5) return BadRequest("Wrong score");
             var matchWithScore = await _repository.AddScore(scoreForAdd, id);
             var firstTeam = await _repository.GetTeam(matchToAddScore.FirstTeam.Id);

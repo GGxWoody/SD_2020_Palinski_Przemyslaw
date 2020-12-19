@@ -49,7 +49,7 @@ namespace VolleyballApp.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateNewTeam(TeamForCreationDto teamForCreationDto)
         {
-            if(await _repository.TeamExists(teamForCreationDto.TeamName)) return BadRequest("Team already exists");
+            if(await _repository.TeamExists(teamForCreationDto.TeamName)) return BadRequest("Team with that name already exists");
 
             var teamToCreate = _mapper.Map<Team>(teamForCreationDto);
 
@@ -58,6 +58,7 @@ namespace VolleyballApp.API.Controllers
             var userFromRepo = await _repository.GetUser(currnetUserId);
             
             if(userFromRepo.UserType != "player") return BadRequest("Only players can create team");
+            if(userFromRepo.Team != null) return BadRequest("You are already in the team");
 
             teamToCreate.Owner = userFromRepo;
             teamToCreate.OwnerId = userFromRepo.Id;

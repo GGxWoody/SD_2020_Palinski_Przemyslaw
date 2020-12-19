@@ -2,19 +2,36 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201218163502_LeagueTables")]
+    partial class LeagueTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.0-rc.1.20451.13");
+
+            modelBuilder.Entity("TeamUser", b =>
+                {
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("TeamsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TeamUser");
+                });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Friendlist", b =>
                 {
@@ -85,37 +102,6 @@ namespace VolleyballApp.API.Migrations
                     b.ToTable("Invites");
                 });
 
-            modelBuilder.Entity("VolleyballApp.API.Models.League", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("City")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ClosedSignUp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("CreatorId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TeamLimit")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.ToTable("Leagues");
-                });
-
             modelBuilder.Entity("VolleyballApp.API.Models.Location", b =>
                 {
                     b.Property<int>("Id")
@@ -151,9 +137,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<bool>("IsRefereeInvited")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("LeagueId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("LocationId")
                         .HasColumnType("INTEGER");
 
@@ -169,8 +152,6 @@ namespace VolleyballApp.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FirstTeamId");
-
-                    b.HasIndex("LeagueId");
 
                     b.HasIndex("LocationId");
 
@@ -328,37 +309,9 @@ namespace VolleyballApp.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId")
-                        .IsUnique();
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.TeamLeague", b =>
-                {
-                    b.Property<int>("LeagueId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TeamId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LeagueGames")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LeagueLosses")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LeagueScore")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LeagueWins")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("LeagueId", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TeamLeague");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
@@ -394,9 +347,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("OwnedTeam")
-                        .HasColumnType("INTEGER");
-
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("BLOB");
 
@@ -404,9 +354,6 @@ namespace VolleyballApp.API.Migrations
                         .HasColumnType("BLOB");
 
                     b.Property<int>("RankingPoints")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("TeamId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserType")
@@ -417,9 +364,22 @@ namespace VolleyballApp.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId");
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("TeamUser", b =>
+                {
+                    b.HasOne("VolleyballApp.API.Models.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VolleyballApp.API.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Friendlist", b =>
@@ -470,24 +430,11 @@ namespace VolleyballApp.API.Migrations
                     b.Navigation("TeamInviting");
                 });
 
-            modelBuilder.Entity("VolleyballApp.API.Models.League", b =>
-                {
-                    b.HasOne("VolleyballApp.API.Models.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
-
-                    b.Navigation("Creator");
-                });
-
             modelBuilder.Entity("VolleyballApp.API.Models.Match", b =>
                 {
                     b.HasOne("VolleyballApp.API.Models.Team", "FirstTeam")
                         .WithMany()
                         .HasForeignKey("FirstTeamId");
-
-                    b.HasOne("VolleyballApp.API.Models.League", "League")
-                        .WithMany("Matches")
-                        .HasForeignKey("LeagueId");
 
                     b.HasOne("VolleyballApp.API.Models.Location", "Location")
                         .WithMany()
@@ -508,8 +455,6 @@ namespace VolleyballApp.API.Migrations
                         .HasForeignKey("SecondTeamId");
 
                     b.Navigation("FirstTeam");
-
-                    b.Navigation("League");
 
                     b.Navigation("Location");
 
@@ -557,45 +502,12 @@ namespace VolleyballApp.API.Migrations
             modelBuilder.Entity("VolleyballApp.API.Models.Team", b =>
                 {
                     b.HasOne("VolleyballApp.API.Models.User", "Owner")
-                        .WithOne("Team")
-                        .HasForeignKey("VolleyballApp.API.Models.Team", "OwnerId")
+                        .WithMany("TeamsCreated")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.TeamLeague", b =>
-                {
-                    b.HasOne("VolleyballApp.API.Models.League", "League")
-                        .WithMany("TeamLeague")
-                        .HasForeignKey("LeagueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VolleyballApp.API.Models.Team", "Team")
-                        .WithMany("TeamLeague")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("League");
-
-                    b.Navigation("Team");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
-                {
-                    b.HasOne("VolleyballApp.API.Models.Team", null)
-                        .WithMany("Users")
-                        .HasForeignKey("TeamId");
-                });
-
-            modelBuilder.Entity("VolleyballApp.API.Models.League", b =>
-                {
-                    b.Navigation("Matches");
-
-                    b.Navigation("TeamLeague");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.Score", b =>
@@ -606,10 +518,6 @@ namespace VolleyballApp.API.Migrations
             modelBuilder.Entity("VolleyballApp.API.Models.Team", b =>
                 {
                     b.Navigation("Photo");
-
-                    b.Navigation("TeamLeague");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
@@ -622,7 +530,7 @@ namespace VolleyballApp.API.Migrations
 
                     b.Navigation("RefereeMatches");
 
-                    b.Navigation("Team");
+                    b.Navigation("TeamsCreated");
                 });
 #pragma warning restore 612, 618
         }

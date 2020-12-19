@@ -27,7 +27,10 @@ namespace VolleyballApp.API.Data
         public async Task<Team> CreateTeam(Team team)
         {
             team.RankingPoints = team.Owner.RankingPoints;
+            var userCreating = await GetUser(team.OwnerId);
+            userCreating.OwnedTeam = true;
             await _context.Teams.AddAsync(team);
+            _context.Users.Update(userCreating);
             await _context.SaveChangesAsync();
             return team;
         }
@@ -61,8 +64,8 @@ namespace VolleyballApp.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(e => e.Teams).ThenInclude(t => t.Owner)
-                .Include(e => e.TeamsCreated).Include(p => p.Photo).FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.Include(e => e.Team).ThenInclude(t => t.Owner)
+            .Include(p => p.Photo).FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
@@ -188,11 +191,11 @@ namespace VolleyballApp.API.Data
             return await PagedList<Match>.CreateAsync(matches, userParams.PageNumber, userParams.PageSize);
         }
 
-        public async Task<bool> IsInTeam(int teamId, int id)
+        public async Task<bool> IsInTeam(int id)
         {
-            var team = await _context.Teams.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == teamId);
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-            return team.Users.Contains(user);
+            if (user.Team != null) return true;
+            return false;
         }
 
         public async Task<bool> IsInivtedToTeam(int teamId, int id)
@@ -226,7 +229,7 @@ namespace VolleyballApp.API.Data
         public async Task<Team> AcceptTeamInvite(int teamId, int id)
         {
             Team team = await _context.Teams.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == teamId);
-            User userToAdd = await _context.Users.Include(x => x.Teams).FirstOrDefaultAsync(x => x.Id == id);
+            User userToAdd = await _context.Users.Include(x => x.Team).FirstOrDefaultAsync(x => x.Id == id);
             team.Users.Add(userToAdd);
             var rankingPointsSum = 0;
             foreach (var user in team.Users)
@@ -234,7 +237,7 @@ namespace VolleyballApp.API.Data
                 rankingPointsSum += user.RankingPoints;
             }
             team.RankingPoints = rankingPointsSum / team.Users.Count();
-            userToAdd.Teams.Add(team);
+            userToAdd.Team = team;
             _context.Update(team);
             _context.Update(userToAdd);
             var InviteToDelete = await GetTeamInvite(team.Id, userToAdd.Id);
@@ -300,6 +303,7 @@ namespace VolleyballApp.API.Data
             match.SecondTeam = await GetTeam(secondTeamId);
             match.Score = new Score();
             match.IsRefereeInvited = false;
+            match.League = null;
             match.Location = new Location();
             var InviteToDelete = await GetMatchInvite(firstTeamId, secondTeamId);
             _context.Invites.Remove(InviteToDelete);
@@ -336,16 +340,23 @@ namespace VolleyballApp.API.Data
             return true;
         }
 
-        public async Task<Match> AddScore(ScoreForAddDto scoreToAdd, int id)
+        public async Task<Score> AddScore(ScoreForAddDto scoreToAdd, int id)
         {
-            var match = await GetMatch(id);
-            var scoreToDelete = await _context.Scores.FirstOrDefaultAsync(x => x.Id == match.ScoreId);
-            match.Score = _mapper.Map<Score>(scoreToAdd);
-            
-            _context.Matches.Update(match); 
-            _context.Scores.Remove(scoreToDelete);
-            if(await saveAll()) return await _context.Matches.FirstOrDefaultAsync(x => x.Id == match.Id);
-            else return null;
+            var score = _context.Scores.SingleOrDefault(x => x.Id == id);
+            score.FirstTeamSets = scoreToAdd.FirstTeamSets;
+            score.SecondTeamSets = scoreToAdd.SecondTeamSets;
+            score.OneFirstTeam = scoreToAdd.OneFirstTeam;
+            score.TwoFirstTeam = scoreToAdd.TwoFirstTeam;
+            score.ThreeFirstTeam = scoreToAdd.ThreeFirstTeam;
+            score.FourFirstTeam = scoreToAdd.FourFirstTeam;
+            score.FiveFirstTeam = scoreToAdd.FiveFirstTeam;
+            score.OneSecondTeam = scoreToAdd.OneSecondTeam;
+            score.TwoSecondTeam = scoreToAdd.TwoSecondTeam;
+            score.ThreeSecondTeam = scoreToAdd.ThreeSecondTeam;
+            score.FourSecondTeam = scoreToAdd.FourSecondTeam;
+            score.FiveSecondTeam = scoreToAdd.FiveSecondTeam;
+            await _context.SaveChangesAsync();
+            return score;
         }
 
         public async Task<Photo> GetPhoto(int id)
@@ -460,13 +471,11 @@ namespace VolleyballApp.API.Data
 
         public async Task<Location> AddLocation(LocationForAddDto locationForAdd, int id)
         {
-            var match = await GetMatch(id);
-            var location = await GetLocation(match.Location.Id);
-            _context.Locations.Remove(location);
-            location = _mapper.Map<Location>(locationForAdd);
-            match.Location = location;
-            _context.Locations.Update(location);
-            _context.Matches.Update(match);
+            var location = _context.Locations.SingleOrDefault(x => x.Id == id);
+            location.Adress = locationForAdd.Adress;
+            location.City = locationForAdd.City;
+            location.Country = locationForAdd.Country;
+            location.TimeOfMatch = locationForAdd.TimeOfMatch;
             await _context.SaveChangesAsync();
 
             return location;
@@ -497,6 +506,83 @@ namespace VolleyballApp.API.Data
             user.GamesPlayed ++;
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        public async Task<League> GetLeague(int id)
+        {
+            var league = await _context.Leagues.Include(x => x.Creator)
+            .Include(x => x.Matches).ThenInclude(x => x.Score).Include(x => x.TeamLeague)
+            .ThenInclude(x => x.Team).FirstOrDefaultAsync(x => x.Id == id);
+            return league;
+        }
+
+        public async Task<PagedList<League>> GetLeagues(UserParams userParams)
+        {
+            var leagues = _context.Leagues.Include(x => x.Creator);
+            return await PagedList<League>.CreateAsync(leagues, userParams.PageNumber, userParams.PageSize);
+        }
+
+        public async Task<League> CreateLeague(LeagueForCreationDto leagueForCreationDto)
+        {
+            var newLeague = new League();
+            var userCreating = await GetUser(leagueForCreationDto.CreatorId);
+            newLeague.Creator = userCreating;
+            newLeague.City = leagueForCreationDto.City;
+            newLeague.Country = leagueForCreationDto.Country;
+            newLeague.TeamLimit = leagueForCreationDto.TeamLimit;
+            newLeague.Description = leagueForCreationDto.Description;
+            var teamLeague = new TeamLeague();
+            if (userCreating.UserType == "player")
+            {
+                teamLeague = new TeamLeague { Team = userCreating.Team, League = newLeague };
+            }
+            _context.TeamLeague.Add(teamLeague);
+            await _context.SaveChangesAsync();
+            return teamLeague.League;
+        }
+
+        public async Task<League> AddTeamToLeague(User userJoining, League leagueToJoin)
+        {
+            var teamToAdd = new TeamLeague { Team = userJoining.Team, League = leagueToJoin};
+            _context.TeamLeague.Add(teamToAdd);
+            await _context.SaveChangesAsync();
+            return leagueToJoin;
+        }
+
+        public async Task<League> CreateAndAddMatches(int leagueId)
+        {
+            var leagueFromRepo = await GetLeague(leagueId);
+            var teamLeagues = new List<TeamLeague>(leagueFromRepo.TeamLeague);
+            var teams = teamLeagues.Select(x => x.Team);
+            var teamsList = new List<Team>(teams);
+            for (int i = 0; i < teams.Count(); i++)
+            {
+                for (int j = i+1; j < teams.Count(); j++)
+                {
+                    await CreateLeagueMatch(teamsList[i].Id,teamsList[j].Id,leagueFromRepo.Id);
+                    await CreateLeagueMatch(teamsList[j].Id,teamsList[i].Id,leagueFromRepo.Id);
+                }
+            }
+            return leagueFromRepo;
+        }
+
+        public async Task<Match> CreateLeagueMatch(int firstTeamId, int secondTeamId, int leagueId)
+        {
+            Match match = new Match();
+            match.FirstTeam = await GetTeam(firstTeamId);
+            match.SecondTeam = await GetTeam(secondTeamId);
+            match.Score = new Score();
+            match.IsRefereeInvited = false;
+            var leagueFromRepo = await GetLeague(leagueId);
+            match.League = leagueFromRepo;
+            match.Location = new Location();
+            leagueFromRepo.Matches.Add(match);
+            await _context.Scores.AddAsync(match.Score);
+            await _context.Locations.AddAsync(match.Location);
+            await _context.Matches.AddAsync(match);
+            _context.Leagues.Update(leagueFromRepo);
+            await _context.SaveChangesAsync();
+            return match;
         }
     }
 }

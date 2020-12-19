@@ -18,22 +18,11 @@ export class MemberDetailComponent implements OnInit {
   user: User;
   loginedInUser: User;
   modalRef: BsModalRef;
-  teamSelected: Team;
   inTeam: boolean;
-  config = {
-    displayKey: 'teamName',
-    search: true,
-    height: 'auto',
-    placeholder: 'Select team',
-    noResultsFound: 'No teams found!',
-    searchPlaceholder: 'Search team',
-    searchOnKey: 'teamName',
-    clearOnSelection: true
-  };
 
   constructor(private authService: AuthService, private userService: UserService,
               private alertify: AlertifyService, private root: ActivatedRoute,
-              private inviteService: FriendInviteService, private modalService: BsModalService) { }
+              private inviteService: FriendInviteService) { }
 
   ngOnInit() {
     this.root.data.subscribe(data => {
@@ -47,29 +36,18 @@ export class MemberDetailComponent implements OnInit {
     });
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
-  }
-
-  sendFriendInvite(id: number) {
-    this.inviteService.sendFriendInvite(this.authService.decodedToken.nameid, id).subscribe(data => {
+  sendFriendInvite() {
+    this.inviteService.sendFriendInvite(this.authService.decodedToken.nameid, this.user.id).subscribe(data => {
       this.alertify.success('You invited: ' + this.user.knownAs + ' to friendlist');
     }, error => {
       this.alertify.error(error);
     });
   }
 
-  selectionChanged() {
-    if (this.user.teams.find(x => x.id === this.teamSelected.id) != null) {
-      this.inTeam = true;
-    } else {
-      this.inTeam = false;
-    }
-  }
-
-  sendTeamInvite(id: number) {
-    this.inviteService.sendTeamInvite(this.authService.decodedToken.nameid, this.teamSelected.id, id).subscribe(data => {
-      this.alertify.success('You invited: ' + this.user.knownAs + ' to friendlist');
+  sendTeamInvite() {
+    this.inviteService.sendTeamInvite(this.authService.decodedToken.nameid, this.loginedInUser.team.id, this.user.id)
+    .subscribe(data => {
+      this.alertify.success('You invited: ' + this.user.knownAs + ' to your team');
     }, error => {
       this.alertify.error(error);
     });

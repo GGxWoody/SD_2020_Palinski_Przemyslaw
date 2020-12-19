@@ -31,7 +31,7 @@ namespace VolleyballApp.API.Data
         Task<Invite> DeclineTeamInvite(int teamId,int id);
         Task<PagedList<User>> GetFriends(UserParams userParams);
         Task<PagedList<Match>> GetMatches(UserParams userParams);
-        Task<bool> IsInTeam(int teamId, int id);
+        Task<bool> IsInTeam(int id);
         Task<bool> IsInivtedToTeam(int teamId, int id);
         Task<Match> GetMatch(int id);
         Task<bool> MatchExistsAndIsNotConcluded(int firstTeamId, int secondTeamId);
@@ -42,7 +42,7 @@ namespace VolleyballApp.API.Data
         Task<bool> IsInivtedToMatch(int firstTeamId, int secondTeamId);
         Task<Invite> DeclineMatchInvite(int firstTeamId, int secondTeamId);
         Task<bool> MatchInviteExists(Team firstTeam,Team secondTeam);
-        Task<Match> AddScore(ScoreForAddDto scoreToAdd,int id);
+        Task<Score> AddScore(ScoreForAddDto scoreToAdd,int id);
         Task<Photo> GetPhoto(int id);
         Task<Message> GetMessage(int id);
         Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
@@ -55,5 +55,11 @@ namespace VolleyballApp.API.Data
         Task<Location> AddLocation(LocationForAddDto locationForAdd, int id);
         Task<List<User>> AddMatchAndRanking(ICollection<User> users, int setScore);
         Task<User> AddRefereeMatch(User user);
+        Task<League> GetLeague(int id);
+        Task<PagedList<League>> GetLeagues(UserParams userParams);
+        Task<League> CreateLeague(LeagueForCreationDto leagueForCreationDto);
+        Task<League> AddTeamToLeague(User userJoining, League leagueToJoin);
+        Task<League> CreateAndAddMatches(int leagueId);
+        Task<Match> CreateLeagueMatch(int firstTeamId, int secondTeamId, int leagueId);
     }
 }

@@ -40,6 +40,9 @@ namespace VolleyballApp.API.Helpers
             CreateMap<MessageForCreationDto, Message>().ReverseMap();
             CreateMap<TeamForUpdateDto, Team>();
             CreateMap<LocationForAddDto, Location>();
+            CreateMap<League, LeagueForDetailedDto>();
+            CreateMap<TeamLeague, TeamLeagueForLeagueDetailsDto>();
+            CreateMap<League, LeagueForListDto>();
         }
     }
 }

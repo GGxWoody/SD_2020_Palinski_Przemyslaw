@@ -18,8 +18,8 @@ export interface User {
     intrests?: string;
     introduction?: string;
     lookingFor?: string;
-    teams?: Team[];
-    teamsCreated?: Team[];
+    team?: Team;
+    ownedTeam?: boolean;
     gamesWon?: number;
     gamesLost?: number;
     isFriend?: boolean;

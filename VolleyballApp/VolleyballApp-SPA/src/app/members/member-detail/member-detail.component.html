@@ -37,7 +37,7 @@
             <button
               class="btn btn-primary w-100"
               *ngIf="!user.isFriend"
-              (click)="sendFriendInvite(user.id)"
+              (click)="sendFriendInvite()"
             >
               <i class="fa fa-address-book"></i>Friend invite
             </button>
@@ -45,7 +45,7 @@
               *ngIf="user.isFriend"
               type="button"
               class="btn btn-primary w-100"
-              (click)="staticModal.show()"
+              (click)="sendTeamInvite()"
             >
               Team invite
             </button>
@@ -57,63 +57,15 @@
     <div class="col-sm-8">
       <div class="tab-panel">
         <tabset class="member-tabset" #memberTabs>
-          <tab heading="About {{ user.knownAs }}"> </tab>
-          <tab heading="Teams">
-            <div *ngIf="user.teams.length === 0" class="mt-5 text-center">
-              <h4>Player has no teams</h4>
-            </div>
-            <div *ngFor="let team of user.teams" class="col-12 mt-2">
-              <app-team-card [team]="team"></app-team-card>
+          <tab heading="About {{ user.knownAs }}"> 
+            <div *ngIf="user.team != null">
+              <app-team-card [team]="user.team"></app-team-card>
             </div>
           </tab>
           <tab heading="Messages">
             <app-member-messages [recipientId]="user.id"></app-member-messages>
           </tab>
         </tabset>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  bsModal
-  #staticModal="bs-modal"
-  [config]="{ backdrop: 'static' }"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="dialog-static-name"
->
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 id="dialog-static-name" class="modal-title pull-left">
-          Team invite
-        </h4>
-        <button
-          type="button"
-          class="close pull-right"
-          aria-label="Close"
-          (click)="staticModal.hide()"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <ngx-select-dropdown
-          (change)="selectionChanged($event)"
-          [multiple]="false"
-          [(ngModel)]="teamSelected"
-          [options]="loginedInUser.teamsCreated"
-          [config]="config"
-        ></ngx-select-dropdown>
-        <button
-          [disabled]="inTeam"
-          class="btn btn-primary w-100 mt-3"
-          (click)="sendTeamInvite(user.id)"
-        >
-          Team invite
-        </button>
       </div>
     </div>
   </div>

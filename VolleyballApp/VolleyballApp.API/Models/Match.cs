@@ -11,6 +11,7 @@ namespace VolleyballApp.API.Models
         public Score Score { get; set; }
         public User Referee { get; set; }
         public bool IsRefereeInvited { get; set; }
-        public Location Location { get; set;}
+        public Location Location { get; set; }
+        public League League { get; set; }
     }
 }

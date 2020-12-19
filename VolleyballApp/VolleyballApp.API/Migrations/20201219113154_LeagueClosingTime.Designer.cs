@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VolleyballApp.API.Data;
 
 namespace VolleyballApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201219113154_LeagueClosingTime")]
+    partial class LeagueClosingTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -394,9 +396,6 @@ namespace VolleyballApp.API.Migrations
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("OwnedTeam")
-                        .HasColumnType("INTEGER");
-
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("BLOB");
 
@@ -485,7 +484,7 @@ namespace VolleyballApp.API.Migrations
                         .WithMany()
                         .HasForeignKey("FirstTeamId");
 
-                    b.HasOne("VolleyballApp.API.Models.League", "League")
+                    b.HasOne("VolleyballApp.API.Models.League", null)
                         .WithMany("Matches")
                         .HasForeignKey("LeagueId");
 
@@ -508,8 +507,6 @@ namespace VolleyballApp.API.Migrations
                         .HasForeignKey("SecondTeamId");
 
                     b.Navigation("FirstTeam");
-
-                    b.Navigation("League");
 
                     b.Navigation("Location");
 
@@ -557,7 +554,7 @@ namespace VolleyballApp.API.Migrations
             modelBuilder.Entity("VolleyballApp.API.Models.Team", b =>
                 {
                     b.HasOne("VolleyballApp.API.Models.User", "Owner")
-                        .WithOne("Team")
+                        .WithOne("OwnedTeam")
                         .HasForeignKey("VolleyballApp.API.Models.Team", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -586,9 +583,11 @@ namespace VolleyballApp.API.Migrations
 
             modelBuilder.Entity("VolleyballApp.API.Models.User", b =>
                 {
-                    b.HasOne("VolleyballApp.API.Models.Team", null)
+                    b.HasOne("VolleyballApp.API.Models.Team", "Team")
                         .WithMany("Users")
                         .HasForeignKey("TeamId");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("VolleyballApp.API.Models.League", b =>
@@ -618,11 +617,11 @@ namespace VolleyballApp.API.Migrations
 
                     b.Navigation("MessagesSent");
 
+                    b.Navigation("OwnedTeam");
+
                     b.Navigation("Photo");
 
                     b.Navigation("RefereeMatches");
-
-                    b.Navigation("Team");
                 });
 #pragma warning restore 612, 618
         }

@@ -40,6 +40,7 @@ namespace VolleyballApp.API.Controllers
                 userToCreate.UserType = "player";
             }
             userToCreate.RankingPoints = 900;
+            userToCreate.OwnedTeam = false;
             
             var createdUser = await _repo.Regiser(userToCreate, userForRegisterDto.Password);
 
