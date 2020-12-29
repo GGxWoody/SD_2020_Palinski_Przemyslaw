@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Match } from 'src/app/_models/match';
+import { Pagination } from 'src/app/_models/pagination';
 import { Score } from 'src/app/_models/score';
 import { User } from 'src/app/_models/user';
 import { AlertifyService } from 'src/app/_services/alertify.service';
@@ -17,6 +18,8 @@ export class MatchDetailComponent implements OnInit {
   match: Match;
   location: Location;
   score: Score;
+  referees: User[];
+  pagination: Pagination;
   user: User = JSON.parse(localStorage.getItem('user'));
   locationForm: FormGroup;
   scoreForm: FormGroup;
@@ -27,6 +30,8 @@ export class MatchDetailComponent implements OnInit {
   ngOnInit() {
     this.root.data.subscribe(data => {
       this.match = data.match;
+      this.referees = data.referees.result;
+      this.pagination = data.referees.pagination;
     });
     this.createLocationForm();
     this.createScoreForm();
@@ -109,7 +114,21 @@ export class MatchDetailComponent implements OnInit {
   }
 
   cancelInvite() {
-    this.inviteService.declineRefereeInvite(this.user.id, this.match.id);
+    this.inviteService.declineRefereeInvite(this.user.id, this.match.id).subscribe(() => {
+      this.alertify.success('Referee invitation canceled');
+      this.reloadMatchData();
+    } , error => {
+        this.alertify.error(error);
+    });
+  }
+
+  reloadMatchData() {
+    this.matchService.getMatch(this.match.id)
+    .subscribe((res: Match) => {
+      this.match = res;
+    }, error => {
+      this.alertify.error(error);
+    });
   }
 
 }

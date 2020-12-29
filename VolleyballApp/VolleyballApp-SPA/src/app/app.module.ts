@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BsDropdownModule, BsDatepickerModule, PaginationModule, ButtonsModule, TabsModule, ModalModule } from 'ngx-bootstrap';
+import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -55,6 +56,11 @@ import { LeaguesCardComponent } from './leagues/leagues-card/leagues-card.compon
 import { LeagueDetailResolver } from './_resolvers/league-detail.resolver';
 import { LeagueDetailComponent } from './leagues/league-detail/league-detail.component';
 import { MatchesForLeagueResolver } from './_resolvers/matches-for-league.resolver';
+import { MatchRefereeListResolver } from './_resolvers/match-referee-list.resolver';
+import { MatchRefereeListComponent } from './matches/match-referee-list/match-referee-list.component';
+import { MatchRefereeDataComponent } from './matches/match-referee-data/match-referee-data.component';
+import { ActivateComponent } from './activate/activate.component';
+import { ActivateLinkComponent } from './activate-link/activate-link.component';
 
 
 
@@ -74,6 +80,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       AppComponent,
       NavComponent,
       HomeComponent,
+      ActivateComponent,
+      ActivateLinkComponent,
       RegisterComponent,
       MemberListComponent,
       MemberCardComponent,
@@ -90,6 +98,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       MemberMessagesComponent,
       TeamDetailComponent,
       MatchListComponent,
+      MatchRefereeListComponent,
+      MatchRefereeDataComponent,
       MatchCardComponent,
       MatchDetailComponent,
       PhotoEditorComponent,
@@ -98,6 +108,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       TeamPhotoComponent,
       LeaguesCardComponent,
       TimeAgoPipe,
+      ActivateComponent,
+      ActivateLinkComponent
    ],
    imports: [
       BrowserModule,
@@ -114,6 +126,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       PaginationModule.forRoot(),
       ButtonsModule.forRoot(),
       BsDatepickerModule.forRoot(),
+      NgxNavbarModule,
       OwlDateTimeModule,
       OwlNativeDateTimeModule,
       RouterModule.forRoot(appRoutes),
@@ -141,6 +154,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       LeagueListResolver,
       LeagueDetailResolver,
       MatchesForLeagueResolver,
+      MatchRefereeListResolver,
       AuthGuard,
       PreventUnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }

@@ -12,6 +12,9 @@ export interface User {
     created?: Date;
     photoUrl?: string;
     city?: string;
+    description?: string;
+    positions?: string;
+    mail?: string;
     country?: string;
     lastActive?: Date;
     photo?: Photo;
@@ -23,4 +26,6 @@ export interface User {
     gamesWon?: number;
     gamesLost?: number;
     isFriend?: boolean;
+    gamesPlayed?: number;
+    isMailActivated?: boolean;
 }

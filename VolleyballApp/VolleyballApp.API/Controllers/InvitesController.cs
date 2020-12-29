@@ -288,7 +288,7 @@ namespace VolleyballApp.API.Controllers
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var invite = await _repository.GetRefereeInvite(matchId);
             if (invite == null) return BadRequest("This invitation does not exists");
-            if (invite.InviteTo.Id != currnetUserId || invite.InviteFrom.Id != currnetUserId) return BadRequest("This is not your invite");
+            if (invite.InviteTo.Id != currnetUserId && invite.InviteFrom.Id != currnetUserId) return BadRequest("This is not your invite");
             await _repository.DeclineRefereeInvite(currnetUserId, matchId);
             return NoContent();
         }

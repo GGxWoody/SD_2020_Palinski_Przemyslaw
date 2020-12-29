@@ -24,5 +24,7 @@ namespace VolleyballApp.API.Dtos
         public bool OwnedTeam { get; set; }
         public bool IsFriend { get; set; }
         public int RankingPoints { get; set; }
+        public string Description { get; set; }
+        public string Positions { get; set; }
     }
 }

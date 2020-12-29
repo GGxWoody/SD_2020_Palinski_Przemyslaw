@@ -25,6 +25,7 @@ namespace VolleyballApp.API.Dtos
         public string UserType { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
+        public string Mail { get; set; }
 
         public UserForRegisterDto()
         {

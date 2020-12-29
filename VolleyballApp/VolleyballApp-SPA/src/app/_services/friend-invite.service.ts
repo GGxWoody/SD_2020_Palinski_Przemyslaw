@@ -85,4 +85,8 @@ export class FriendInviteService {
   declineRefereeInvite(userId: number, matchId: number) {
     return this.http.delete(this.baseUrl + 'invites/' + userId + '/match/' + matchId + '/referee');
   }
+
+  sendRefereeInvite(userId: number, refereeId: number, matchId: number) {
+    return this.http.post(this.baseUrl + 'invites/' + userId + '/match/' + matchId + '/' + refereeId + '/referee', {});
+  }
 }

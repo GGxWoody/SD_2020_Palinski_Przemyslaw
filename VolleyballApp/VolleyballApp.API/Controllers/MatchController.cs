@@ -57,6 +57,16 @@ namespace VolleyballApp.API.Controllers
             return Ok(location);
         }
 
+        [HttpGet("{id}/referees")]
+        public async Task<IActionResult> GetReferesFromMatchLocation(int id, [FromQuery]UserParams userParams)
+        {
+            var match = await _repository.GetMatch(id);
+            var refereeList = await _repository.GetRefereesFromLocation(match.Location.Country, match.Location.City, userParams);
+            var refereesToReturn = _mapper.Map<List<UserForListDto>>(refereeList);
+            Response.AddPagination(refereeList.CurrentPage, refereeList.PageSize, refereeList.TotalCount, refereeList.TotalPages);
+            return Ok(refereesToReturn);
+        }
+
         [HttpPut("{id}/score")]
         public async Task<IActionResult> SetMatchScore(ScoreForAddDto scoreForAdd, int id)
         {
@@ -78,6 +88,7 @@ namespace VolleyballApp.API.Controllers
             var secondTeam = await _repository.GetTeam(matchToAddScore.SecondTeam.Id);
             await _repository.AddMatchAndRanking(firstTeam.Users, scoreForAdd.FirstTeamSets);
             await _repository.AddMatchAndRanking(secondTeam.Users, scoreForAdd.SecondTeamSets);
+            await _repository.AddRefereeMatch(userSendingScore);
             if (matchToAddScore.League != null)
             {
                 await _repository.AddLeagueMatchScore(matchToAddScore.League, matchToAddScore, scoreForAdd.FirstTeamSets, scoreForAdd.SecondTeamSets);

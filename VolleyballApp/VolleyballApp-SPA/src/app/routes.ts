@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { ActivateLinkComponent } from './activate-link/activate-link.component';
+import { ActivateComponent } from './activate/activate.component';
 import { HomeComponent } from './home/home.component';
 import { InviteListComponent } from './invites/invite-list/invite-list.component';
 import { LeagueDetailComponent } from './leagues/league-detail/league-detail.component';
@@ -20,6 +22,7 @@ import { LeagueDetailResolver } from './_resolvers/league-detail.resolver';
 import { LeagueListResolver } from './_resolvers/league-list.resolver';
 import { MatchDetailResolver } from './_resolvers/match-detail.resolver';
 import { MatchListResolver } from './_resolvers/match-list.resolver';
+import { MatchRefereeListResolver } from './_resolvers/match-referee-list.resolver';
 import { MatchesForLeagueResolver } from './_resolvers/matches-for-league.resolver';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 import { MemberEditResolver } from './_resolvers/member-edit.resolver';
@@ -30,6 +33,8 @@ import { TeamListResolver } from './_resolvers/team-list.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
+    { path: 'activate', component: ActivateComponent},
+    { path: 'activate/:id', component: ActivateLinkComponent},
     {
         path: '',
         runGuardsAndResolvers: 'always',
@@ -52,7 +57,8 @@ export const appRoutes: Routes = [
             resolve: {league: LeagueDetailResolver, matches: MatchesForLeagueResolver } },
             { path: 'teams/:id', component: TeamDetailComponent,
             resolve: { team: TeamDetailResolver, loginedInUser: MemberEditResolver} },
-            { path: 'matches/:id', component: MatchDetailComponent, resolve: { match: MatchDetailResolver } }
+            { path: 'matches/:id', component: MatchDetailComponent,
+            resolve: { match: MatchDetailResolver, referees: MatchRefereeListResolver } }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' },

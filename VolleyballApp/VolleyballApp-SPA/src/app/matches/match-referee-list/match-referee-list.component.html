@@ -1,0 +1,17 @@
+<div class="container mt-3">  
+  <div class="row justify-content-center">
+    <div *ngFor="let user of users" class="col-12">
+      <app-match-referee-data [referee]='user' [match]='match' (matchChange)='sendMatchData()'></app-match-referee-data>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination.totalPages >= 2">
+  <pagination [boundaryLinks]="true" 
+              [totalItems]="pagination.totalItems"
+              [itemsPerPage]="pagination.itemsPerPage"
+              [(ngModel)]="pagination.currentPage"
+              (pageChanged)="pageChanged($event)"
+            previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  </pagination>
+</div>

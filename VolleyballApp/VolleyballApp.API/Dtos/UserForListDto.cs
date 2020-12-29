@@ -15,8 +15,11 @@ namespace VolleyballApp.API.Dtos
         public DateTime LastActive { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+        public int GamesPlayed { get; set; }
         public string PhotoUrl { get; set; }
         public int RankingPoints { get; set; }
         public bool OwnedTeam { get; set; }
+        public bool IsMailActivated { get; set; }
+        public string Mail { get; set; }
     }
 }

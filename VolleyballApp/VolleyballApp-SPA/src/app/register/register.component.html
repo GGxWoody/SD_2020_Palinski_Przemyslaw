@@ -36,6 +36,11 @@
     <div class="invalid-feedback" *ngIf="registerForm.get('knownAs').touched && registerForm.get('knownAs').hasError('required')">Known as is required</div>
   </div>
   <div class="form-group">
+    <input [ngClass]="{'is-invalid': registerForm.get('mail').errors && registerForm.get('mail').touched}" class="form-control"
+      placeholder="Mail" formControlName="mail">
+    <div class="invalid-feedback" *ngIf="registerForm.get('mail').touched && registerForm.get('mail').hasError('required')">Mail is required</div>
+  </div>
+  <div class="form-group">
     <input [ngClass]="{'is-invalid': registerForm.get('dateOfBirth').errors && registerForm.get('dateOfBirth').touched}" class="form-control"
       placeholder="Date of Birth" formControlName="dateOfBirth" type="text" bsDatepicker [bsConfig]='bsConfig'>
     <div class="invalid-feedback" *ngIf="registerForm.get('dateOfBirth').touched && registerForm.get('dateOfBirth').hasError('required')">Date of Birth is required</div>

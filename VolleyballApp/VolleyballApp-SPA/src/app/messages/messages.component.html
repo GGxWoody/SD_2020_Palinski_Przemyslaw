@@ -48,7 +48,7 @@
         ]"
         [queryParams]="{ tab: 2 }"
       >
-        <td>{{ message.content }}</td>
+        <td>{{ (message.content.length>6)? (message.content | slice:0:50)+'...':(message.content) }}</td>
         <td>
           <div *ngIf="messageContainer != 'Outbox'">
             <img

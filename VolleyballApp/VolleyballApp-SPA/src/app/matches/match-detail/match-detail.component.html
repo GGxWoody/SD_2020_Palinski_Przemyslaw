@@ -50,6 +50,9 @@
       </div>
       <div class="card">
         <div class="d-flex justify-content-center">
+          <div class="card-body" *ngIf="!match.isRefereeInvited && user.id == match.firstTeam.owner.id">
+            <app-match-referee-list [users]='referees' [pagination]='pagination' [match]='match' (matchChange)='reloadMatchData()'></app-match-referee-list>
+          </div>
           <div class="card-body col-4" *ngIf="match.referee != null && user.id != match.referee.id">
             <h3 class="text-center">Match referee</h3>
             <app-member-card [user]="match.referee"></app-member-card>

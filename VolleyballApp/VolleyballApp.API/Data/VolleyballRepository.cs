@@ -647,5 +647,14 @@ namespace VolleyballApp.API.Data
             await _context.SaveChangesAsync();
             return league;
         }
+
+        public async Task<PagedList<User>> GetRefereesFromLocation(string country, string city, UserParams userParams)
+        {
+            var referees = _context.Users.AsQueryable();
+            referees = referees.Where(x => x.UserType == "referee");
+            referees = referees.Where(x => x.City == city);
+            referees = referees.Where(x => x.Country == country);
+            return await PagedList<User>.CreateAsync(referees, userParams.PageNumber, userParams.PageSize);
+        }
     }
 }

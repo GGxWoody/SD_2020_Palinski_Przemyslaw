@@ -18,13 +18,15 @@ namespace VolleyballApp.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repo;
+        private readonly IVolleyballRepository _volley;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper, IVolleyballRepository volley)
         {
             _mapper = mapper;
-            this._config = config;
-            this._repo = repo;
+            _config = config;
+            _repo = repo;
+            _volley = volley;
         }
 
         [HttpPost("register")]
@@ -41,12 +43,39 @@ namespace VolleyballApp.API.Controllers
             }
             userToCreate.RankingPoints = 900;
             userToCreate.OwnedTeam = false;
+            userToCreate.IsMailActivated = false;
+            userToCreate.Description = "";
+            userToCreate.Positions = "";
             
             var createdUser = await _repo.Regiser(userToCreate, userForRegisterDto.Password);
+            Helpers.MailSender.sendMessage("Account activation", "<h3>To activate your account click this link http://localhost:4200/activate/" + createdUser.Id +"</h3>", createdUser.Mail);
 
             var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
 
             return CreatedAtRoute("GetUser", new { controller = "Users", id = createdUser.Id }, userToReturn);
+        }
+
+        [HttpGet("activate/{id}")]
+        public async Task<IActionResult> ActivateUser(int id)
+        {
+            var userFromRepo = await _volley.GetUser(id);
+            if (userFromRepo == null) return Unauthorized();
+            if (userFromRepo.IsMailActivated) return BadRequest("User already activated");
+            userFromRepo.IsMailActivated = true;
+            var userToReturn = _mapper.Map<UserForListDto>(userFromRepo);
+            if (await _volley.saveAll()) return Ok(userToReturn);
+            throw new Exception($"Activating user with {id} failed on save.");
+
+        }
+
+        [HttpGet("resend/{id}")]
+        public async Task<IActionResult> ResendMail(int id)
+        {
+            var user = await _volley.GetUser(id);
+            if (user == null) return Unauthorized();
+            if(user.IsMailActivated) return BadRequest("Mail already confirmed");
+            Helpers.MailSender.sendMessage("Account activation", "<h3>To activate your account click this link http://localhost:4200/activate/" + user.Id +"</h3>", user.Mail);
+            return Ok();
         }
 
         [HttpPost("login")]

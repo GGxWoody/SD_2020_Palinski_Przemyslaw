@@ -63,5 +63,6 @@ namespace VolleyballApp.API.Data
         Task<Match> CreateLeagueMatch(int firstTeamId, int secondTeamId, int leagueId);
         Task<PagedList<Match>> GetLeagueMatches(int leagueId, UserParams userParams);
         Task<League> AddLeagueMatchScore(League league, Match match, int firstTeamScore, int secondTeamScore);
+        Task<PagedList<User>> GetRefereesFromLocation(string country, string city, UserParams userParams);
     }
 }

@@ -44,4 +44,25 @@ export class AuthService {
     const token = localStorage.getItem('token');
     return !this.jwtHelper.isTokenExpired(token);
   }
+
+  resendMail(id: any) {
+    return this.http.get(this.baseUrl + 'resend/' + id);
+  }
+
+  activate(id: number) {
+    return this.http.get(this.baseUrl + 'activate/' + id).pipe(
+      map((response: any) => {
+        const user = response;
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUser = user.user;
+        }
+      })
+    );
+  }
+
+  activatedMail() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user.isMailActivated;
+  }
 }

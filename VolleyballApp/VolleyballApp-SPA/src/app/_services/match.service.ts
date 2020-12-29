@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Match } from '../_models/match';
 import { PaginatedResult } from '../_models/pagination';
 import { Score } from '../_models/score';
+import { User } from '../_models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -53,4 +54,38 @@ export class MatchService {
   setScore(id: number, score: Score) {
     return this.http.put(this.baseUrl + 'match/' + id + '/score', score);
   }
+
+  getMatchReferee(
+    id: number,
+    page?,
+    itemsPerPage?,
+    userParams?,
+    likesParam?
+  ): Observable<PaginatedResult<User[]>> {
+    const paginatedResult: PaginatedResult<User[]> = new PaginatedResult<
+      User[]
+    >();
+
+    let params = new HttpParams();
+
+    if (page != null && itemsPerPage != null) {
+      params = params.append('pageNumber', page);
+      params = params.append('pageSize', itemsPerPage);
+    }
+
+    return this.http
+      .get<User[]>(this.baseUrl + 'match/' + id + '/referees', { observe: 'response', params })
+      .pipe(
+        map(response => {
+          paginatedResult.result = response.body;
+          if (response.headers.get('Pagination') != null) {
+            paginatedResult.pagination = JSON.parse(
+              response.headers.get('Pagination')
+            );
+          }
+          return paginatedResult;
+        })
+      );
+  }
+
 }

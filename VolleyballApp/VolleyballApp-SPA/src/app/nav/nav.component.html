@@ -1,44 +1,126 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+<nav
+  *ngIf="loggedIn()"
+  ngxNavbarDynamicExpand
+  class="navbar navbar-expand-md navbar-dark bg-primary"
+>
   <div class="container">
     <a class="navbar-brand" [routerLink]="['/home']">Volleyball App</a>
-
-    <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/members']">Players</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/teams']">Teams</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/leagues']">Leagues</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/matches']">Matches</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/messages']">Messages</a>
-      </li>
-    </ul>
-    <form *ngIf="!loggedIn()" #loginForm="ngForm" class="form-inline my-2 my-lg-0" (ngSubmit)="login()">
-      <input class="form-control mr-sm-2" type="text" name="username" placeholder="Username" required
-        [(ngModel)]="model.username" />
-      <input class="form-control mr-sm-2" type="password" name="password" placeholder="Password" required
-        [(ngModel)]="model.password" autocomplete="on" />
-      <button [disabled]="!loginForm.valid" class="btn btn-success my-2 my-sm-0" type="submit">
-        Login
-      </button>
-    </form>
-    <div *ngIf="loggedIn()" class="dropdown" dropdown>
-      <a class="dropdown-toggle text-light" dropdownToggle>
-        Welcome {{ authService.decodedToken?.unique_name | titlecase}}
-      </a>
-      <div class="dropdown-menu mt-3" *dropdownMenu>
-        <a class="dropdown-item" [routerLink]="['/members/edit']"><i class="fa fa-user mr-1"></i>Edit Profile</a>
-        <a class="dropdown-item" [routerLink]="['/invites']"><i class="fa fa-envelope mr-1"></i>Invites</a>
-        <a class="dropdown-item" [routerLink]="['/friends']"><i class="fa fa-address-book mr-1"></i>Friend List</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out mr-1"></i>Logout</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      (click)="collapse.toggle()"
+      aria-controls="main-nav1"
+      aria-expanded="false"
+      aria-label="Navbar"
+    >
+      <span
+        class="navbar-toggler-icon d-flex align-items-center justify-content-center"
+      >
+      </span>
+    </button>
+    <ngx-navbar-collapse id="main-nav1" #collapse="ngxNavbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/members']">Players</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/teams']">Teams</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/leagues']">Leagues</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/matches']">Matches</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/messages']">Messages</a>
+        </li>
+      </ul>
+      <div class="dropdown" dropdown>
+        <a class="dropdown-toggle text-light" dropdownToggle>
+          Welcome {{ authService.decodedToken?.unique_name | titlecase }}
+        </a>
+        <div class="dropdown-menu mt-3" *dropdownMenu>
+          <a class="dropdown-item" [routerLink]="['/members/edit']"
+            ><i class="fa fa-user mr-1"></i>Edit Profile</a
+          >
+          <a class="dropdown-item" [routerLink]="['/invites']"
+            ><i class="fa fa-envelope mr-1"></i>Invites</a
+          >
+          <a class="dropdown-item" [routerLink]="['/friends']"
+            ><i class="fa fa-address-book mr-1"></i>Friend List</a
+          >
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="logout()"
+            ><i class="fa fa-sign-out mr-1"></i>Logout</a
+          >
+        </div>
       </div>
-    </div>
+    </ngx-navbar-collapse>
+  </div>
+</nav>
+
+<nav
+  *ngIf="!loggedIn()"
+  ngxNavbarDynamicExpand
+  class="navbar navbar-expand-md navbar-dark bg-primary"
+>
+  <div class="container">
+    <a class="navbar-brand" [routerLink]="['/home']">Volleyball App</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      (click)="collapse.toggle()"
+      aria-controls="main-nav"
+      aria-expanded="false"
+      aria-label="Navbar"
+    >
+      <span
+        class="navbar-toggler-icon d-flex align-items-center justify-content-center"
+      >
+      </span>
+    </button>
+    <ngx-navbar-collapse id="main-nav" #collapse="ngxNavbarCollapse">
+      <form
+        #loginForm="ngForm"
+        class="form-inline my-2 my-lg-0"
+        (ngSubmit)="login()"
+      >
+        <div class="form-row">
+          <div class="form-group col-sm-12 col-md-5 col-lg-5">
+            <input
+              class="form-control mr-sm-2"
+              style="min-width: 211px"
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              [(ngModel)]="model.username"
+            />
+          </div>
+          <div class="form-group col-sm-12 col-md-5 col-lg-5">
+            <input
+              class="form-control mr-sm-2"
+              style="min-width: 211px"
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              [(ngModel)]="model.password"
+              autocomplete="on"
+            />
+          </div>
+          <div class="form-group col-sm-12 col-md-2 col-lg-2">
+            <button
+              [disabled]="!loginForm.valid"
+              class="btn btn-success my-2 my-sm-0"
+              type="submit"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </form>
+    </ngx-navbar-collapse>
   </div>
 </nav>
