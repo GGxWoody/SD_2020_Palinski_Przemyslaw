@@ -32,6 +32,7 @@ namespace VolleyballApp.API.Controllers
         {
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var userFromRepo = await _repository.GetUser(currnetUserId);
+            if (userFromRepo.IsMailActivated == false) return BadRequest("User account is not activated");
             userParams.UserID = currnetUserId;
             var users = await _repository.GetUsers(userParams);
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);

@@ -521,7 +521,7 @@ namespace VolleyballApp.API.Data
         public async Task<League> GetLeague(int id)
         {
             var league = await _context.Leagues.Include(x => x.Creator).Include(x => x.Matches)
-            .Include(x => x.TeamLeague).ThenInclude(x => x.Team).FirstOrDefaultAsync(x => x.Id == id);
+            .Include(x => x.TeamLeague).ThenInclude(x => x.Team).ThenInclude(x => x.Owner).FirstOrDefaultAsync(x => x.Id == id);
             return league;
         }
 
@@ -566,6 +566,8 @@ namespace VolleyballApp.API.Data
             var teamsList = new List<Team>(teams);
             for (int i = 0; i < teams.Count(); i++)
             {
+                Helpers.MailSender.sendLeagueStartInfo(leagueFromRepo.Id ,teamsList[i].Owner.Mail);
+
                 for (int j = i+1; j < teams.Count(); j++)
                 {
                     await CreateLeagueMatch(teamsList[i].Id,teamsList[j].Id,leagueFromRepo.Id);

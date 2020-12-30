@@ -66,7 +66,7 @@ namespace VolleyballApp.API.Controllers
             if (sender == null || recipient == null) return NotFound();
             var friendFromRepo = await _repository.AcceptFriendInvite(sender,recipient);
             var inviteToDisplay = _mapper.Map<FriendToReturnDto>(friendFromRepo);
-
+            Helpers.MailSender.sendInviteAction("friend", "accepted", sender.Mail);
             return Ok(inviteToDisplay);
         }
 
@@ -75,9 +75,11 @@ namespace VolleyballApp.API.Controllers
         {
             if (userId == id) return BadRequest();
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            var sender = await _repository.GetUser(userId);
             if (await _repository.IsInivtedToFriends(userId,id))
             {
                 await _repository.DeclineFriendInvite(userId, id);
+                Helpers.MailSender.sendInviteAction("friend", "declined", sender.Mail);
                 return NoContent();
             }
             return BadRequest("No existing invite from this user");
@@ -93,8 +95,10 @@ namespace VolleyballApp.API.Controllers
             var user = await _repository.GetUser(userId);
             var recipient = await _repository.GetUser(id);
             if (recipient == null) return BadRequest("Could not find user");
+            if (recipient.IsMailActivated == false) return BadRequest("User account is not activated");
             var invite = await _repository.CreateFriendInvite(user,recipient);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            Helpers.MailSender.sendInviteInfo("friend", recipient.Mail);
             return CreatedAtRoute("GetFriendInvite", new { userId = user.Id, id = recipient.Id}, inviteToReturn);
         }
 
@@ -112,11 +116,14 @@ namespace VolleyballApp.API.Controllers
             var recipient = await _repository.GetUser(id);
             var sender = await _repository.GetUser(userId);
             if (recipient.UserType != "player") return BadRequest("You cannot invite this user to team");
+            if (recipient.Team != null) return BadRequest("This user is already in some team");
+            if (recipient.IsMailActivated == false) return BadRequest("User account is not activated");
             if (team.Id != sender.Team.Id) return BadRequest("You are not part of that team");
             if (sender.OwnedTeam == false) return BadRequest("You are not owner of that team");
             if (recipient == null) return BadRequest("Could not find user");
             var invite = await _repository.CreateTeamInvite(recipient,team);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            Helpers.MailSender.sendInviteInfo("team", recipient.Mail);
             return CreatedAtRoute("GetTeamInvite", new {userId = userId, teamId = team.Id, id = recipient.Id}, inviteToReturn);
         }
 
@@ -148,6 +155,7 @@ namespace VolleyballApp.API.Controllers
             if (team == null || recipient == null) return NotFound();
             var teamFromRepo = await _repository.AcceptTeamInvite(teamId, id);
             var teamToDisplay = _mapper.Map<TeamForDeatailedDto>(teamFromRepo);
+            Helpers.MailSender.sendInviteAction("team", "accepted", teamFromRepo.Owner.Mail);
 
             return Ok(teamToDisplay);
         }
@@ -157,9 +165,11 @@ namespace VolleyballApp.API.Controllers
         {
             if (userId == id) return BadRequest();
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            var teamFromRepo = await _repository.GetTeam(teamId);
             if (await _repository.IsInivtedToTeam(teamId,id))
             {
                 await _repository.DeclineTeamInvite(teamId, id);
+                Helpers.MailSender.sendInviteAction("team", "declined", teamFromRepo.Owner.Mail);
                 return NoContent();
             }
             return BadRequest("No existing invite for this user");
@@ -203,6 +213,7 @@ namespace VolleyballApp.API.Controllers
 
             var invite = await _repository.CreateMatchInvite(firstTeam,secondTeam);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            Helpers.MailSender.sendInviteInfo("match", secondTeam.Owner.Mail);
             return CreatedAtRoute("GetMatchInvite", new {firstTeamId = firstTeamId, secondTeamId = secondTeamId, userId = firstTeam.OwnerId}, inviteToReturn);
 
         }
@@ -220,6 +231,7 @@ namespace VolleyballApp.API.Controllers
                 return NotFound();
             var matchFromRepo = await _repository.AcceptMatchInvite(firstTeamId, secondTeamId);
             var matchToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
+            Helpers.MailSender.sendInviteAction("match", "accepted", firstTeam.Owner.Mail);
             return Ok(matchToDisplay);
         }
 
@@ -234,6 +246,7 @@ namespace VolleyballApp.API.Controllers
             if (await _repository.IsInivtedToMatch(firstTeamId, secondTeamId))
             {
                 await _repository.DeclineMatchInvite(firstTeamId, secondTeamId);
+                Helpers.MailSender.sendInviteAction("match", "declined", firstTeam.Owner.Mail);
                 return NoContent();
             }
             return BadRequest("No existing invite for this user");
@@ -265,6 +278,7 @@ namespace VolleyballApp.API.Controllers
 
             var invite = await _repository.CreateRefereeInvite(referee, match, currnetUserId);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
+            Helpers.MailSender.sendInviteInfo("match", referee.Mail);
             return CreatedAtRoute("GetRefereeInvite", new {userId = currnetUserId, matchId = matchId, refereeId = refereeId}, inviteToReturn);
 
         }
@@ -279,6 +293,7 @@ namespace VolleyballApp.API.Controllers
             
             var matchFromRepo = await _repository.AcceptRefereeInvite(invite.InviteTo.Id, matchId);
             var matchToDisplay = _mapper.Map<MatchForDetailedDto>(matchFromRepo);
+            Helpers.MailSender.sendInviteAction("referee", "accepted", invite.InviteFrom.Mail);
             return Ok(matchToDisplay);
         }
 
@@ -290,6 +305,7 @@ namespace VolleyballApp.API.Controllers
             if (invite == null) return BadRequest("This invitation does not exists");
             if (invite.InviteTo.Id != currnetUserId && invite.InviteFrom.Id != currnetUserId) return BadRequest("This is not your invite");
             await _repository.DeclineRefereeInvite(currnetUserId, matchId);
+            Helpers.MailSender.sendInviteAction("referee", "declined", invite.InviteFrom.Mail);
             return NoContent();
         }
 

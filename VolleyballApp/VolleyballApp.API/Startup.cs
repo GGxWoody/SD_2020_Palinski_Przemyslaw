@@ -45,6 +45,7 @@ namespace VolleyballApp.API
             services.AddAutoMapper(typeof(VolleyballRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IVolleyballRepository, VolleyballRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

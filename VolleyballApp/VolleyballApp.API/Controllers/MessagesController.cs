@@ -21,7 +21,7 @@ namespace VolleyballApp.API.Controllers
     {
         private readonly IVolleyballRepository _repo;
         private readonly IMapper _mapper;
-        public MessagesController(IVolleyballRepository repo, IMapper mapper)
+        public MessagesController(IVolleyballRepository repo, IMapper mapper, IMessageRepository message)
         {
             _mapper = mapper;
             _repo = repo;
@@ -87,6 +87,7 @@ namespace VolleyballApp.API.Controllers
 
             if (recipient == null)
                 return BadRequest("Could not find user");
+            if (recipient.IsMailActivated == false) return BadRequest("User account is not activated");
 
             var message = _mapper.Map<Message>(messageForCreationDto);
 
@@ -94,6 +95,7 @@ namespace VolleyballApp.API.Controllers
 
             if (await _repo.saveAll())
             {
+                Helpers.MailSender.sendMemberMessage(message, recipient.Mail);
                 var messageToReturn = _mapper.Map<MessageToReturnDto>(message);
                 return CreatedAtRoute("GetMessage", new { id = message.Id, userId = userId }, messageToReturn);
             }

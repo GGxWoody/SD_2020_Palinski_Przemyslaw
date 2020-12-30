@@ -56,6 +56,7 @@ namespace VolleyballApp.API.Controllers
             var currnetUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var userFromRepo = await _repository.GetUser(currnetUserId);
+            if (userFromRepo.IsMailActivated == false) return BadRequest("User account is not activated");
             
             if(userFromRepo.UserType != "player") return BadRequest("Only players can create team");
             if(userFromRepo.Team != null) return BadRequest("You are already in the team");

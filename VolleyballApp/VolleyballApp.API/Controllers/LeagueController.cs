@@ -48,7 +48,8 @@ namespace VolleyballApp.API.Controllers
         public async Task<IActionResult> CreateLeague(LeagueForCreationDto leagueForCreationDto) {
             if (leagueForCreationDto.CreatorId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
             var userCreating = await _repository.GetUser(leagueForCreationDto.CreatorId);
-            if (userCreating.OwnedTeam == false) return BadRequest("You need to be owner of the team");
+            if (userCreating.OwnedTeam == false && userCreating.UserType == "player") return BadRequest("You need to be owner of the team");
+            if (userCreating.IsMailActivated == false) return BadRequest("User account is not activated");
             var createdLeague = await _repository.CreateLeague(leagueForCreationDto);
             var leagueToReturn = _mapper.Map<LeagueForDetailedDto>(createdLeague);
             return CreatedAtRoute("GetLeague", new { controller = "League", id = createdLeague.Id }, leagueToReturn);
@@ -66,6 +67,7 @@ namespace VolleyballApp.API.Controllers
             var teams = new List<TeamLeague>(leagueToJoin.TeamLeague);
             if (teams.Select(x => x.TeamId).Contains(userJoining.Team.Id)) return BadRequest("Your team is already in this league");
             await _repository.AddTeamToLeague(userJoining, leagueToJoin);
+            Helpers.MailSender.sendLeagueJoinInfo(userJoining.Team.Id, leagueId, leagueToJoin.Creator.Mail);
             return Ok();
         }
 

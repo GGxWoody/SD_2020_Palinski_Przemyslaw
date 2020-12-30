@@ -33,7 +33,6 @@ import { TeamListResolver } from './_resolvers/team-list.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'activate', component: ActivateComponent},
     { path: 'activate/:id', component: ActivateLinkComponent},
     {
         path: '',
@@ -44,6 +43,7 @@ export const appRoutes: Routes = [
                 path: 'members/edit', component: MemberEditComponent, resolve: { user: MemberEditResolver },
                 canDeactivate: [PreventUnsavedChanges]
             },
+            { path: 'activate', component: ActivateComponent},
             { path: 'members', component: MemberListComponent, resolve: { users: MemberListResolver } },
             { path: 'friends', component: MemberFriendListComponent, resolve: { friends: FriendListResolver } },
             { path: 'teams', component: TeamListComponent, resolve: {teams: TeamListResolver} },

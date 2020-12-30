@@ -52,6 +52,7 @@ namespace VolleyballApp.API.Controllers
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
             var userFromRepo = await _repo.GetUser(userId);
+            if (userFromRepo.IsMailActivated == false) return BadRequest("User account is not activated");
             var file = photoForCreationDto.File;
             var uploadResult = new ImageUploadResult();
             if (file.Length > 0)
