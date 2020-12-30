@@ -20,6 +20,7 @@ namespace VolleyballApp.API.Dtos
         public PhotoForReturnDto Photo { get; set; }
         public int GamesLost { get; set; }
         public int GamesWon { get; set; }
+        public int GamesPlayed { get; set; }
         public TeamsForListDto Team { get; set; }
         public bool OwnedTeam { get; set; }
         public bool IsFriend { get; set; }

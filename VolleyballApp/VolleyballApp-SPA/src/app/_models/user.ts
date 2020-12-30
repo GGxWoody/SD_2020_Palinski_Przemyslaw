@@ -28,4 +28,5 @@ export interface User {
     isFriend?: boolean;
     gamesPlayed?: number;
     isMailActivated?: boolean;
+    rankingPoints?: number;
 }

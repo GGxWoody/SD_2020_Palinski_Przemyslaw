@@ -1,0 +1,28 @@
+<form [formGroup]="leagueForm" (ngSubmit)="createLeague()">
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': leagueForm.get('country').errors && leagueForm.get('country').touched}" class="form-control"
+      placeholder="Country" formControlName="country">
+    <div class="invalid-feedback" *ngIf="leagueForm.get('country').touched && leagueForm.get('country').hasError('required')">Country is required</div>
+  </div>
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': leagueForm.get('city').errors && leagueForm.get('city').touched}" class="form-control"
+      placeholder="City" formControlName="city">
+    <div class="invalid-feedback" *ngIf="leagueForm.get('city').touched && leagueForm.get('city').hasError('required')">City is required</div>
+  </div>
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': leagueForm.get('teamLimit').errors && leagueForm.get('teamLimit').touched}" class="form-control"
+      placeholder="Team Limit" formControlName="teamLimit">
+    <div class="invalid-feedback" *ngIf="leagueForm.get('teamLimit').touched && leagueForm.get('teamLimit').hasError('required')">Address is required</div>
+  </div>
+  <div class="form-group">
+    <input [ngClass]="{'is-invalid': leagueForm.get('closedSignUp').errors && leagueForm.get('closedSignUp').touched}" class="form-control"
+      placeholder="Closed Sign Up" formControlName="closedSignUp" type="text" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Date Time">
+    <owl-date-time #dt2></owl-date-time> 
+    <div class="invalid-feedback" *ngIf="leagueForm.get('closedSignUp').touched && leagueForm.get('closedSignUp').hasError('required')">Closed sign up is required</div>
+  </div>
+  
+  <div class="form-group text-center">
+    <button class="btn btn-success mr-2" type="submit" [disabled]="leagueForm.invalid">Create league</button>
+    <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+  </div>
+</form>

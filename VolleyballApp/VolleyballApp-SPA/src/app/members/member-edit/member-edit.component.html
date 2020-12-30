@@ -23,9 +23,14 @@
             <strong>Location:</strong>
             <p>{{ user.city }}, {{ user.country }}</p>
           </div>
-          <div>
+          <div *ngIf="user.userType==='player' || user.userType==='referee'">
             <strong>Games:</strong>
-            <p>Won: {{ user.gamesWon }}, Lost: {{ user.gamesLost }}</p>
+            <p *ngIf="user.userType==='player'">Won: {{ user.gamesWon }}, Lost: {{ user.gamesLost }}</p>
+            <p *ngIf="user.userType==='referee'">{{ user.gamesPlayed }}</p>
+          </div>
+          <div *ngIf="user.userType==='player'">
+            <strong>Ranking:</strong>
+            <p>{{ user.rankingPoints }}</p>
           </div>
           <div>
             <strong>Age:</strong>
@@ -88,7 +93,7 @@
               </div>
             </form>
           </tab>
-          <tab heading="Team">
+          <tab heading="Team" *ngIf="user.userType==='player'">
             <div *ngIf="!creationMode && user.team == null" class="d-flex justify-content-center mt-3">
               <button
                 class="btn btn-primary btn-lg mr-2"

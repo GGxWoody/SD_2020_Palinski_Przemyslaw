@@ -540,14 +540,19 @@ namespace VolleyballApp.API.Data
             newLeague.Country = leagueForCreationDto.Country;
             newLeague.TeamLimit = leagueForCreationDto.TeamLimit;
             newLeague.Description = leagueForCreationDto.Description;
+            newLeague.ClosedSignUp = leagueForCreationDto.ClosedSignUp;
             var teamLeague = new TeamLeague();
             if (userCreating.UserType == "player")
             {
                 teamLeague = new TeamLeague { Team = userCreating.Team, League = newLeague };
+                _context.TeamLeague.Add(teamLeague);
+            } else if (userCreating.UserType == "organiser")
+            {
+                _context.Leagues.Add(newLeague);
             }
-            _context.TeamLeague.Add(teamLeague);
+            
             await _context.SaveChangesAsync();
-            return teamLeague.League;
+            return newLeague;
         }
 
         public async Task<League> AddTeamToLeague(User userJoining, League leagueToJoin)

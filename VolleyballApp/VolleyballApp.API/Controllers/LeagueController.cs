@@ -49,6 +49,7 @@ namespace VolleyballApp.API.Controllers
             if (leagueForCreationDto.CreatorId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
             var userCreating = await _repository.GetUser(leagueForCreationDto.CreatorId);
             if (userCreating.OwnedTeam == false && userCreating.UserType == "player") return BadRequest("You need to be owner of the team");
+            if (userCreating.UserType == "referee") return BadRequest("Referees can't create league");
             if (userCreating.IsMailActivated == false) return BadRequest("User account is not activated");
             var createdLeague = await _repository.CreateLeague(leagueForCreationDto);
             var leagueToReturn = _mapper.Map<LeagueForDetailedDto>(createdLeague);

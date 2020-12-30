@@ -61,6 +61,7 @@ import { MatchRefereeListComponent } from './matches/match-referee-list/match-re
 import { MatchRefereeDataComponent } from './matches/match-referee-data/match-referee-data.component';
 import { ActivateComponent } from './activate/activate.component';
 import { ActivateLinkComponent } from './activate-link/activate-link.component';
+import { LeagueFormComponent } from './leagues/league-form/league-form.component';
 
 
 
@@ -105,6 +106,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       PhotoEditorComponent,
       LeaguesListComponent,
       LeagueDetailComponent,
+      LeagueFormComponent,
       TeamPhotoComponent,
       LeaguesCardComponent,
       TimeAgoPipe,

@@ -81,4 +81,8 @@ export class LeaguesService {
   startLeague(leagueId) {
     return this.http.put(this.baseUrl + 'league/' + leagueId, {});
   }
+
+  createLeague(model: any) {
+    return this.http.post(this.baseUrl + 'league', model);
+  }
 }

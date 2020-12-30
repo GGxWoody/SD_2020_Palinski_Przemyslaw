@@ -36,8 +36,8 @@
               </div>
               <div class="form-group">
                 <input [ngClass]="{'is-invalid': locationForm.get('timeOfMatch').errors && locationForm.get('timeOfMatch').touched}" class="form-control"
-                  placeholder="Time of match" formControlName="timeOfMatch" type="text" [owlDateTime]="dt" [owlDateTimeTrigger]="dt" placeholder="Date Time">
-                <owl-date-time #dt></owl-date-time> 
+                  placeholder="Time of match" formControlName="timeOfMatch" type="text" [owlDateTime]="dt4" [owlDateTimeTrigger]="dt4" placeholder="Date Time">
+                <owl-date-time #dt4></owl-date-time> 
                 <div class="invalid-feedback" *ngIf="locationForm.get('timeOfMatch').touched && locationForm.get('timeOfMatch').hasError('required')">Date of Birth is required</div>
               </div>
               

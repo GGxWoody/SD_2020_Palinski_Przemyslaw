@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { League } from 'src/app/_models/league';
 import { PaginatedResult, Pagination } from 'src/app/_models/pagination';
 import { User } from 'src/app/_models/user';
@@ -12,6 +13,7 @@ import { LeaguesService } from 'src/app/_services/leagues.service';
   styleUrls: ['./leagues-list.component.scss']
 })
 export class LeaguesListComponent implements OnInit {
+  creationMode = false;
   leagues: League[];
   pagination: Pagination;
   user: User = JSON.parse(localStorage.getItem('user'));
@@ -39,5 +41,13 @@ export class LeaguesListComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  creationToggle() {
+    this.creationMode = true;
+  }
+
+  cancelCreationMode(registerMode: boolean) {
+    this.creationMode = registerMode;
   }
 }

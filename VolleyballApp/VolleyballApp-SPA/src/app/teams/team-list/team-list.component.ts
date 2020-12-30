@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PaginatedResult, Pagination } from 'src/app/_models/pagination';
 import { Team } from 'src/app/_models/team';
 import { AlertifyService } from 'src/app/_services/alertify.service';
@@ -13,7 +14,8 @@ import { TeamService } from 'src/app/_services/team.service';
 export class TeamListComponent implements OnInit {
   teams: Team[];
   pagination: Pagination;
-  constructor(private teamService: TeamService, private alertify: AlertifyService, private root: ActivatedRoute) { }
+  constructor(private teamService: TeamService, private alertify: AlertifyService,
+              private root: ActivatedRoute) { }
 
   ngOnInit() {
     this.root.data.subscribe(data => {
@@ -36,5 +38,4 @@ export class TeamListComponent implements OnInit {
       this.alertify.error(error);
     });
   }
-
 }

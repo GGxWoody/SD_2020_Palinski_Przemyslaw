@@ -15,6 +15,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
 import { TeamListComponent } from './teams/team-list/team-list.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { AutorizeGuard } from './_guards/autorize.guard';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { FriendListResolver } from './_resolvers/friend-list.resolver';
 import { InviteListResolver } from './_resolvers/invite-list.resolver';
@@ -34,6 +35,7 @@ import { TeamListResolver } from './_resolvers/team-list.resolver';
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'activate/:id', component: ActivateLinkComponent},
+    { path: 'activate', canActivate: [AutorizeGuard], component: ActivateComponent},
     {
         path: '',
         runGuardsAndResolvers: 'always',
@@ -43,7 +45,6 @@ export const appRoutes: Routes = [
                 path: 'members/edit', component: MemberEditComponent, resolve: { user: MemberEditResolver },
                 canDeactivate: [PreventUnsavedChanges]
             },
-            { path: 'activate', component: ActivateComponent},
             { path: 'members', component: MemberListComponent, resolve: { users: MemberListResolver } },
             { path: 'friends', component: MemberFriendListComponent, resolve: { friends: FriendListResolver } },
             { path: 'teams', component: TeamListComponent, resolve: {teams: TeamListResolver} },
