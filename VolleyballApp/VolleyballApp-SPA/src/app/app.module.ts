@@ -39,7 +39,6 @@ import { TimeAgoPipe } from 'time-ago-pipe';
 import { NgPipesModule } from 'ngx-pipes';
 import { TeamDetailComponent } from './teams/team-detail/team-detail.component';
 import { TeamDetailResolver } from './_resolvers/team-detail.resolver';
-import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { MatchListComponent } from './matches/match-list/match-list.component';
 import { MatchListResolver } from './_resolvers/match-list.resolver';
 import { MatchCardComponent } from './matches/match-card/match-card.component';
@@ -120,7 +119,6 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       FormsModule,
       NgPipesModule,
       ReactiveFormsModule,
-      SelectDropDownModule,
       FileUploadModule,
       BsDropdownModule.forRoot(),
       TabsModule.forRoot(),

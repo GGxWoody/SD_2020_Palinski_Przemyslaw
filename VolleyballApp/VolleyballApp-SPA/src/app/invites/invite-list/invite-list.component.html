@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <h2 class="col-12 text-center mt-4" *ngIf="invites.length === 0">No Invites</h2>
     <div *ngFor="let invite of invites" class="col-6">
-      <app-invite-card [invite]="invite" (refreshContent)="refreshContent($event)"></app-invite-card>
+      <app-invite-card [invite]="invite" (refreshContent)="refreshContent()"></app-invite-card>
     </div>
   </div>
 </div>

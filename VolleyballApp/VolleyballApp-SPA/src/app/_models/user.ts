@@ -17,7 +17,7 @@ export interface User {
     positions?: string;
     mail?: string;
     country?: string;
-    lastActive?: Date;
+    lastActive?: any;
     photo?: Photo;
     intrests?: string;
     introduction?: string;
