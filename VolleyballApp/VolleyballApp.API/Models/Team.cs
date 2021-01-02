@@ -9,7 +9,7 @@ namespace VolleyballApp.API.Models
         public string TeamName { get; set; }
         public int OwnerId { get; set; }
         public User Owner { get; set; }
-        public ICollection<User> Users { get; set; }
+        public ICollection<UserTeam> UserTeams { get; set; }
         public DateTime DateCreated { get; set; }
         public string Description { get; set; }
         public Photo Photo { get; set; }

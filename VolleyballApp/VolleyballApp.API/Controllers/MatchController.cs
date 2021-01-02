@@ -89,8 +89,8 @@ namespace VolleyballApp.API.Controllers
             var firstTeam = await _repository.GetTeam(matchToAddScore.FirstTeam.Id);
             var secondTeam = await _repository.GetTeam(matchToAddScore.SecondTeam.Id);
             _message.SendMatchUpdate(matchToAddScore.FirstTeam.Id, matchToAddScore.SecondTeam.Id, matchToAddScore.Id);
-            await _repository.AddMatchAndRanking(firstTeam.Users, scoreForAdd.FirstTeamSets);
-            await _repository.AddMatchAndRanking(secondTeam.Users, scoreForAdd.SecondTeamSets);
+            await _repository.AddMatchAndRanking(firstTeam, scoreForAdd.FirstTeamSets);
+            await _repository.AddMatchAndRanking(secondTeam, scoreForAdd.SecondTeamSets);
             await _repository.AddRefereeMatch(userSendingScore);
             if (matchToAddScore.League != null)
             {

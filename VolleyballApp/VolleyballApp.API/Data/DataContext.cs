@@ -17,6 +17,7 @@ namespace VolleyballApp.API.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<TeamLeague> TeamLeague { get; set; }
+        public DbSet<UserTeam> UserTeam { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
@@ -42,10 +43,9 @@ namespace VolleyballApp.API.Data
 
             modelBuilder.Entity<TeamLeague>()
             .HasKey( x => new {x.LeagueId, x.TeamId});
-        
-            modelBuilder.Entity<Team>()
-            .HasOne(x => x.Owner)
-            .WithOne(x => x.Team);
+
+            modelBuilder.Entity<UserTeam>()
+            .HasKey( x => new {x.UserId, x.TeamId});
 
             modelBuilder.Entity<League>()
             .HasMany(x => x.Matches)

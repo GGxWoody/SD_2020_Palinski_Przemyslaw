@@ -42,7 +42,7 @@ namespace VolleyballApp.API.Controllers
                 userToCreate.UserType = "player";
             }
             userToCreate.RankingPoints = 900;
-            userToCreate.OwnedTeam = false;
+            userToCreate.UserTeam = null;
             userToCreate.IsMailActivated = false;
             userToCreate.Description = "";
             userToCreate.Positions = "";

@@ -14,7 +14,7 @@ namespace VolleyballApp.API.Data
         }
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.Include(x => x.Team).FirstOrDefaultAsync(x => x.Username == username);
+            var user = await _context.Users.Include(x => x.UserTeam).ThenInclude(x => x.Team).FirstOrDefaultAsync(x => x.Username == username);
             if(user == null) return null;
             if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)) return null;
             return user;

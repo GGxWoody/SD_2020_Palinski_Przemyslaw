@@ -10,9 +10,14 @@
     <div class="invalid-feedback" *ngIf="leagueForm.get('city').touched && leagueForm.get('city').hasError('required')">City is required</div>
   </div>
   <div class="form-group">
+    <input [ngClass]="{'is-invalid': leagueForm.get('description').errors && leagueForm.get('description').touched}" class="form-control"
+      placeholder="Description" formControlName="description">
+    <div class="invalid-feedback" *ngIf="leagueForm.get('description').touched && leagueForm.get('description').hasError('required')">Description is required</div>
+  </div>
+  <div class="form-group">
     <input [ngClass]="{'is-invalid': leagueForm.get('teamLimit').errors && leagueForm.get('teamLimit').touched}" class="form-control"
       placeholder="Team Limit" formControlName="teamLimit">
-    <div class="invalid-feedback" *ngIf="leagueForm.get('teamLimit').touched && leagueForm.get('teamLimit').hasError('required')">Address is required</div>
+    <div class="invalid-feedback" *ngIf="leagueForm.get('teamLimit').touched && leagueForm.get('teamLimit').hasError('required')">Team limit is required</div>
   </div>
   <div class="form-group">
     <input [ngClass]="{'is-invalid': leagueForm.get('closedSignUp').errors && leagueForm.get('closedSignUp').touched}" class="form-control"

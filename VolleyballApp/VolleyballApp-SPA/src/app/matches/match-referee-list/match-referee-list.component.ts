@@ -21,6 +21,7 @@ export class MatchRefereeListComponent implements OnInit {
   constructor(private matchService: MatchService, private alertify: AlertifyService) { }
 
   ngOnInit() {
+    console.log(this.users);
   }
 
   pageChanged(event: any): void {

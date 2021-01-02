@@ -59,13 +59,17 @@ namespace VolleyballApp.API.Controllers
             if (userFromRepo.IsMailActivated == false) return BadRequest("User account is not activated");
             
             if(userFromRepo.UserType != "player") return BadRequest("Only players can create team");
-            if(userFromRepo.Team != null) return BadRequest("You are already in the team");
+            if(userFromRepo.UserTeam != null) return BadRequest("You are already in the team");
 
             teamToCreate.Owner = userFromRepo;
             teamToCreate.OwnerId = userFromRepo.Id;
             teamToCreate.DateCreated = System.DateTime.Now;
-            teamToCreate.Users = new List<User>();
-            teamToCreate.Users.Add(userFromRepo);
+            teamToCreate.UserTeams = new List<UserTeam>();
+            UserTeam newUser = new UserTeam();
+            newUser.Team = teamToCreate;
+            newUser.User = userFromRepo;
+            newUser.IsTeamOwner = true;
+            teamToCreate.UserTeams.Add(newUser);
 
             var teamCreated = await _repository.CreateTeam(teamToCreate);
 

@@ -18,6 +18,7 @@ import { TeamService } from 'src/app/_services/team.service';
 export class TeamDetailComponent implements OnInit {
   @ViewChild('editForm', { static: true }) editForm: NgForm;
   team: Team;
+  userList: User[];
   loginedInUser: User;
   teamSelected: Team;
   modalRef: BsModalRef;
@@ -40,14 +41,15 @@ export class TeamDetailComponent implements OnInit {
       this.team = data.team;
       this.loginedInUser = data.loginedInUser;
     });
+    this.userList = this.team.userTeams.map(x => x.user);
   }
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
   }
 
-  sendMatchInvite(id: number) {
-    this.inviteService.sendMatchInvite(this.loginedInUser.id, this.teamSelected.id , this.team.id).subscribe(data => {
+  sendMatchInvite() {
+    this.inviteService.sendMatchInvite(this.loginedInUser.id, this.loginedInUser.userTeam.teamId , this.team.id).subscribe(data => {
       this.alertify.success('You invited: ' + this.team.teamName + ' to play match');
     }, error => {
       this.alertify.error(error);

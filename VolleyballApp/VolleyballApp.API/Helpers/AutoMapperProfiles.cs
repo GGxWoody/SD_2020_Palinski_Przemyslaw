@@ -43,6 +43,7 @@ namespace VolleyballApp.API.Helpers
             CreateMap<League, LeagueForDetailedDto>();
             CreateMap<TeamLeague, TeamLeagueForLeagueDetailsDto>();
             CreateMap<League, LeagueForListDto>();
+            CreateMap<UserTeam,UserTeamDto>();
         }
     }
 }

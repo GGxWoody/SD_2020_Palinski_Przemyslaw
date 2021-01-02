@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -116,10 +117,10 @@ namespace VolleyballApp.API.Controllers
             var recipient = await _repository.GetUser(id);
             var sender = await _repository.GetUser(userId);
             if (recipient.UserType != "player") return BadRequest("You cannot invite this user to team");
-            if (recipient.Team != null) return BadRequest("This user is already in some team");
+            if (recipient.UserTeam != null) return BadRequest("This user is already in some team");
             if (recipient.IsMailActivated == false) return BadRequest("User account is not activated");
-            if (team.Id != sender.Team.Id) return BadRequest("You are not part of that team");
-            if (sender.OwnedTeam == false) return BadRequest("You are not owner of that team");
+            if (team.Id != sender.UserTeam.TeamId) return BadRequest("You are not part of that team");
+            if (sender.UserTeam.IsTeamOwner == false) return BadRequest("You are not owner of that team");
             if (recipient == null) return BadRequest("Could not find user");
             var invite = await _repository.CreateTeamInvite(recipient,team);
             var inviteToReturn = _mapper.Map<InviteToReturnDto>(invite);
@@ -201,8 +202,11 @@ namespace VolleyballApp.API.Controllers
 
 
             if (firstTeam == null || secondTeam == null) BadRequest("One of the team does not exist");
-            var firstTeamPlayers = firstTeam.Users;
-            var secondTeamPlayers = secondTeam.Users;
+            var firstTeamUsers = firstTeam.UserTeams.ToList();
+            var secondTeamUsers = secondTeam.UserTeams.ToList();
+            var firstTeamPlayers = firstTeamUsers.Select(x => x.User).ToList();
+            var secondTeamPlayers = secondTeamUsers.Select(x => x.User).ToList();
+            
 
 
             if (currnetUserId != firstTeam.OwnerId) return BadRequest("You have to be owner of team to send invite for match");

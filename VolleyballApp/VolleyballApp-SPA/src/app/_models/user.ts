@@ -1,6 +1,7 @@
 import { PhotoEditorComponent } from '../members/photo-editor/photo-editor.component';
 import { Photo } from './photo';
 import { Team } from './team';
+import { UserTeam } from './userTeam';
 
 export interface User {
     id: number;
@@ -21,8 +22,7 @@ export interface User {
     intrests?: string;
     introduction?: string;
     lookingFor?: string;
-    team?: Team;
-    ownedTeam?: boolean;
+    userTeam?: UserTeam;
     gamesWon?: number;
     gamesLost?: number;
     isFriend?: boolean;

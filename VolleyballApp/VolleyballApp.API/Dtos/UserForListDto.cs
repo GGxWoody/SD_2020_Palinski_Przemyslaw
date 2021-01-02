@@ -10,7 +10,7 @@ namespace VolleyballApp.API.Dtos
         public string Gender { get; set; }
         public int Age { get; set; }
         public string KnownAs { get; set; }
-        public TeamsForListDto Team { get; set; }
+        public UserTeamDto UserTeam { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
         public string City { get; set; }

@@ -15,9 +15,14 @@
             <strong>Location:</strong>
             <p>{{ user.city }}, {{ user.country }}</p>
           </div>
-          <div>
+          <div *ngIf="user.userType==='player' || user.userType==='referee'">
             <strong>Games:</strong>
-            <p>Won: {{ user.gamesWon }}, Lost: {{ user.gamesLost }}</p>
+            <p *ngIf="user.userType==='player'">Won: {{ user.gamesWon }}, Lost: {{ user.gamesLost }}</p>
+            <p *ngIf="user.userType==='referee'">{{ user.gamesPlayed }}</p>
+          </div>
+          <div *ngIf="user.userType==='player'">
+            <strong>Ranking:</strong>
+            <p>{{ user.rankingPoints }}</p>
           </div>
           <div>
             <strong>Age:</strong>
@@ -58,8 +63,8 @@
       <div class="tab-panel mt-2">
         <tabset class="member-tabset" #memberTabs>
           <tab heading="About {{ user.knownAs }}"> 
-            <div *ngIf="user.team != null">
-              <app-team-card [team]="user.team"></app-team-card>
+            <div *ngIf="user.userTeam != null">
+              <app-team-card [team]="user.userTeam.team"></app-team-card>
             </div>
           </tab>
           <tab heading="Messages">

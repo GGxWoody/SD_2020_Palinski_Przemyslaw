@@ -45,7 +45,7 @@ export class MemberDetailComponent implements OnInit {
   }
 
   sendTeamInvite() {
-    this.inviteService.sendTeamInvite(this.authService.decodedToken.nameid, this.loginedInUser.team.id, this.user.id)
+    this.inviteService.sendTeamInvite(this.authService.decodedToken.nameid, this.loginedInUser.userTeam.teamId, this.user.id)
     .subscribe(data => {
       this.alertify.success('You invited: ' + this.user.knownAs + ' to your team');
     }, error => {

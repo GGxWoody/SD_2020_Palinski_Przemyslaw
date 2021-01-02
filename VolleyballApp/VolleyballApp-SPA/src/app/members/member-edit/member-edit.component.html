@@ -94,7 +94,7 @@
             </form>
           </tab>
           <tab heading="Team" *ngIf="user.userType==='player'">
-            <div *ngIf="!creationMode && user.team == null" class="d-flex justify-content-center mt-3">
+            <div *ngIf="!creationMode && user.userTeam == null" class="d-flex justify-content-center mt-3">
               <button
                 class="btn btn-primary btn-lg mr-2"
                 (click)="createToggle()"
@@ -109,8 +109,8 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="user.team != null">
-              <app-team-card [team]="user.team"></app-team-card>
+            <div *ngIf="user.userTeam != null">
+              <app-team-card [team]="user.userTeam.team"></app-team-card>
             </div>
           </tab>
           <tab heading="Photo">

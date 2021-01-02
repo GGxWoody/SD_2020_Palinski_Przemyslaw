@@ -48,7 +48,7 @@ namespace VolleyballApp.API.Controllers
         public async Task<IActionResult> CreateLeague(LeagueForCreationDto leagueForCreationDto) {
             if (leagueForCreationDto.CreatorId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
             var userCreating = await _repository.GetUser(leagueForCreationDto.CreatorId);
-            if (userCreating.OwnedTeam == false && userCreating.UserType == "player") return BadRequest("You need to be owner of the team");
+            if (userCreating.UserTeam.IsTeamOwner == false && userCreating.UserType == "player") return BadRequest("You need to be owner of the team");
             if (userCreating.UserType == "referee") return BadRequest("Referees can't create league");
             if (userCreating.IsMailActivated == false) return BadRequest("User account is not activated");
             var createdLeague = await _repository.CreateLeague(leagueForCreationDto);
@@ -62,13 +62,13 @@ namespace VolleyballApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
             var userJoining = await _repository.GetUser(userId);
             var leagueToJoin = await _repository.GetLeague(leagueId);
-            if (userJoining.OwnedTeam == false) return BadRequest ("You are not an owner of a team");
+            if (userJoining.UserTeam.IsTeamOwner == false) return BadRequest ("You are not an owner of a team");
             if (leagueToJoin.TeamLeague.Count() >= leagueToJoin.TeamLimit) return BadRequest ("This league is alredy full");
             if (DateTime.Compare(DateTime.Now, leagueToJoin.ClosedSignUp) > 0) return BadRequest("League has already closed its sign up");
             var teams = new List<TeamLeague>(leagueToJoin.TeamLeague);
-            if (teams.Select(x => x.TeamId).Contains(userJoining.Team.Id)) return BadRequest("Your team is already in this league");
+            if (teams.Select(x => x.TeamId).Contains(userJoining.UserTeam.TeamId)) return BadRequest("Your team is already in this league");
             await _repository.AddTeamToLeague(userJoining, leagueToJoin);
-            Helpers.MailSender.sendLeagueJoinInfo(userJoining.Team.Id, leagueId, leagueToJoin.Creator.Mail);
+            Helpers.MailSender.sendLeagueJoinInfo(userJoining.UserTeam.TeamId, leagueId, leagueToJoin.Creator.Mail);
             return Ok();
         }
 

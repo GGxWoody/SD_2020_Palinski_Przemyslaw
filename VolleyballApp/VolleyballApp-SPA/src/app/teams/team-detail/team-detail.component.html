@@ -12,19 +12,20 @@
         />
         <div class="card-body">
           <div>
-            <strong>Games:</strong>
+            <strong>Ranking points:</strong>
+            <p>{{ team.rankingPoints }}</p>
           </div>
           <div>
             <strong>Team created:</strong>
             <p>{{ team.dateCreated | date: "mediumDate" }}</p>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" *ngIf="loginedInUser.userType === 'player' && loginedInUser.userTeam.isTeamOwner">
           <div class="btn-group d-flex">
             <button
               type="button"
               class="btn btn-primary w-100"
-              (click)="staticModal.show()"
+              (click)="sendMatchInvite()"
               *ngIf="loginedInUser.id != team.owner.id"
             >
               Match invite
@@ -55,7 +56,7 @@
           </tab>
           <tab heading="Players">
             <div class="row justify-content-center mt-3">
-              <div *ngFor="let user of team.users" class="col-3">
+              <div *ngFor="let user of userList" class="col-3">
                 <app-member-card [user]="user"></app-member-card>
               </div>
             </div>
@@ -98,48 +99,6 @@
             <app-team-photo [team]="team"></app-team-photo>
           </tab>
         </tabset>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal fade"
-  bsModal
-  #staticModal="bs-modal"
-  [config]="{ backdrop: 'static' }"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="dialog-static-name"
->
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 id="dialog-static-name" class="modal-title pull-left">
-          Team invite
-        </h4>
-        <button
-          type="button"
-          class="close pull-right"
-          aria-label="Close"
-          (click)="staticModal.hide()"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <ngx-select-dropdown
-          [multiple]="false"
-          [(ngModel)]="teamSelected"
-          [options]="loginedInUser.teamsCreated"
-          [config]="config"
-        ></ngx-select-dropdown>
-        <button
-          class="btn btn-primary w-100 mt-3"
-          (click)="sendMatchInvite(team.id)"
-        >
-          Team invite
-        </button>
       </div>
     </div>
   </div>

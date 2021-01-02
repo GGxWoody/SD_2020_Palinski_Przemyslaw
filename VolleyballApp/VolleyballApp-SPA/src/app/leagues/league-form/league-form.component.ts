@@ -27,7 +27,8 @@ export class LeagueFormComponent implements OnInit {
     this.leagueForm = this.fb.group({
       country: ['', Validators.required],
       city: ['', Validators.required],
-      teamLimit: ['', Validators.required],
+      description: ['', Validators.required],
+      teamLimit: ['', [Validators.required, Validators.pattern('^[0-8]*$'), Validators.maxLength(1)]],
       closedSignUp: [null, Validators.required],
       creatorId: [this.user.id, Validators.required]
     });

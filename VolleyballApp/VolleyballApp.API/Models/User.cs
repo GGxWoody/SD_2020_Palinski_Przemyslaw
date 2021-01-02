@@ -25,8 +25,7 @@ namespace VolleyballApp.API.Models
         public int GamesWon { get; set; }
         public int RankingPoints { get; set; }
         public Photo Photo { get; set; }
-        public Team Team { get; set; }
-        public bool OwnedTeam { get; set; }
+        public UserTeam UserTeam { get; set;}
         public ICollection<Message> MessagesSent { get; set; }
         public ICollection<Message> MessagesReceived { get; set; }
         public ICollection<Match> RefereeMatches { get; set; }
