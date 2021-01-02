@@ -663,5 +663,12 @@ namespace VolleyballApp.API.Data
             referees = referees.Where(x => x.Country == country);
             return await PagedList<User>.CreateAsync(referees, userParams.PageNumber, userParams.PageSize);
         }
+
+        public async Task<UserTeam> RemoveUserFromTeam(int teamId, int userId)
+        {
+            var userTeamToDelete = await _context.UserTeam.FirstOrDefaultAsync(x => x.UserId == userId && x.TeamId == teamId);
+            _context.UserTeam.Remove(userTeamToDelete);
+            return userTeamToDelete;
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -86,6 +87,25 @@ namespace VolleyballApp.API.Controllers
             _mapper.Map(teamForUpdateDto, teamFromRepo);
             if (await _repository.saveAll()) return NoContent();
             throw new Exception($"Updating team with {id} failed on save.");
+        }
+
+        [HttpDelete("{id}/{userId}")]
+        public async Task<IActionResult> RemoveUserFromTeam(int id, int userId)
+        {
+            var team = await _repository.GetTeam(id);
+            if (team == null) return BadRequest("This team does not exist");
+            if (team.OwnerId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) return Unauthorized();
+            if (!team.UserTeams.Select(x => x.UserId).Contains(userId)) return BadRequest("This player is not in your team");
+            return Ok(await _repository.RemoveUserFromTeam(id, userId));
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> LeaveTeam(int userId)
+        {
+            var user = await _repository.GetUser(userId);
+            if (user.UserTeam == null) return BadRequest("User is not in any team");
+            if (user.UserTeam.IsTeamOwner) return BadRequest("Owner can't leave team");
+            return Ok(await _repository.RemoveUserFromTeam(user.UserTeam.TeamId, userId));
         }
     }
 }

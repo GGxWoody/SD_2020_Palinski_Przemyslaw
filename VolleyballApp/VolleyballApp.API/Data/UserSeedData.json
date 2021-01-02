@@ -8,7 +8,10 @@
         "Created": "2017-03-16",
         "LastActive": "2017-03-16",
         "City": "Deseret",
-        "Country": "Viet Nam"
+        "Country": "Viet Nam",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Genevieve",
@@ -19,7 +22,10 @@
         "Created": "2017-02-12",
         "LastActive": "2017-02-12",
         "City": "Saranap",
-        "Country": "Kazakhstan"
+        "Country": "Kazakhstan",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Hazel",
@@ -30,7 +36,10 @@
         "Created": "2017-07-28",
         "LastActive": "2017-07-28",
         "City": "Jugtown",
-        "Country": "Azerbaijan"
+        "Country": "Azerbaijan",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Molly",
@@ -41,7 +50,10 @@
         "Created": "2017-06-15",
         "LastActive": "2017-06-15",
         "City": "Wyoming",
-        "Country": "Malaysia"
+        "Country": "Malaysia",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Luz",
@@ -52,7 +64,10 @@
         "Created": "2017-02-28",
         "LastActive": "2017-02-28",
         "City": "Camino",
-        "Country": "Panama"
+        "Country": "Panama",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Gregory",
@@ -63,7 +78,10 @@
         "Created": "2017-06-06",
         "LastActive": "2017-06-06",
         "City": "Sutton",
-        "Country": "Antarctica"
+        "Country": "Antarctica",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Key",
@@ -74,7 +92,10 @@
         "Created": "2017-05-29",
         "LastActive": "2017-05-29",
         "City": "Leland",
-        "Country": "Romania"
+        "Country": "Romania",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Foley",
@@ -85,7 +106,10 @@
         "Created": "2017-05-12",
         "LastActive": "2017-05-12",
         "City": "Franklin",
-        "Country": "Croatia (Hrvatska)"
+        "Country": "Croatia (Hrvatska)",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Shepherd",
@@ -96,7 +120,10 @@
         "Created": "2017-02-13",
         "LastActive": "2017-02-13",
         "City": "Aurora",
-        "Country": "Switzerland"
+        "Country": "Switzerland",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     },
     {
         "Username": "Small",
@@ -107,6 +134,9 @@
         "Created": "2017-06-25",
         "LastActive": "2017-06-25",
         "City": "Deputy",
-        "Country": "Wallis and Futuna Islands"
+        "Country": "Wallis and Futuna Islands",
+        "UserType": "player",
+        "RankingPoints":900,
+        "IsMailActivated": true
     }
 ]

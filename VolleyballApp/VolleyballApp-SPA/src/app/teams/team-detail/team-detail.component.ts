@@ -42,6 +42,7 @@ export class TeamDetailComponent implements OnInit {
       this.loginedInUser = data.loginedInUser;
     });
     this.userList = this.team.userTeams.map(x => x.user);
+    console.log(this.loginedInUser);
   }
 
   openModal(template: TemplateRef<any>) {
@@ -59,6 +60,22 @@ export class TeamDetailComponent implements OnInit {
   updateTeam() {
     this.teamService.updateTeam(this.team.id, this.team).subscribe(next => {
       this.alertify.success('Profile updated successfully');
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  leaveTeam(userId: number) {
+    this.teamService.leaveTeam(userId).subscribe(next => {
+      this.alertify.success('You have successfully left the team');
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  kickFromTeam(userId: number) {
+    this.teamService.kickFromTeam(this.team.id, userId).subscribe(next => {
+      this.alertify.success('You have successfully removed user form the team');
     }, error => {
       this.alertify.error(error);
     });

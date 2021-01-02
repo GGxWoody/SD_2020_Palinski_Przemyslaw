@@ -19,7 +19,7 @@ export class InviteCardComponent implements OnInit {
 
   acceptFriendInvite(userId: number, id: number) {
     this.inviteService.acceptFriendInvite(userId, id).subscribe(data => {
-      this.alertify.success('You accepted: ' + this.invite.inviteFrom.knownAs + ' to friendlist');
+      this.alertify.success('You accepted ' + this.invite.inviteFrom.knownAs + ' to friendlist');
       this.refreshContent.emit();
     }, error => {
       this.alertify.error(error);
@@ -37,8 +37,7 @@ export class InviteCardComponent implements OnInit {
 
   acceptTeamInvite(userId: number, teamId: number, id: number) {
     this.inviteService.acceptTeamInvite(userId, teamId, id).subscribe(data => {
-      this.alertify.success('You accepted: ' + this.invite.teamInvited.owner.knownAs
-      + ' invite to team ' + this.invite.teamInvited.teamName);
+      this.alertify.success('You accepted invite to team ' + this.invite.teamInvited.teamName);
       this.refreshContent.emit();
     }, error => {
       this.alertify.error(error);
@@ -47,8 +46,7 @@ export class InviteCardComponent implements OnInit {
 
   declineTeamInvite(userId: number, teamId: number, id: number) {
     this.inviteService.declineTeamInvite(userId, teamId, id).subscribe(data => {
-      this.alertify.success('You declined ' + this.invite.teamInvited.owner.knownAs
-      + ' invite to team ' + this.invite.teamInvited.teamName);
+      this.alertify.success('You declined invite to team ' + this.invite.teamInvited.teamName);
       this.refreshContent.emit();
     }, error => {
       this.alertify.error(error);
@@ -57,8 +55,7 @@ export class InviteCardComponent implements OnInit {
 
   acceptMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
     this.inviteService.acceptMatchInvite(userId, firstTeamId, secondTeamId).subscribe(data => {
-      this.alertify.success('You accepted: ' + this.invite.teamInvited.owner.knownAs
-      + ' invite to match form ' + this.invite.teamInviting.teamName);
+      this.alertify.success('You accepted invite to match form ' + this.invite.teamInviting.teamName);
       this.refreshContent.emit();
     }, error => {
       this.alertify.error(error);
@@ -67,8 +64,7 @@ export class InviteCardComponent implements OnInit {
 
   declineMatchInvite(userId: number, firstTeamId: number, secondTeamId: number) {
     this.inviteService.declineMatchInvite(userId, firstTeamId, secondTeamId).subscribe(data => {
-      this.alertify.success('You declined ' + this.invite.teamInvited.owner.knownAs
-      + ' invite to match form ' + this.invite.teamInviting.teamName);
+      this.alertify.success('You declined invite to match form ' + this.invite.teamInviting.teamName);
       this.refreshContent.emit();
     }, error => {
       this.alertify.error(error);
@@ -77,7 +73,7 @@ export class InviteCardComponent implements OnInit {
 
   acceptRefereeInvite(userId: number, matchId: number) {
     this.inviteService.acceptRefereeInvite(userId, matchId).subscribe(data => {
-      this.alertify.success('You accepted: ' + this.invite.inviteFrom.knownAs
+      this.alertify.success('You accepted ' + this.invite.inviteFrom.knownAs
       + ' invite to be referee');
       this.refreshContent.emit();
     }, error => {
@@ -87,7 +83,7 @@ export class InviteCardComponent implements OnInit {
 
   declineRefereeInvite(userId: number, matchId: number) {
     this.inviteService.declineRefereeInvite(userId, matchId).subscribe(data => {
-      this.alertify.success('You declined: ' + this.invite.inviteFrom.knownAs
+      this.alertify.success('You declined ' + this.invite.inviteFrom.knownAs
       + ' invite to be referee');
       this.refreshContent.emit();
     }, error => {

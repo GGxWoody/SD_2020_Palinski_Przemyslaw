@@ -56,4 +56,12 @@ export class TeamService {
   deletePhoto(userId: number, id: number, teamId) {
     return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id + '/' + teamId);
   }
+
+  leaveTeam(userId: number) {
+    return this.http.delete(this.baseUrl + 'teams/' + userId);
+  }
+
+  kickFromTeam(teamId: number, userId: number) {
+    return this.http.delete(this.baseUrl + 'teams/' + teamId + '/' + userId);
+  }
 }

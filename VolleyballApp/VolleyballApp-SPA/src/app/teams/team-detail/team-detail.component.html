@@ -20,18 +20,35 @@
             <p>{{ team.dateCreated | date: "mediumDate" }}</p>
           </div>
         </div>
-        <div class="card-footer" *ngIf="loginedInUser.userType === 'player' && loginedInUser.userTeam.isTeamOwner">
+        <div
+          class="card-footer"
+          *ngIf="
+            loginedInUser.userType === 'player' &&
+            loginedInUser.userTeam !== null &&
+            (loginedInUser.userTeam.teamId === team.id || loginedInUser.userTeam.isTeamOwner)
+          "
+        >
           <div class="btn-group d-flex">
             <button
               type="button"
               class="btn btn-primary w-100"
               (click)="sendMatchInvite()"
-              *ngIf="loginedInUser.id != team.owner.id"
+              *ngIf="loginedInUser.userTeam !== null && loginedInUser.userTeam.isTeamOwner && loginedInUser.userTeam.teamId !== team.id"
             >
               Match invite
             </button>
-            <button class="btn btn-success w-100" *ngIf="loginedInUser.id === team.owner.id">
+            <button
+              class="btn btn-success w-100"
+              *ngIf="loginedInUser.id === team.owner.id"
+            >
               <i class="fa fa-envelope"></i> Edit
+            </button>
+            <button
+                  class="btn btn-primary w-100"
+                  *ngIf="loginedInUser.userTeam !== null && loginedInUser.userTeam.teamId === team.id && !loginedInUser.userTeam.isTeamOwner"
+                  (click)="leaveTeam(loginedInUser.id)"
+                >
+                  Leave team
             </button>
           </div>
         </div>
@@ -57,6 +74,13 @@
           <tab heading="Players">
             <div class="row justify-content-center mt-3">
               <div *ngFor="let user of userList" class="col-3">
+                <button
+                  class="btn btn-primary w-100"
+                  *ngIf="user.id !== loginedInUser.id && loginedInUser.userTeam !== null && loginedInUser.userTeam.teamId === team.id && loginedInUser.userTeam.isTeamOwner"
+                  (click)="leaveTeam(user.id)"
+                >
+                  Kick
+                </button>
                 <app-member-card [user]="user"></app-member-card>
               </div>
             </div>

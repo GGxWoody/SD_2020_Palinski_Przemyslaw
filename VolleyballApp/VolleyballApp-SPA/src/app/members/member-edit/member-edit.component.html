@@ -66,13 +66,21 @@
               id="editForm"
               (ngSubmit)="updateUser()"
             >
-              <h4>Description</h4>
+              <h4 class="mt-2">Description</h4>
               <label for="description" class="ml-4">Description</label>
                 <input
                   class="form-control ml-2"
                   type="text"
                   name="description"
                   [(ngModel)]="user.description"
+                />
+              <h4 class="mt-2" *ngIf="user.userType ==='player'">Preferred positions</h4>
+              <label *ngIf="user.userType ==='player'" for="positions" class="ml-4">Positions</label>
+                <input
+                  class="form-control ml-2"
+                  type="text"
+                  name="positions"
+                  [(ngModel)]="user.positions"
                 />
               <h4>Location Details</h4>
               <div class="form-inline">

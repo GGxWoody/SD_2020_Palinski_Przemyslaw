@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <div class="row">
-    <h1>{{ user.knownAs }}'s Profile</h1>
+    <h1>{{ user.knownAs }}'s {{ user.userType}} Profile</h1>
   </div>
   <div class="row">
     <div class="col-sm-4">
@@ -14,6 +14,10 @@
           <div>
             <strong>Location:</strong>
             <p>{{ user.city }}, {{ user.country }}</p>
+          </div>
+          <div *ngIf="user.userType ==='player' && user.positions != null">
+            <strong>Positions:</strong>
+            <p>{{ user.positions }}</p>
           </div>
           <div *ngIf="user.userType==='player' || user.userType==='referee'">
             <strong>Games:</strong>
@@ -62,7 +66,11 @@
     <div class="col-sm-8">
       <div class="tab-panel mt-2">
         <tabset class="member-tabset" #memberTabs>
-          <tab heading="About {{ user.knownAs }}"> 
+          <tab heading="About {{ user.knownAs }}">
+            <h1 *ngIf="user.userTeam === null && (user.description === null || user.description === '')" class="text-center mt-2"> This user has no info to be displayed</h1>
+            <h1 class="mt-2 text-center" *ngIf="user.description != null">Description</h1>
+            <h3 class="text-justify">{{ user.description }}</h3>
+            <h1 class="mt-4 text-center" *ngIf="user.userTeam !== null">Team</h1>
             <div *ngIf="user.userTeam != null">
               <app-team-card [team]="user.userTeam.team"></app-team-card>
             </div>

@@ -32,11 +32,7 @@
         invite.teamInvited.teamName
       }}</a>
     </h5>
-    <h5 class="card-title">From: {{ invite.teamInvited.owner.knownAs }}</h5>
     <p class="card-text">
-      Age: {{ invite.teamInvited.owner.age }}, Country:
-      {{ invite.teamInvited.owner.country }}, City:
-      {{ invite.teamInvited.owner.city }}
     </p>
     <button
       class="btn btn-primary w-100"
@@ -70,12 +66,6 @@
         invite.teamInviting.teamName
       }}</a>
     </h5>
-    <h5 class="card-title">
-      For team:
-      <a [routerLink]="['/teams/', invite.teamInvited.id]">{{
-        invite.teamInvited.teamName
-      }}</a>
-    </h5>
     <button
       class="btn btn-primary w-100"
       (click)="
@@ -106,8 +96,7 @@
     <h5 class="card-title">
       For Match:
       <a [routerLink]="['/matches/', invite.matchInvitedTo.id]">
-        Click to see match</a
-      >
+        Click to see match</a>
     </h5>
 
     <button
